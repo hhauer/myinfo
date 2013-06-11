@@ -1,0 +1,64 @@
+{% load staticfiles %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>PSU - Select Odin Username</title>
+	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
+	<link href="{% static "MyInfo/css/jquery-ui-1.10.2.custom.css" %}" rel="stylesheet">
+	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery-ui-1.10.2.custom.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery.cookie.js" %}"></script>
+	<script src="{% static "MyInfo/js/ajax_forms.js" %}"></script>
+	
+	<script type="text/javascript">
+	$(function() {
+		$("input[type=submit]").button();
+	});
+	</script>
+</head>
+
+<body>
+	<h1>Select Your Odin Username</h1>
+	
+	<div id="body-content">
+	<p>Please select your Odin Username. This username will be used to log you into PSU's electronic
+	systems. You will keep this username for the duration of your stay at PSU.</p>
+	
+	<form id="provisionAccount" action="/ajax/AccountPickup/provision_new_user.json" method="post" class="ajaxform">
+	<div class="ui-widget">
+	<fieldset>
+		<legend>Select an Odin Username</legend>
+		<div class="wide-input">
+			{{ odin_form.name.label_tag }} {{ odin_form.name }}
+			{{ odin_form.name.errors }}
+		</div>
+	</fieldset>
+	
+	<p>You may select an additional email alias. Your email alias will be delivered to your
+	primary PSU email inbox, but may be friendlier to read or remember than your Odin username.</p>
+	
+	<fieldset>
+		<legend>Select Your Email Alias</legend>
+		<div class="wide-input">
+			{{ mail_form.aliases.label_tag }} {{ mail_form.aliases }}
+			{{ mail_form.aliases.errors }}
+		</div>
+	</fieldset>
+	</div>
+	
+	<p><strong>Reminder:</strong> Portland State policy requires that you read the email sent to your PSU e-mail address
+	on a regular basis.</p>
+	
+	<input type="submit" value="Continue" />
+	<span class="ajax-errors errorlist"></span>
+	</form>
+	</div>
+	
+	<div class="ajax-wait-dialog" title="Please wait">
+		<p>Please wait, your information is being updated.</p>
+		<div id="ajax-progressbar"></div>
+	</div>
+</body>
+</html>

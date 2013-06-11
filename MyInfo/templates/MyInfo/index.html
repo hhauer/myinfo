@@ -1,0 +1,70 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>PSU - MyInfo Login</title>
+	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
+	<link href="{% static "MyInfo/css/jquery-ui-1.10.2.custom.css" %}" rel="stylesheet">
+	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery-ui-1.10.2.custom.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
+	
+	<script type="text/javascript">
+	$(function() {
+		$("input[type=submit]").button();
+		
+		{% if not form.errors and not error %}
+		$("#infoForm").hide();
+		{% endif %}
+		
+		$("#loginToggle").click(function(event) {
+			event.preventDefault();
+			$("#infoForm").fadeIn("slow");
+		});
+	});
+	
+
+	</script>
+</head>
+
+<body>
+	<h1>MyInfo - Login</h1>
+
+	<div id="body-content">
+	
+	<h3>Faculty and students with active accounts</h3>
+	<a href="/MyInfo/update_information/">Click here to log in with single sign-on.</a><br>
+	
+	<h3>Is your password expired?</h3>
+	<a id="loginToggle" href="#">Click here to update your password.</a><br>
+	
+	
+	
+	<form id="infoForm" action="/MyInfo/" method="post">
+	{% csrf_token %}
+	{{ form.non_field_errors }}
+	
+	<div class="ui-widget">
+	{% if error %}
+	<div class="ui-state-error">{{ error }}</div>
+	{% endif %}
+	<fieldset>
+		<div>
+			{{ form.odin_username.label_tag }} {{ form.odin_username }}
+			{{ form.odin_username.errors }}
+		</div>
+		
+		<div>
+			{{ form.password.label_tag }} {{ form.password }}
+			{{ form.password.errors }}
+		</div>
+	</fieldset>
+	</div>
+	
+	<input type="submit" value="Login to MyInfo" />
+	</form>
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,173 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>PSU - MyInfo</title>
+	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
+	<link href="{% static "MyInfo/css/jquery-ui-1.10.2.custom.css" %}" rel="stylesheet">
+	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery-ui-1.10.2.custom.js" %}"></script>
+	<script src="{% static "MyInfo/js/zxcvbn.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery.cookie.js" %}"></script>
+	<script src="{% static "MyInfo/js/ajax_forms.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
+	
+	<script type="text/javascript">
+	$(function() {
+		$("input[type=submit]").button();
+		$("#passwordbar").progressbar({value: 0});
+		$("#accordion").accordion({heightStyle: "content"});
+		$("#password-button").button({disabled: true});
+		
+		$("#password-reset-optout").button({ icons: { primary: "ui-icon-alert"}}).click(function() {
+			$.ajax({
+				type: "POST",
+				data: $("#password-reset-optout").checked,
+				cache: false,
+				url: "/ajax/MyInfo/toggle_password_opt_out.json"
+			})
+		});
+		
+		$("#passwordReset").validate({
+			rules: {
+				alternate_email: "email",
+			},
+			errorPlacement: function(label, invalid) {
+				label.insertAfter(invalid);
+			}
+		});
+	});
+	</script>
+	
+	<script type="text/javascript">
+	{% include "MyInfo/password_meter.js" %}
+	</script>
+	
+	<style>
+		#logout {
+			float:right;
+		}	
+	</style>
+</head>
+
+<body>
+	<h1>PSU - MyInfo</h1>
+	
+	<div id="body-content">
+	
+	{% if newStudent %}
+	<h2>Hello, {{ identity.DISPLAY_NAME }}. </h2>
+	{% else %}
+	<h2>Hello, {{ identity.DISPLAY_NAME }}. <span id="logout"><a href="../accounts/logout/">Logout</a></span></h2>
+	{% endif %}
+	
+	
+	<div id="user-information">
+		<div><span class="infolabel">Odin Username:</span> {{ identity.ODIN_NAME }}</div>
+		<div><span class="infolabel">PSU Email:</span> {{ identity.EMAIL_ADDRESS }}</div>
+		<div><span class="infolabel">ID Number:</span> {{ identity.ID_NUMBER }}</div>
+	</div>
+	
+	<form id="passwordForm" action="/MyInfo/update_information/" method="post">
+	{% csrf_token %}
+	{{ passwordForm.non_field_errors }}
+	
+	<fieldset style="position:relative">
+		<legend>Manage Your Password</legend>
+		<div id="passwordArea" class="ui-widget">
+			{% for field in passwordForm %}
+			<div class="wide-input">
+				{{ field.label_tag }} {{ field }}
+				{{ field.errors }}
+			</div>
+			{% endfor %}
+			
+			{% if not newStudent %}
+			<div id="formInfo"><p>Your password expires on: {{ password_expiration }}</p></div>
+			{% endif %}
+			
+			<input id="password-button" type="submit" value="Update Password" />
+		</div>
+		
+		<div id="passwordMeter">
+			Passwords must meet the following requirements:
+			<ul>
+				<li id="lettercount" class="invalid">At least <strong>{{ password_rules.letter_count }}</strong> letters.</li>
+				<li id="numbercount" class="invalid">At least <strong>{{ password_rules.number_count }}</strong> numbers.</li>
+				<li id="specialcount" class="invalid">At least <strong>{{ password_rules.special_count }}</strong> special characters.</li>
+				<li id="totalcount" class="invalid">Between <strong>{{ password_rules.minimum_count }}</strong> and <strong>{{ password_rules.maximum_count }}</strong> total characters.</li>
+				<li id="password-same" class="invalid">The passwords must match.</li>
+			</ul>
+			<h5>Your password strength is: </h5>
+			<div id="passwordbar"><div class="password-ttc"></div></div>
+		</div>
+
+	</fieldset>
+	</form>
+	
+	<div id="accordion">
+		<h4>Optional: Password Reset Information</h4>
+		<div>
+			<form id="passwordReset" action="/ajax/MyInfo/update_external_contact.json" method="post" class="ajaxform">
+			<div class="wide-input">
+				{{ contactForm.alternate_email.label_tag }} {{ contactForm.alternate_email }}
+				{{ contactForm.alternate_email.errors }}
+			</div>
+			
+			<div class="wide-input">
+				{{ contactForm.cell_number.label_tag }} {{ contactForm.cell_number }}
+				{{ contactForm.cell_number.errors }}
+			</div>
+			
+			<div class="wide-input">
+				{{ contactForm.cell_carrier.label_tag }} {{ contactForm.cell_carrier }}
+				{{ contactForm.cell_carrier.errors }}
+			</div>
+			<input type="submit" value="Update" />
+			<span class="ajax-message"></span>
+			</form>
+			<p>If you would like to opt out of the ability to reset your password automatically (for example you do not
+			have a non-PSU email or cell phone,) you may select that option here. Please keep in mind that this will make it
+			much harder to recover your account in the event that your password expires.</p>
+			<label for="password-reset-optout">Opt Out</label><input type="checkbox" id="password-reset-optout" {{ checked }}/>
+		</div>
+		
+		{% if PSUEmployeeForm %}
+		<h4>Optional: Directory Information</h4>
+		<div>
+			<form id="directoryInformation" action="/ajax/MyInfo/update_directory_information.json" method="post" class="ajaxform">
+			<div class="wide-input">
+				{{ PSUEmployeeForm.job_title.label_tag }} {{ PSUEmployeeForm.job_title }}
+				{{ PSUEmployeeForm.job_title.errors }}
+			</div>
+			
+			<div class="wide-input">
+				{{ PSUEmployeeForm.office_building.label_tag }} {{ PSUEmployeeForm.office_building }}
+				{{ PSUEmployeeForm.office_building.errors }}
+			</div>
+			
+			<div class="wide-input">
+				{{ PSUEmployeeForm.office_room.label_tag }} {{ PSUEmployeeForm.office_room }}
+				{{ PSUEmployeeForm.office_room.errors }}
+			</div>
+			
+			<div class="wide-input">
+				{{ PSUEmployeeForm.department.label_tag }} {{ PSUEmployeeForm.department }}
+				{{ PSUEmployeeForm.department.errors }}
+			</div>
+			<input type="submit" value="Update" />
+			<span class="ajax-message"></span>
+			</form>
+		</div>
+		{% endif %}
+	</div>
+	
+	</div>
+	
+	<div class="ajax-wait-dialog" title="Please wait">
+		<p>Please wait, your information is being updated.</p>
+		<div id="ajax-progressbar"></div>
+	</div>
+</body>
+</html>

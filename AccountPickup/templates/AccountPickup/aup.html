@@ -1,0 +1,51 @@
+{% load staticfiles %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>PSU - AUP</title>
+	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
+	<link href="{% static "MyInfo/css/jquery-ui-1.10.2.custom.css" %}" rel="stylesheet">
+	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery-ui-1.10.2.custom.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
+	
+	<script type="text/javascript">
+	$(function() {
+		$("input[type=submit]").button();
+	});
+	</script>
+</head>
+
+<body>
+	<h1>Acceptable Use Policy</h1>
+	
+	<div id="body-content">
+	<p>Please read and review the following policies regarding the use of computing resources at PSU:</p>
+	
+	<ul>
+	<li><a href="http://www.pdx.edu/oit/sites/www.pdx.edu.oit/files/Acceptable Use Policy.pdf">PSU Acceptable Use Policy</a></li>
+	<li><a href="http://www.pdx.edu/ogc/sites/www.pdx.edu.ogc/files/Email Communication Policy 1.29.13 SIGNED FINAL.pdf">PSU Email Communication Policy</a></li>
+	<li><a href="http://www.pdx.edu/sites/www.pdx.edu.financial-services/files/BAO_rcap_web_policy.pdf">PSU Revoling Charge Account Plan Policy</a></li>
+	</ul>
+	
+	<form id="aupForm" action="/AccountPickup/AUP/" method="post">
+	{% csrf_token %}
+	{{ form.non_field_errors }}
+	
+	<div class="ui-widget">
+	<fieldset>
+		<div>
+			{{ form.accepted.label_tag }} {{ form.accepted }}
+			{{ form.accepted.errors }}
+		</div>
+	</fieldset>
+	</div>
+	
+	<input type="submit" value="Continue" />
+	</form>
+	</div>
+	
+</body>
+</html>

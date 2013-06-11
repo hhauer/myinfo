@@ -1,0 +1,62 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>PSU - Password Reset</title>
+	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
+	<link href="{% static "MyInfo/css/jquery-ui-1.10.2.custom.css" %}" rel="stylesheet">
+	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery-ui-1.10.2.custom.js" %}"></script>
+	
+	<script type="text/javascript">
+	$(function() {
+		$("input[type=submit]").button();
+	});
+	</script>
+</head>
+
+<body>
+	<h1>PSU - Password Reset</h1>
+	
+	<div id="body-content">
+	<p>Blah, blah, blah reset your ODIN password.</p>
+	
+	{% if error %}
+	<div class="ui-state-error">{{ error }}</div>
+	{% endif %}
+	
+	<form id="resetForm" action="/PasswordReset/" method="post">
+	{% csrf_token %}
+	{{ form.non_field_errors }}
+	<fieldset>
+		<legend>Reset Password</legend>
+			{% for field in reset_request %}
+			<div class="formItem">
+				{{ field.label_tag }} {{ field }}
+				{{ field.errors }}
+			</div>
+			{% endfor %}
+	</fieldset>
+	
+	<input type="submit" value="Send Reset Code" />
+	</form>
+	
+	<form id="tokenForm" action="/PasswordReset/reset/" method="post">
+	{% csrf_token %}
+	{{ form.non_field_errors }}
+	<fieldset>
+		<legend>Have a Reset Token?</legend>
+			{% for field in reset_token %}
+			<div class="formItem">
+				{{ field.label_tag }} {{ field }}
+				{{ field.errors }}
+			</div>
+			{% endfor %}
+	</fieldset>
+	
+	<input type="submit" value="Reset Your Password" />
+	</form>
+	</div>
+</body>
+</html>

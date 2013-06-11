@@ -1,0 +1,113 @@
+body {font-size: 1.1em;}
+h1, h2, h3, h4 {font-family: "Frutiger Light", "Corbel", "Verdana", sans-serif;}
+body, p, form {font-family: "Adobe Garamond Pro", "Garamond", serif;}
+
+html, body {
+	background-color: #F6F7F2;
+	width: 100%;
+	margin: 0px;
+}
+
+h1 {
+	display: block;
+	color: white;
+	background-color: #6A7F10;
+	margin: 0;
+	padding: 20px 0px 20px 20px;
+}
+
+fieldset {
+	margin-bottom: .5em;
+	margin-right: 0px;
+	margin-left: 0px;
+	margin-top: .5em;
+	border-color: #6A7F10;
+	border-width: 1px;
+	border-style: solid;
+}
+
+
+li {
+	list-style-type: none;
+}
+
+label {
+	width: 9em;
+	float: left;
+}
+div.wide-input input {
+	width: 15em;
+}
+div.wide-input select {
+	width: 15em;
+}
+
+label.error {
+	color: #D2492A; /* PSU Red */
+	width: auto;
+	text-align: left;
+	display: inline;
+	float: none;
+	padding-left: 0.5em;
+	font-weight: bold;
+}
+
+#user-information {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #6A7F10;
+	display: inline-block;
+	width: 100%;
+}
+
+#user-information div {
+	padding-left: 0.8em;
+}
+
+#body-content {
+	padding: 10px;
+}
+
+.infolabel {
+	width: 9em;
+	float: left;
+	font-weight: bold;
+}
+
+.optional {
+	background-color: 
+}
+
+/* Errorlist class is used by Django when form validation errors are output. */
+.errorlist {
+	color: #D2492A; /* PSU Red */
+}
+
+.no-close .ui-dialog-titlebar-close {
+	display: none;
+}
+
+/* Classes for the password meter. */
+#passwordArea {
+	float:left;
+	width: 60%;
+}
+#passwordMeter {
+	float:right;
+	width: 40%;
+}
+/* Password validity classes used to style elements of the password meter. */
+li.valid {
+	color: #6A7F10; /* PSU Green */
+	font-weight: bold;
+	list-style-image: url("/static/MyInfo/images/accept.png");
+}
+li.invalid {
+	color: #D2492A; /* PSU Red */
+	font-weight: bold;
+	list-style-image: url("/static/MyInfo/images/cancel.png");
+}
+.password-ttc {
+	text-align: center;
+	vertical-align: middle;
+}
