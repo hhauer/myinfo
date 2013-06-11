@@ -35,11 +35,19 @@ label {
 	width: 9em;
 	float: left;
 }
-div.wide-input input {
+div.wide-input input, select {
 	width: 15em;
+	border: 1px solid #ccc;
+	box-sizing:content-box;
+	-ms-box-sizing:content-box;
+	-moz-box-sizing:content-box;
+	-webkit-box-sizing:content-box;
 }
-div.wide-input select {
-	width: 15em;
+div.wide-input input.deletebutton {
+	cursor: pointer;
+	border: none;
+	width: 16px;
+	height: 16px;
 }
 
 label.error {

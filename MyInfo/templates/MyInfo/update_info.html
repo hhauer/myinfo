@@ -5,9 +5,9 @@
 	<meta charset="utf-8">
 	<title>PSU - MyInfo</title>
 	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
-	<link href="{% static "MyInfo/css/jquery-ui-1.10.2.custom.css" %}" rel="stylesheet">
+	<link href="{% static "MyInfo/css/jquery-ui-1.10.3.custom.css" %}" rel="stylesheet">
 	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
-	<script src="{% static "MyInfo/js/jquery-ui-1.10.2.custom.js" %}"></script>
+	<script src="{% static "MyInfo/js/jquery-ui-1.10.3.custom.js" %}"></script>
 	<script src="{% static "MyInfo/js/zxcvbn.js" %}"></script>
 	<script src="{% static "MyInfo/js/jquery.cookie.js" %}"></script>
 	<script src="{% static "MyInfo/js/ajax_forms.js" %}"></script>
@@ -27,6 +27,12 @@
 				cache: false,
 				url: "/ajax/MyInfo/toggle_password_opt_out.json"
 			})
+		});
+		
+		$(".deletebutton").click(function(event) {
+			event.preventDefault();
+			/* No fancy ajax magics. :< */
+			alert($(this).val());
 		});
 		
 		$("#passwordReset").validate({
@@ -112,18 +118,21 @@
 			<form id="passwordReset" action="/ajax/MyInfo/update_external_contact.json" method="post" class="ajaxform">
 			<div class="wide-input">
 				{{ contactForm.alternate_email.label_tag }} {{ contactForm.alternate_email }}
-				{{ contactForm.alternate_email.errors }}
+				<input type="image" src="/static/MyInfo/images/cancel.png" class="deletebutton" value="{{ contactForm.alternate_email.html_name }}">
 			</div>
+			{{ contactForm.alternate_email.errors }}
 			
 			<div class="wide-input">
 				{{ contactForm.cell_number.label_tag }} {{ contactForm.cell_number }}
-				{{ contactForm.cell_number.errors }}
+				<input type="image" src="/static/MyInfo/images/cancel.png" class="deletebutton" value="{{ contactForm.cell_number.html_name }}">
 			</div>
+			{{ contactForm.cell_number.errors }}
 			
 			<div class="wide-input">
 				{{ contactForm.cell_carrier.label_tag }} {{ contactForm.cell_carrier }}
-				{{ contactForm.cell_carrier.errors }}
+				<input type="image" src="/static/MyInfo/images/cancel.png" class="deletebutton" value="{{ contactForm.cell_carrier.html_name }}">
 			</div>
+			{{ contactForm.cell_carrier.errors }}
 			<input type="submit" value="Update" />
 			<span class="ajax-message"></span>
 			</form>
