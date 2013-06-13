@@ -1,6 +1,7 @@
 '''
 For managing API calls out to external resources such as sailpoint.
 '''
+import urllib
 import urllib2
 import json
 from django.conf import settings
@@ -12,45 +13,66 @@ logger = logging.getLogger(__name__)
 # This function authenticates sailPoint and makes a call to the REST api pointed to by the link
 # param. If there is postData, it is JSON encoded and posted to the link. This function returns
 # a file-like object from which the response can be read.
-def callSailpoint(link, postData=None):
+def callSailpoint(link, data=None):
     password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
-    password_manager.add_password(None, settings.SAILPOINT_SERVER_URL, settings.SAILPOINT_USER, settings.SAILPOINT_PASSWORD)
+    password_manager.add_password(None, settings.SAILPOINT_SERVER_URL, settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD)
     auth_handler = urllib2.HTTPBasicAuthHandler(password_manager)
     opener = urllib2.build_opener(auth_handler)
     
-    if postData:
-        jsonData = json.dumps(postData)
-        req = urllib2.Request('http://' + settings.SAILPOINT_SERVER_URL + '/iiq/rest/custom/' + link, jsonData, {'Content-Type': 'application/json'})
-        return opener.open(req)
+    url = 'http://' + settings.SAILPOINT_SERVER_URL + '/iiq/rest/custom/runRule/' + link
+    if data:
+        url += '?json=' + urllib.quote_plus(json.dumps(data))
     
-    return opener.open('http://' + settings.SAILPOINT_SERVER_URL + '/iiq/rest/custom/' + link)
-
-# This function turns a 9num into the user's identity information like name.
-def identifyAccountPickup(id_number, birthdate, password):
-    
-    # Stubbed return
-    stub = {
-        "PSU_UUID" : id_number,
-        "DISPLAY_NAME" : "John Smith",
-        "SPRIDEN_ID" : id_number,
-    }
-    return (True, stub)
-    
-    apiLink = 'getPSUPersonByKeyValue/psuid/' + id_number
     try:
-        idData = json.load(callSailpoint(apiLink))
+        logger.debug("Making sailpoint call: {}".format(url))
+        response = opener.open(url)
+        final_response = json.load(response)
+        logger.debug("Sailpoint response: {}".format(final_response))
     except urllib2.HTTPError as e:
-        logger.critical("An error {} occurred for user {}: {}".format(e.code, id_number, e.reason))
+        logger.critical("The following error occurred while attempting to contact sailpoint: {} -- {}".format(e.code, e.reason))
         return None
     except urllib2.URLError as e:
-        logger.critical("There was an error contacting sailpoint for user {}: {}".format(id_number, e.reason))
+        logger.critical("The following error occurred while attempting to contact sailpoint: {} -- {}".format(e.code, e.reason))
         return None
-    else:
-        if 'Error' in idData:
-            logger.critical("The following error was returned from sailpoint for 9num {} - {}".format(id_number, idData['Error']))
-            return None
+    except ValueError:
+        logger.critical("Sailpoint returned invalid JSON: {}".format(response))
+        return None
+
+    return final_response or None
+
+# This function turns a 9num into the user's identity information like name.
+def identifyAccountPickup(spriden_id, birthdate, password):
+    # Dev sailpoint only works for Ty. If it's not him, return a stub.
+    if (spriden_id != "959187734"):
+        # Stubbed return
+        stub = {
+            "PSU_UUID" : spriden_id,
+            "DISPLAY_NAME" : "John Smith",
+            "SPRIDEN_ID" : spriden_id,
+        }
+        return (True, stub)
     
-    return idData
+    # Build our packet to send to sailpoint.
+    data = {
+        "user_spriden_id" : spriden_id,
+        "user_dob" : birthdate,
+        "user_initpass" : password
+    }
+    
+    result = callSailpoint('PSU_UI_ACCOUNT_CLAIM_AUTH', data)
+    
+    # If any of our tests fail, auth fails. 
+    if result["DOB"] != "MATCH" or result["SPRIDEN_ID"] != "MATCH" or result["INITPASS"] != "MATCH":
+        logger.info("Account pickup authentication failed with the following response: {}".format(result))
+        final_result = (False, None)
+    else:
+        final_result = (True, {
+            "PSU_UUID": result["PSU_UUID"],
+            "DISPLAY_NAME": result["IDENTITY_DISPLAY_NAME"],
+            "SPRIDEN_ID": spriden_id
+        })
+    
+    return final_result
 
 # Identify a user with an expired password.
 def identifyExpiredPassword(username, password):
@@ -114,6 +136,6 @@ def EmailAliasesFromIdentity(identity):
             ('jsmith5@pdx.edu', 'jsmith5@pdx.edu'), 
             ('smitty@pdx.edu', 'smitty@pdx.edu'))
 
-def launch_provisioning_workflow(identity, odin_name, email_aliases):
+def launch_provisioning_workflow(identity, odin_name, email_alias):
     # TODO: Stubbed
     return
