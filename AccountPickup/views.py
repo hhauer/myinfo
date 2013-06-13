@@ -14,6 +14,12 @@ from MyInfo.models import UserDataItem
 import logging
 logger = logging.getLogger(__name__)
 
+anchor = {
+    "AccountPickup:AUP" : "#aup",
+    "AccountPickup:ODIN" : "#odin",
+    "AccountPickup:PasswordReset" : "#reset",
+}
+
 # The index of this module performs a non-CAS login to the AccountPickup system.
 #@ratelimit(block = False, rate='5/m')
 #@ratelimit(block = True, rate='10/h')
@@ -40,7 +46,7 @@ def index(request):
             (go_next, _) = UserDataItem.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'], key_name='MYINFO_PICKUP_STATE', 
                                                            defaults={'key_valu' : 'AccountPickup:AUP'})
             request.session['NEXT'] = go_next.key_valu
-            return HttpResponseRedirect(reverse(go_next.key_valu))
+            return HttpResponseRedirect(reverse(go_next.key_valu) + anchor[go_next.key_valu])
         #If identity is invalid, prompt re-entry.
         error_message = "That identity was not found."
     
@@ -53,7 +59,7 @@ def index(request):
 @login_required(login_url='/AccountPickup/')
 def AUP(request):
     if request.session['NEXT'] != 'AccountPickup:AUP':
-        return HttpResponseRedirect(reverse(request.session['NEXT']))
+        return HttpResponseRedirect(reverse(request.session['NEXT']) + anchor[request.session['NEXT']])
     
     form = acceptAUP(request.POST or None)
         
@@ -68,7 +74,7 @@ def AUP(request):
         UserDataItem.objects.filter(psu_uuid = request.session['identity']['PSU_UUID'], 
                                     key_name ='MYINFO_PICKUP_STATE').update(key_valu = 'AccountPickup:PasswordReset')
         request.session['NEXT'] = 'AccountPickup:PasswordReset'
-        return HttpResponseRedirect(reverse('AccountPickup:PasswordReset'))
+        return HttpResponseRedirect(reverse('AccountPickup:PasswordReset') + anchor[request.session['NEXT']])
     
     return render(request, 'AccountPickup/aup.html', {
         'form' : form,
@@ -78,7 +84,7 @@ def AUP(request):
 @login_required(login_url='/AccountPickup/')
 def password_reset(request):
     if request.session['NEXT'] != 'AccountPickup:PasswordReset':
-        return HttpResponseRedirect(reverse(request.session['NEXT']))
+        return HttpResponseRedirect(reverse(request.session['NEXT']) + anchor[request.session['NEXT']])
     
     reset_form = password_reset_optout_form(request.POST or None)
     
@@ -104,7 +110,7 @@ def password_reset(request):
         UserDataItem.objects.filter(psu_uuid = request.session['identity']['PSU_UUID'], 
                                     key_name ='MYINFO_PICKUP_STATE').update(key_valu = 'AccountPickup:ODIN')
         request.session['NEXT'] = 'AccountPickup:ODIN'
-        return HttpResponseRedirect(reverse('AccountPickup:ODIN'))
+        return HttpResponseRedirect(reverse('AccountPickup:ODIN') + anchor[request.session['NEXT']])
     
     return render(request, 'AccountPickup/password_reset.html', {
         'form': reset_form,
@@ -114,7 +120,7 @@ def password_reset(request):
 @login_required(login_url='/AccountPickup/')
 def odinName(request):
     if request.session['NEXT'] != 'AccountPickup:ODIN':
-        return HttpResponseRedirect(reverse(request.session['NEXT']))
+        return HttpResponseRedirect(reverse(request.session['NEXT']) + anchor[request.session['NEXT']])
     
     # Pass in the session to the odinForm so that it can get appropriate name options.
     odinForm = pickOdinName(request.session, request.POST or None)
