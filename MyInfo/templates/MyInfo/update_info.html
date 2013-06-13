@@ -2,23 +2,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	{% include "MyInfo/shared_head.html" %}
 	<title>PSU - MyInfo</title>
-	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
-	<link href="{% static "MyInfo/css/jquery-ui-1.10.3.custom.css" %}" rel="stylesheet">
-	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
-	<script src="{% static "MyInfo/js/jquery-ui-1.10.3.custom.js" %}"></script>
+	
 	<script src="{% static "MyInfo/js/zxcvbn.js" %}"></script>
-	<script src="{% static "MyInfo/js/jquery.cookie.js" %}"></script>
-	<script src="{% static "MyInfo/js/ajax_forms.js" %}"></script>
 	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
 	
 	<script type="text/javascript">
 	$(function() {
-		$("input[type=submit]").button();
 		$("#passwordbar").progressbar({value: 0});
 		$("#accordion").accordion({heightStyle: "content"});
-		$("#password-button").button({disabled: true});
+		$("#password-button").attr("disabled", "disabled");
 		
 		$("#password-reset-optout").button({ icons: { primary: "ui-icon-alert"}}).click(function() {
 			$.ajax({
@@ -49,23 +43,17 @@
 	<script type="text/javascript">
 	{% include "MyInfo/password_meter.js" %}
 	</script>
-	
-	<style>
-		#logout {
-			float:right;
-		}	
-	</style>
 </head>
 
 <body>
-	<h1>PSU - MyInfo</h1>
+	<h3 class="header">PSU - MyInfo</h3>
 	
 	<div id="body-content">
 	
 	{% if newStudent %}
-	<h2>Hello, {{ identity.DISPLAY_NAME }}. </h2>
+	<h4>Hello, {{ identity.DISPLAY_NAME }}. </h4>
 	{% else %}
-	<h2>Hello, {{ identity.DISPLAY_NAME }}. <span id="logout"><a href="../accounts/logout/">Logout</a></span></h2>
+	<h4>Hello, {{ identity.DISPLAY_NAME }}. <span style="float:right;"><a href="../accounts/logout/">Logout</a></span></h4>
 	{% endif %}
 	
 	
@@ -81,7 +69,7 @@
 	
 	<fieldset style="position:relative">
 		<legend>Manage Your Password</legend>
-		<div id="passwordArea" class="ui-widget">
+		<div id="passwordArea">
 			{% for field in passwordForm %}
 			<div class="wide-input">
 				{{ field.label_tag }} {{ field }}
@@ -93,7 +81,7 @@
 			<div id="formInfo"><p>Your password expires on: {{ password_expiration }}</p></div>
 			{% endif %}
 			
-			<input id="password-button" type="submit" value="Update Password" />
+			<input id="password-button" type="submit" value="Update Password"/>
 		</div>
 		
 		<div id="passwordMeter">
@@ -105,7 +93,7 @@
 				<li id="totalcount" class="invalid">Between <strong>{{ password_rules.minimum_count }}</strong> and <strong>{{ password_rules.maximum_count }}</strong> total characters.</li>
 				<li id="password-same" class="invalid">The passwords must match.</li>
 			</ul>
-			<h5>Your password strength is: </h5>
+			<h6>Your password strength is: </h6>
 			<div id="passwordbar"><div class="password-ttc"></div></div>
 		</div>
 

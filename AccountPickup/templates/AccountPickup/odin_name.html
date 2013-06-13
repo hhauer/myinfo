@@ -3,24 +3,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	{% include "MyInfo/shared_head.html" %}
 	<title>PSU - Select Odin Username</title>
-	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
-	<link href="{% static "MyInfo/css/jquery-ui-1.10.3.custom.css" %}" rel="stylesheet">
-	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
-	<script src="{% static "MyInfo/js/jquery-ui-1.10.3.custom.js" %}"></script>
-	<script src="{% static "MyInfo/js/jquery.cookie.js" %}"></script>
-	<script src="{% static "MyInfo/js/ajax_forms.js" %}"></script>
-	
-	<script type="text/javascript">
-	$(function() {
-		$("input[type=submit]").button();
-	});
-	</script>
 </head>
 
 <body>
-	<h1>Select Your Odin Username</h1>
+	<h3 class="header">Select Your Odin Username</h3>
 	
 	<div id="body-content">
 	<p>Please select your Odin Username. This username will be used to log you into PSU's electronic
