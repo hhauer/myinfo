@@ -36,6 +36,7 @@ div.wide-input input.deletebutton {
 	border: none;
 	width: 16px;
 	height: 16px;
+	padding: 0px;
 }
 
 label.error {
@@ -82,6 +83,14 @@ label.error {
 	background-color: 
 }
 
+.tab-content {
+	background: #F6F7F2;
+	border: 1px solid #6A7F10;
+}
+
+ul.tabs li a {
+	border: 1px solid #6A7F10;
+}
 /* Errorlist class is used by Django when form validation errors are output. */
 .errorlist {
 	color: #D2492A; /* PSU Red */
@@ -101,7 +110,7 @@ label.error {
 	width: 40%;
 }
 /* Password validity classes used to style elements of the password meter. */
-li.valid {
+span.valid, li.valid {
 	color: #6A7F10; /* PSU Green */
 	font-weight: bold;
 	list-style-image: url("/static/MyInfo/images/accept.png");
