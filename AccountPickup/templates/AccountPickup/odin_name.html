@@ -5,12 +5,28 @@
 <head>
 	{% include "MyInfo/shared_head.html" %}
 	<title>PSU - Select Odin Username</title>
+	
+	<script type="text/javascript">
+	$(function() {
+		$('.killclick').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+		});
+	});
+	</script>
 </head>
 
 <body>
 	<h3 class="header">Select Your Odin Username</h3>
 	
 	<div id="body-content">
+	<ul class="tabs left">
+		<li><a href="#aup" class="killclick">Acceptable Use</a></li>
+		<li><a href="#reset" class="killclick">Password Reset</a></li>
+		<li><a href="#odin" class="killclick">Odin Username</a></li>
+	</ul>
+	
+	<div id="odin" class="tab-content">
 	<p>Please select your Odin Username. This username will be used to log you into PSU's electronic
 	systems. You will keep this username for the duration of your stay at PSU.</p>
 	
@@ -42,6 +58,7 @@
 	<input type="submit" value="Continue" />
 	<span class="ajax-errors errorlist"></span>
 	</form>
+	</div>
 	</div>
 	
 	<div class="ajax-wait-dialog" title="Please wait">

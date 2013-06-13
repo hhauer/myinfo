@@ -7,12 +7,28 @@
 	<title>PSU - AUP</title>
 
 	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
+	
+	<script type="text/javascript">
+	$(function() {
+		$('.killclick').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+		});
+	});
+	</script>
 </head>
 
 <body>
 	<h3 class="header">Acceptable Use Policy</h3>
 	
 	<div id="body-content">
+	<ul class="tabs left">
+		<li><a href="#aup" class="killclick">Acceptable Use</a></li>
+		<li><a href="#reset" class="killclick">Password Reset</a></li>
+		<li><a href="#odin" class="killclick">Odin Username</a></li>
+	</ul>
+	
+	<div id="aup" class="tab-content">
 	<p>Please read and review the following policies regarding the use of computing resources at PSU:</p>
 	
 	<ul>
@@ -36,6 +52,7 @@
 	
 	<input type="submit" value="Continue" />
 	</form>
+	</div>
 	</div>
 	
 </body>

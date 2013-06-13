@@ -18,6 +18,10 @@ fieldset {
 	border-style: solid;
 }
 
+legend {
+	font-weight: bold;
+}
+
 
 li {
 	list-style-type: none;
@@ -90,6 +94,9 @@ label.error {
 
 ul.tabs li a {
 	border: 1px solid #6A7F10;
+}
+ul.tabs {
+	border-bottom: 1px solid #6A7F10;
 }
 /* Errorlist class is used by Django when form validation errors are output. */
 .errorlist {
