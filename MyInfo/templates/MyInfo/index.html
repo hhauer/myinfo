@@ -51,6 +51,14 @@
 			{{ form.password.label_tag }} {{ form.password }}
 			{{ form.password.errors }}
 		</div>
+		
+		{% if captcha %}
+		<div class="captcha">
+		{{ captcha.captcha }}
+		</div>
+		{% endif %}
+		
+
 	</fieldset>
 	</div>
 	

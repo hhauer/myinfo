@@ -53,6 +53,11 @@ label.error {
 	font-weight: bold;
 }
 
+div.captcha {
+	padding-left: 9em;
+	padding-top: .4em;
+}
+
 #user-information {
 	border-style: solid;
 	border-width: 1px;

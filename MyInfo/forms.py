@@ -1,6 +1,7 @@
 from django import forms
 from django_localflavor_us.forms import USPhoneNumberField
 from MyInfo.models import Department, CellCarrier
+from captcha.fields import ReCaptchaField
 
 import logging
 logger = logging.getLogger(__name__)
@@ -64,4 +65,7 @@ class formPSUEmployee(forms.Form):
 class expired_password_login_form(forms.Form):
     odin_username = forms.CharField(label="Odin Username")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
-    
+
+# reCAPTCHA validation.
+class ReCaptchaForm(forms.Form):
+    captcha = ReCaptchaField()
