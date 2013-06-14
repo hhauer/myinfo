@@ -69,17 +69,13 @@ def update_information(request):
         checked = 'checked'
     else:
         checked = ''
-        
-    # If the user authenticated with CAS, get the rest of the information we need from
-    # sailpoint.
-    if 'attributes' in request.session:
-        request.session['identity'] = identity_from_cas(request.session['attributes']['UDC_IDENTIFIER'])
-    else:
-        request.session['identity'] = identity_from_psu_uuid(request.session['identity']['PSU_UUID'])
     
     if 'identity' not in request.session:
         logger.critical("No identity for user at MyInfo: {}".format(request.session))
         return HttpResponseServerError('No identity information was available.')
+    
+    # Refresh our identity.
+    request.session['identity'] = identity_from_psu_uuid(request.session['identity']['PSU_UUID'])
 
     # Build our extended information form.
     contactForm = formExternalContactInformation(request.POST or None, initial=contact_initial(request))
