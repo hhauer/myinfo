@@ -75,6 +75,12 @@
 			<label for="showpass">Show password</label>
 			<input type="checkbox" onchange="tick(this)" id="showpass" style="margin-left: 0px"/>
 		</div>
+		
+		{% if captcha %}
+		<div class="captcha">
+		{{ captcha.captcha }}
+		</div>
+		{% endif %}
 	</fieldset>
 	</div>
 	

@@ -9,16 +9,26 @@ from django.contrib import auth
 from django.core.urlresolvers import reverse
 from brake.decorators import ratelimit
 
+from MyInfo.forms import ReCaptchaForm
+
 import logging
 logger = logging.getLogger(__name__)
 
 @ratelimit(block = False, rate='5/m')
 @ratelimit(block = True, rate='10/h')
 def index(request):
+    captcha = None
     form = expired_password_login_form(request.POST or None)
     error_message = ""
+    
+    if getattr(request, 'limited', False):
+        captcha = ReCaptchaForm(request.POST or None)
         
-    if form.is_valid():
+    if form.is_valid() and (captcha is None or captcha.is_valid()):
+        # For some reason they already have a session. Let's get rid of it and start fresh.
+        if request.session is not None:
+            request.session.flush()
+            
         user = auth.authenticate(odin_username=form.cleaned_data['odin_username'],
                                  password=form.cleaned_data['password'],
                                  request=request)
@@ -36,6 +46,7 @@ def index(request):
     return render(request, 'MyInfo/index.html', {
         'form' : form,
         'error' : error_message,
+        'captcha' : captcha,
     })
     
         
