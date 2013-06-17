@@ -1,15 +1,36 @@
 from MyInfo.forms import formExternalContactInformation, formPSUEmployee
+from MyInfo.forms import formPasswordChange, formNewPassword
 from MyInfo.util_functions import error_state_to_html
+from PSU_MyInfo.api_calls import change_password
 from django.core.exceptions import SuspiciousOperation
 from models import UserDataItem
+from ajax.decorators import login_required
 
 import logging
 logger = logging.getLogger(__name__)
 
+@login_required
 def update_password(request):
-    pass
-    # TODO: Move the password update here. I guess we live in an ajax world now.
+    # Find out which auth backend we used, is this a new user or returning user?
+    # TODO: Do we want to send the new user somewhere, or send them an email?
+    new_user = False;
+    if request.session['_auth_user_backend'] == 'django_cas.backends.CASBackend':
+        form = formPasswordChange(request.POST or None)
+    else:
+        form = formNewPassword(request.POST or None)
+        new_user = True;
 
+    if form.is_valid():
+        (success, message) = change_password(request.session['identity'], form.cleaned_data['newPassword'])
+        if success:
+            return {'status' : 'Success', 'message' : '<p>Password changed successfully.</p>'}
+        else:
+            return {'status' : 'Error', 'message' : '<p>{}</p>'.format(message)}
+    else:
+        return {'status' : 'Error', 'message' : error_state_to_html(form)}
+        
+
+@login_required
 def update_external_contact(request):
     form = formExternalContactInformation(request.POST or None)
     ident = request.session['identity']['PSU_UUID']
@@ -33,6 +54,7 @@ def update_external_contact(request):
     
     return {'status' : 'Error', 'message' : error_state_to_html(form)}
 
+@login_required
 def update_directory_information(request):
     form = formPSUEmployee(request.POST or None)
     ident = request.session['identity']['PSU_UUID']
@@ -54,6 +76,7 @@ def update_directory_information(request):
     
     return {'status' : 'Error', 'message' : error_state_to_html(form)}
 
+@login_required
 def toggle_password_opt_out(request):
     request.session["opt-out"] = not request.session["opt-out"]
 
@@ -68,6 +91,7 @@ keys = {
 }
 
 # This function is called by the delete ajax call. It is important that we be careful with accepted values.
+@login_required
 def delete_key_value(request):
     if request.POST['key'] not in keys:
         raise SuspiciousOperation

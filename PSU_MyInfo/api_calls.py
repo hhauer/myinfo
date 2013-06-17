@@ -127,6 +127,11 @@ def OdinNamesFromIdentity(identity):
     # TODO: Stubbed.
     return (('jsmith5', 'jsmith5'), ('j.smith', 'j.smith'), ('john.smith4', 'john.smith4'))
 
+# This function calls out to sailpoint to begin a password update event.
+def change_password(identity, new_password):
+    # TODO: Stubbed
+    return (True, "")
+
 # This function returns a list of potential email aliases to choose from based on a 9-number.
 def EmailAliasesFromIdentity(identity):
     # TODO: Stubbed

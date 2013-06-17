@@ -2,8 +2,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from MyInfo.forms import formPasswordChange, formNewPassword, formExternalContactInformation, formPSUEmployee, expired_password_login_form
-from django.http import HttpResponse, HttpResponseServerError, HttpResponseRedirect
-from PSU_MyInfo.api_calls import identity_from_cas, passwordConstraintsFromIdentity, identity_from_psu_uuid
+from django.http import HttpResponseServerError, HttpResponseRedirect
+from PSU_MyInfo.api_calls import passwordConstraintsFromIdentity, identity_from_psu_uuid
 from MyInfo.util_functions import contact_initial, directory_initial
 from django.contrib import auth
 from django.core.urlresolvers import reverse
@@ -86,19 +86,14 @@ def update_information(request):
     else:
         psuEmployeeForm = None
         
-    if contactForm.is_valid() and passwordForm.is_valid() and psuEmployeeForm.is_valid():
-        #Do stuff with the forms.
-        
-        return HttpResponse('Valid forms detected.')
-    else:
-        password_rules = passwordConstraintsFromIdentity(request.session['identity'])
-        
-        return render(request, 'MyInfo/update_info.html', {
-        'identity' : request.session['identity'],
-        'password_rules' : password_rules,
-        'passwordForm' : passwordForm,
-        'contactForm' : contactForm,
-        'PSUEmployeeForm' : psuEmployeeForm,
-        'newStudent' : newStudent,
-        'checked' : checked,
-        })
+    password_rules = passwordConstraintsFromIdentity(request.session['identity'])
+    
+    return render(request, 'MyInfo/update_info.html', {
+    'identity' : request.session['identity'],
+    'password_rules' : password_rules,
+    'passwordForm' : passwordForm,
+    'contactForm' : contactForm,
+    'PSUEmployeeForm' : psuEmployeeForm,
+    'newStudent' : newStudent,
+    'checked' : checked,
+    })
