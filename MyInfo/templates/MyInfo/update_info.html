@@ -20,13 +20,20 @@
 				data: $("#password-reset-optout").checked,
 				cache: false,
 				url: "/ajax/MyInfo/toggle_password_opt_out.json"
-			})
+			});
 		});
 		
 		$(".deletebutton").click(function(event) {
 			event.preventDefault();
-			/* No fancy ajax magics. :< */
-			alert($(this).val());
+			$("[name='"+ $(this).val() +"']").val('');
+			
+			$.ajax({
+				type: "POST",
+				data: {key: $(this).val()},
+				context: this,
+				cache: false,
+				url: "/ajax/MyInfo/delete_key_value.json"
+			});
 		});
 		
 		$("#passwordReset").validate({
@@ -34,7 +41,7 @@
 				alternate_email: "email",
 			},
 			errorPlacement: function(label, invalid) {
-				label.insertAfter(invalid);
+				label.insertAfter(invalid.next());
 			}
 		});
 	});
@@ -142,23 +149,28 @@
 			<fieldset>
 			<div class="wide-input">
 				{{ PSUEmployeeForm.job_title.label_tag }} {{ PSUEmployeeForm.job_title }}
-				{{ PSUEmployeeForm.job_title.errors }}
+				<input type="image" src="/static/MyInfo/images/cancel.png" class="deletebutton" value="{{ PSUEmployeeForm.job_title.html_name }}">
 			</div>
+			{{ PSUEmployeeForm.job_title.errors }}
 			
 			<div class="wide-input">
 				{{ PSUEmployeeForm.office_building.label_tag }} {{ PSUEmployeeForm.office_building }}
-				{{ PSUEmployeeForm.office_building.errors }}
+				<input type="image" src="/static/MyInfo/images/cancel.png" class="deletebutton" value="{{ PSUEmployeeForm.office_building.html_name }}">
 			</div>
+			{{ PSUEmployeeForm.office_building.errors }}
 			
 			<div class="wide-input">
 				{{ PSUEmployeeForm.office_room.label_tag }} {{ PSUEmployeeForm.office_room }}
-				{{ PSUEmployeeForm.office_room.errors }}
+				<input type="image" src="/static/MyInfo/images/cancel.png" class="deletebutton" value="{{ PSUEmployeeForm.office_room.html_name }}">
 			</div>
+			{{ PSUEmployeeForm.office_room.errors }}
 			
 			<div class="wide-input">
 				{{ PSUEmployeeForm.department.label_tag }} {{ PSUEmployeeForm.department }}
-				{{ PSUEmployeeForm.department.errors }}
+				<input type="image" src="/static/MyInfo/images/cancel.png" class="deletebutton" value="{{ PSUEmployeeForm.department.html_name }}">
 			</div>
+			{{ PSUEmployeeForm.department.errors }}
+			
 			</fieldset>
 			<input type="submit" value="Update" />
 			<span class="ajax-message"></span>
