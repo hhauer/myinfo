@@ -67,9 +67,9 @@ $(document).ready(function() {
 		}
 		
 		if (window.lengthValid && window.numberValid && window.letterValid && window.specialValid && window.passwordSame) {
-			$("#password-button").button('enable');
+			$("#password-button").removeAttr("disabled");
 		} else {
-			$("#password-button").button('disable');
+			$("#password-button").attr("disabled", "disabled");
 		}
 	});
 	

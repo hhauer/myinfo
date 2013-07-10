@@ -8,7 +8,12 @@ from django.conf import settings
 
 from django_cas.models import User
 
+from PSU_MyInfo.api_calls import identity_from_cas
+
 __all__ = ['CASBackend']
+
+import logging
+logger = logging.getLogger(__name__)
 
 def _verify_cas1(ticket, service):
     """Verifies CAS 1.0 authentication ticket.
@@ -77,9 +82,9 @@ def _verify_cas3(ticket, service):
         tree = ElementTree.fromstring(response)
         if tree[0].tag.endswith('authenticationSuccess'):
             for element in tree[0]:
-               if element.tag.endswith('user'):
+                if element.tag.endswith('user'):
                     user = element.text
-               elif element.tag.endswith('attributes'):
+                elif element.tag.endswith('attributes'):
                     for attribute in element:
                         attributes[attribute.tag.split("}").pop()] = attribute.text
         return user, attributes
@@ -87,7 +92,7 @@ def _verify_cas3(ticket, service):
         page.close()
 
 def get_saml_assertion(ticket):
-   return """<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol"  MajorVersion="1" MinorVersion="1" RequestID="_192.168.16.51.1024506224022" IssueInstant="2002-06-19T17:03:44.022Z"><samlp:AssertionArtifact>""" + ticket + """</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>"""
+    return """<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol"  MajorVersion="1" MinorVersion="1" RequestID="_192.168.16.51.1024506224022" IssueInstant="2002-06-19T17:03:44.022Z"><samlp:AssertionArtifact>""" + ticket + """</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>"""
 
 SAML_1_0_NS = 'urn:oasis:names:tc:SAML:1.0:'
 SAML_1_0_PROTOCOL_NS = '{' + SAML_1_0_NS + 'protocol' + '}'
@@ -143,7 +148,7 @@ def _verify_cas2_saml(ticket, service):
                         values_array.append(v.text)
                     attributes[at.attrib['AttributeName']] = values_array
                 else:
-                   attributes[at.attrib['AttributeName']] = values[0].text
+                    attributes[at.attrib['AttributeName']] = values[0].text
         return user, attributes
     finally:
         page.close()
@@ -167,13 +172,14 @@ class CASBackend(object):
         username, attributes = _verify(ticket, service)
         if attributes:
             request.session['attributes'] = attributes
+            request.session['identity'] = identity_from_cas(request.session['attributes']['UDC_IDENTIFIER'])
         if not username:
             return None
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(username=request.session['identity']['PSU_UUID'])
         except User.DoesNotExist:
             # user will have an "unusable" password
-            user = User.objects.create_user(username, '')
+            user = User.objects.create_user(request.session['identity']['PSU_UUID'], '')
             user.save()
         return user
 

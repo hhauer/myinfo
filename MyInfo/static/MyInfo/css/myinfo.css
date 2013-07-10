@@ -1,19 +1,11 @@
 body {font-size: 1.1em;}
-h1, h2, h3, h4 {font-family: "Frutiger Light", "Corbel", "Verdana", sans-serif;}
+h1, h2, h3, h4, h5, h6 {font-family: "Frutiger Light", "Corbel", "Verdana", sans-serif;}
 body, p, form {font-family: "Adobe Garamond Pro", "Garamond", serif;}
 
 html, body {
 	background-color: #F6F7F2;
 	width: 100%;
 	margin: 0px;
-}
-
-h1 {
-	display: block;
-	color: white;
-	background-color: #6A7F10;
-	margin: 0;
-	padding: 20px 0px 20px 20px;
 }
 
 fieldset {
@@ -24,6 +16,10 @@ fieldset {
 	border-color: #6A7F10;
 	border-width: 1px;
 	border-style: solid;
+}
+
+legend {
+	font-weight: bold;
 }
 
 
@@ -38,16 +34,13 @@ label {
 div.wide-input input, select {
 	width: 15em;
 	border: 1px solid #ccc;
-	box-sizing:content-box;
-	-ms-box-sizing:content-box;
-	-moz-box-sizing:content-box;
-	-webkit-box-sizing:content-box;
 }
 div.wide-input input.deletebutton {
 	cursor: pointer;
 	border: none;
 	width: 16px;
 	height: 16px;
+	padding: 0px;
 }
 
 label.error {
@@ -58,6 +51,11 @@ label.error {
 	float: none;
 	padding-left: 0.5em;
 	font-weight: bold;
+}
+
+div.captcha {
+	padding-left: 9em;
+	padding-top: .4em;
 }
 
 #user-information {
@@ -76,6 +74,14 @@ label.error {
 	padding: 10px;
 }
 
+.header {
+	display: block;
+	color: white;
+	background-color: #6A7F10;
+	margin: 0;
+	padding: 20px 0px 20px 20px;
+}
+
 .infolabel {
 	width: 9em;
 	float: left;
@@ -86,6 +92,17 @@ label.error {
 	background-color: 
 }
 
+.tab-content {
+	background: #F6F7F2;
+	border: 1px solid #6A7F10;
+}
+
+ul.tabs li a {
+	border: 1px solid #6A7F10;
+}
+ul.tabs {
+	border-bottom: 1px solid #6A7F10;
+}
 /* Errorlist class is used by Django when form validation errors are output. */
 .errorlist {
 	color: #D2492A; /* PSU Red */
@@ -105,7 +122,7 @@ label.error {
 	width: 40%;
 }
 /* Password validity classes used to style elements of the password meter. */
-li.valid {
+span.valid, li.valid {
 	color: #6A7F10; /* PSU Green */
 	font-weight: bold;
 	list-style-image: url("/static/MyInfo/images/accept.png");

@@ -130,6 +130,7 @@ TEMPLATE_DIRS = (
 # It is possible that we will need to implement a cache solution for rate limiting.
 
 INSTALLED_APPS = (
+    'longerusername', # This must be first so that it can patch the auth model.         
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -146,6 +147,7 @@ INSTALLED_APPS = (
     # Apps related to plugins.
     'ajax',
     'widget_tweaks',
+    'captcha',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -209,6 +211,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'django_cas': {
+            'handlers': ['RotatingFileHandler'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     }
 }
 
@@ -220,3 +227,11 @@ CAS_VERSION = config.get('cas', 'CAS_VERSION')
 SAILPOINT_SERVER_URL = config.get('sailpoint', 'SAILPOINT_SERVER_URL')
 SAILPOINT_USERNAME = config.get('sailpoint', 'SAILPOINT_USERNAME')
 SAILPOINT_PASSWORD = config.get('sailpoint', 'SAILPOINT_PASSWORD')
+
+# Settings related to reCAPTCHA
+RECAPTCHA_USE_SSL = True
+RECAPTCHA_PUBLIC_KEY = config.get('recaptcha', 'RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = config.get('recaptcha', 'RECAPTCHA_PRIVATE_KEY')
+
+# Username length patch.
+MAX_USERNAME_LENGTH = 36

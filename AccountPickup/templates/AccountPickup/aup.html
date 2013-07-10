@@ -3,25 +3,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	{% include "MyInfo/shared_head.html" %}
 	<title>PSU - AUP</title>
-	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
-	<link href="{% static "MyInfo/css/jquery-ui-1.10.3.custom.css" %}" rel="stylesheet">
-	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
-	<script src="{% static "MyInfo/js/jquery-ui-1.10.3.custom.js" %}"></script>
+
 	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
 	
 	<script type="text/javascript">
 	$(function() {
-		$("input[type=submit]").button();
+		$('.killclick').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+		});
 	});
 	</script>
 </head>
 
 <body>
-	<h1>Acceptable Use Policy</h1>
+	<h3 class="header">Acceptable Use Policy</h3>
 	
 	<div id="body-content">
+	<ul class="tabs left">
+		<li><a href="#aup" class="killclick">Acceptable Use</a></li>
+		<li><a href="#reset" class="killclick">Password Reset</a></li>
+		<li><a href="#odin" class="killclick">Odin Username</a></li>
+	</ul>
+	
+	<div id="aup" class="tab-content">
 	<p>Please read and review the following policies regarding the use of computing resources at PSU:</p>
 	
 	<ul>
@@ -45,6 +52,7 @@
 	
 	<input type="submit" value="Continue" />
 	</form>
+	</div>
 	</div>
 	
 </body>

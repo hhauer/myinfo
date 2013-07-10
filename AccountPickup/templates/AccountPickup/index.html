@@ -3,24 +3,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	{% include "MyInfo/shared_head.html" %}
 	<title>PSU - Account Pickup</title>
-	<link href="{% static "MyInfo/css/myinfo.css" %}" rel="stylesheet">
-	<link href="{% static "MyInfo/css/jquery-ui-1.10.3.custom.css" %}" rel="stylesheet">
-	<script src="{% static "MyInfo/js/jquery-1.9.1.js" %}"></script>
-	<script src="{% static "MyInfo/js/jquery-ui-1.10.3.custom.js" %}"></script>
+
 	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
 	<script src="{% static "MyInfo/js/additional-methods.js" %}"></script>
 	
 	<script type="text/javascript">
 	$(function() {
-		$("input[type=submit]").button();
 		$("#login-form").validate({
 			rules: {
 				id_number: {
 					required: true,
 					minlength: 9,
-					maxlength: 9
+					maxlength: 9,
+					number: true
 				},
 				birth_date: {
 					required: true,
@@ -41,10 +38,10 @@
 </head>
 
 <body>
-	<h1>Account Pickup - New User</h1>
+	<h3 class="header">Account Pickup - New User</h3>
 
 	<div id="body-content">
-	<h2>Welcome to Account Pickup</h2>
+	<h4>Welcome to Account Pickup</h4>
 	
 	<p>Please enter your PSU ID number, birthday, and the password you received in the mail to get started.
 	You will be guided through the process of setting up you accounts and setting your initial password.
@@ -78,6 +75,12 @@
 			<label for="showpass">Show password</label>
 			<input type="checkbox" onchange="tick(this)" id="showpass" style="margin-left: 0px"/>
 		</div>
+		
+		{% if captcha %}
+		<div class="captcha">
+		{{ captcha.captcha }}
+		</div>
+		{% endif %}
 	</fieldset>
 	</div>
 	
