@@ -41,11 +41,11 @@ def index(request):
                                  birth_date=form.cleaned_data['birth_date'],
                                  password=form.cleaned_data['auth_pass'],
                                  request=request)
-        logger.info("Account claim login attempt with ID: {}".format(form.cleaned_data['id_number']))
+        logger.info("Account claim login attempt with ID: {1}".format(form.cleaned_data['id_number']))
         if user is not None:
             #Identity is valid.
             auth.login(request, user)
-            logger.info("Account claim login success with ID: {}".format(form.cleaned_data['id_number']))
+            logger.info("Account claim login success with ID: {1}".format(form.cleaned_data['id_number']))
             
             # Where in the process should we be?
             (go_next, _) = UserDataItem.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'], key_name='MYINFO_PICKUP_STATE', 

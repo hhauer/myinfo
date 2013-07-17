@@ -14,6 +14,15 @@ framework.
 
 """
 import os
+import sys
+import site
+
+
+# Uncomment the following when using with mod_wsgi.
+#site.addsitedir('/var/www/myinfo/myinfo-env/lib/python2.6/site-packages')
+#sys.path.append('/var/www/myinfo/psu-myinfo')
+#sys.path.append('/var/www/myinfo/psu-myinfo/PSU_MyInfo')
+
 
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
 # if running multiple sites in the same mod_wsgi process. To fix this, use

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 @login_required(login_url='/AccountClaim/')
 def provision_new_user(request):
-    logger.debug("Provision new user launched with the following data: {}".format(request.POST))
+    logger.debug("Provision new user launched with the following data: {1}".format(request.POST))
     
     # Pass in the session to the odinForm so that it can get appropriate name options.
     odinForm = pickOdinName(request.session, request.POST or None)
@@ -27,8 +27,8 @@ def provision_new_user(request):
     mail_valid = mailForm.is_valid()
         
     if odin_valid and mail_valid:
-        logger.debug("Odin name selected: {}".format(odinForm.cleaned_data['name']))
-        logger.debug("Email Aliases: {}".format(mailForm.cleaned_data))
+        logger.debug("Odin name selected: {1}".format(odinForm.cleaned_data['name']))
+        logger.debug("Email Aliases: {1}".format(mailForm.cleaned_data))
         
         # After this point, the provisioning will have started so if the user re-logs after this
         # they will need to be at the MyInfo:index step.

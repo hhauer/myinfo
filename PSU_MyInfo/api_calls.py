@@ -29,13 +29,13 @@ def callSailpoint(link, data=None):
         final_response = json.load(response)
         logger.debug("Sailpoint response: {}".format(final_response))
     except urllib2.HTTPError as e:
-        logger.critical("The following error occurred while attempting to contact sailpoint: {} -- {}".format(e.code, e.reason))
+        logger.critical("The following error occurred while attempting to contact sailpoint: {1} -- {2}".format(e.code, e.reason))
         return None
     except urllib2.URLError as e:
-        logger.critical("The following error occurred while attempting to contact sailpoint: {} -- {}".format(e.code, e.reason))
+        logger.critical("The following error occurred while attempting to contact sailpoint: {1} -- {2}".format(e.code, e.reason))
         return None
     except ValueError:
-        logger.critical("Sailpoint returned invalid JSON: {}".format(response))
+        logger.critical("Sailpoint returned invalid JSON: {1}".format(response))
         return None
 
     return final_response or None
@@ -63,7 +63,7 @@ def identifyAccountPickup(spriden_id, birthdate, password):
     
     # If any of our tests fail, auth fails. 
     if result["DOB"] != "MATCH" or result["SPRIDEN_ID"] != "MATCH" or result["INITPASS"] != "MATCH":
-        logger.info("Account pickup authentication failed with the following response: {}".format(result))
+        logger.info("Account pickup authentication failed with the following response: {1}".format(result))
         final_result = (False, None)
     else:
         final_result = (True, {

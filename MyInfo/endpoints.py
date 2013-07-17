@@ -25,7 +25,7 @@ def update_password(request):
         if success:
             return {'status' : 'Success', 'message' : '<p>Password changed successfully.</p>'}
         else:
-            return {'status' : 'Error', 'message' : '<p>{}</p>'.format(message)}
+            return {'status' : 'Error', 'message' : '<p>{1}</p>'.format(message)}
     else:
         return {'status' : 'Error', 'message' : error_state_to_html(form)}
         
@@ -98,4 +98,4 @@ def delete_key_value(request):
     
     UserDataItem.objects.filter(psu_uuid = request.session['identity']['PSU_UUID']).filter(key_name = keys[request.POST['key']]).delete()
     
-    logger.info("Delete key: {} for {}".format(keys[request.POST['key']], request.session['identity']['PSU_UUID']))
+    logger.info("Delete key: {1} for {2}".format(keys[request.POST['key']], request.session['identity']['PSU_UUID']))

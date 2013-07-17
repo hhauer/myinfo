@@ -1,0 +1,4 @@
+Django==1.5.1
+decorator==3.4.0
+django-localflavor-us==1.1
+django-widget-tweaks==1.3

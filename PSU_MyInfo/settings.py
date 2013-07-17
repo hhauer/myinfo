@@ -5,7 +5,7 @@
 
 from ConfigParser import RawConfigParser
 config = RawConfigParser()
-config.read('PSU_MyInfo/secure_settings.ini')
+config.read('secure_settings.ini')
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -178,7 +178,7 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'RotatingFileHandler': {
-            'filename': 'C:/Temp/my_info_log.txt',
+            'filename': 'my_info_log.txt',
             'maxBytes' : 262144,
             'backupCount' : 5,
             'formatter': 'verbose',

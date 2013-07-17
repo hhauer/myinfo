@@ -32,12 +32,12 @@ def index(request):
         user = auth.authenticate(odin_username=form.cleaned_data['odin_username'],
                                  password=form.cleaned_data['password'],
                                  request=request)
-        logger.info("Expired Password login attempt for Odin Username: ".format(form.cleaned_data['odin_username']))
+        logger.info("Expired Password login attempt for Odin Username: {1}".format(form.cleaned_data['odin_username']))
         if user is not None:
             #Identity is valid.
             auth.login(request, user)
             
-            logger.info("Expired Password login success for Odin Username: ".format(form.cleaned_data['odin_username']))
+            logger.info("Expired Password login success for Odin Username: {1}".format(form.cleaned_data['odin_username']))
             
             return HttpResponseRedirect(reverse("MyInfo:update"))
         #If identity is invalid, prompt re-entry.
@@ -71,7 +71,7 @@ def update_information(request):
         checked = ''
     
     if 'identity' not in request.session:
-        logger.critical("No identity for user at MyInfo: {}".format(request.session))
+        logger.critical("No identity for user at MyInfo: {1}".format(request.session))
         return HttpResponseServerError('No identity information was available.')
     
     # Refresh our identity.
