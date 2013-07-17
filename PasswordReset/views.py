@@ -73,21 +73,21 @@ def reset(request, token=None):
                 auth.login(request, user)
                 return HttpResponseRedirect(reverse('MyInfo:update'))
             
-            logger.error("Password reset received a signed psu_uuid but could not authenticate for: {1}".format(psu_uuid))
+            logger.error("Password reset received a signed psu_uuid but could not authenticate for: {0}".format(psu_uuid))
             error_message = "There was an internal error. Please contact the helpdesk for support."
         except SignatureExpired:
             udc_id = signer.unsign(token)
             # Too slow!
-            logger.info("Attempted password reset after timeout for: {1}".format(udc_id))
+            logger.info("Attempted password reset after timeout for: {0}".format(udc_id))
             error_message = "The password reset expired. Please try again."
         except BadSignature:
-            logger.info("Attempted reset of invalid token: {1}".format(token))
+            logger.info("Attempted reset of invalid token: {0}".format(token))
             error_message = "There was an internal error. Please contact the helpdesk for support."
     
     # Something went wrong, forward them back to the password reset link page.  
     if error_message is None:
         error_message = "There was an internal error. Please contact the helpdesk for support."
-        logger.debug("Reached end of key signing attempt without an error message for token: {1}".format(token))
+        logger.debug("Reached end of key signing attempt without an error message for token: {0}".format(token))
     reset_request = request_reset_form(request.POST or None)
     return render(request, 'PasswordReset/index.html', {'reset_request' : reset_request, 'reset_token' : reset_token, 'error' : error_message, 'reset_captcha' : captcha,})
 

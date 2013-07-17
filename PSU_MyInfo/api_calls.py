@@ -24,18 +24,18 @@ def callSailpoint(link, data=None):
         url += '?json=' + urllib.quote_plus(json.dumps(data))
     
     try:
-        logger.debug("Making sailpoint call: {}".format(url))
+        logger.debug("Making sailpoint call: {0}".format(url))
         response = opener.open(url)
         final_response = json.load(response)
-        logger.debug("Sailpoint response: {}".format(final_response))
+        logger.debug("Sailpoint response: {0}".format(final_response))
     except urllib2.HTTPError as e:
-        logger.critical("The following error occurred while attempting to contact sailpoint: {1} -- {2}".format(e.code, e.reason))
+        logger.critical("The following error occurred while attempting to contact sailpoint: {0} -- {1}".format(e.code, e.reason))
         return None
     except urllib2.URLError as e:
-        logger.critical("The following error occurred while attempting to contact sailpoint: {1} -- {2}".format(e.code, e.reason))
+        logger.critical("The following error occurred while attempting to contact sailpoint: {0} -- {1}".format(e.code, e.reason))
         return None
     except ValueError:
-        logger.critical("Sailpoint returned invalid JSON: {1}".format(response))
+        logger.critical("Sailpoint returned invalid JSON: {0}".format(response))
         return None
 
     return final_response or None
@@ -63,7 +63,7 @@ def identifyAccountPickup(spriden_id, birthdate, password):
     
     # If any of our tests fail, auth fails. 
     if result["DOB"] != "MATCH" or result["SPRIDEN_ID"] != "MATCH" or result["INITPASS"] != "MATCH":
-        logger.info("Account pickup authentication failed with the following response: {1}".format(result))
+        logger.info("Account pickup authentication failed with the following response: {0}".format(result))
         final_result = (False, None)
     else:
         final_result = (True, {
