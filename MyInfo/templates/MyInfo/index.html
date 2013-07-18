@@ -1,10 +1,10 @@
+{% extends "lib\base.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html>
-<head>
-	{% include "MyInfo/shared_head.html" %}
-	<title>PSU - MyInfo Login</title>
-	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
+
+{% block title %}MyInfo Login{% endblock %}
+
+{% block head_js %}
+	<script src="{% static "lib/js/jquery.validate.js" %}"></script>
 	
 	<script type="text/javascript">
 	$(function() {
@@ -18,53 +18,59 @@
 		});
 	});
 	</script>
-</head>
+{% endblock %}
 
-<body>
-	<h3 class="header">MyInfo - Login</h3>
+{% block header %}MyInfo - Login{% endblock %}
 
-	<div id="body-content">
-	
-	<h5>Faculty and students with active accounts</h5>
-	<a href="/MyInfo/update_information/">Click here to log in with single sign-on.</a><br>
-	
-	<h5>Is your password expired?</h5>
-	<a id="loginToggle" href="#">Click here to update your password.</a><br>
-	
-	
-	
+{% block body_content %}
+	<div class="col_6" style="align">
+		<div class="center">
+			<h5>Users with active accounts</h5>
+			<a href="/MyInfo/update_information/">Click here to log in with single sign-on.</a>
+		</div>
+	</div>
+
+	<div class="col_6">
+		<div class="center">
+			<h5>Is your password expired?</h5>
+			<a id="loginToggle" href="#">Click here to update your password.</a><br>
+		</div>
+	</div>
+
 	<form id="infoForm" action="/MyInfo/" method="post">
-	{% csrf_token %}
-	{{ form.non_field_errors }}
-	
-	<div class="ui-widget">
-	{% if error %}
-	<div class="ui-state-error">{{ error }}</div>
-	{% endif %}
-	<fieldset>
-		<div class="wide-input">
-			{{ form.odin_username.label_tag }} {{ form.odin_username }}
-			{{ form.odin_username.errors }}
-		</div>
+		{% csrf_token %}
+		{{ form.non_field_errors }}
 		
-		<div class="wide-input">
-			{{ form.password.label_tag }} {{ form.password }}
-			{{ form.password.errors }}
-		</div>
-		
-		{% if captcha %}
-		<div class="captcha">
-		{{ captcha.captcha }}
-		</div>
+		{% if error %}
+		<div class="ui-state-error">{{ error }}</div>
 		{% endif %}
+		<fieldset>
+			<div class="wide-input">
+				{{ form.odin_username.label_tag }} {{ form.odin_username }}
+				{{ form.odin_username.errors }}
+			</div>
+			
+			<div class="wide-input">
+				{{ form.password.label_tag }} {{ form.password }}
+				{{ form.password.errors }}
+			</div>
+			
+			{% if captcha %}
+			<div class="captcha">
+				{{ captcha.captcha }}
+			</div>
+			{% endif %}
+		</fieldset>
 		
-
-	</fieldset>
-	</div>
-	
-	<input type="submit" value="Login to MyInfo" />
+		<input type="submit" value="Login to MyInfo" />
 	</form>
-	</div>
+{% endblock %}
+
+
+
+
 	
-</body>
-</html>
+
+	
+	
+	

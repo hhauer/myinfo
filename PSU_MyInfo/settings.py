@@ -144,6 +144,7 @@ INSTALLED_APPS = (
     'MyInfo',
     'AccountPickup',
     'PasswordReset',
+    'lib',
     # Apps related to plugins.
     'ajax',
     'widget_tweaks',

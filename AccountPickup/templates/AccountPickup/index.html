@@ -1,13 +1,11 @@
+{% extends "lib\base.html" %}
 {% load staticfiles %}
-{% load widget_tweaks %}
-<!DOCTYPE html>
-<html>
-<head>
-	{% include "MyInfo/shared_head.html" %}
-	<title>PSU - Account Pickup</title>
 
-	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
-	<script src="{% static "MyInfo/js/additional-methods.js" %}"></script>
+{% block title %}Account Pickup{% endblock %}
+
+{% block head_js %}
+	<script src="{% static "lib/js/jquery.validate.js" %}"></script>
+	<script src="{% static "lib/js/additional-methods.js" %}"></script>
 	
 	<script type="text/javascript">
 	$(function() {
@@ -35,12 +33,12 @@
 		$('#id_auth_pass').attr('type', el.checked ? 'text' : 'password');
 	}
 	</script>
-</head>
+{% endblock %}
 
-<body>
-	<h3 class="header">Account Pickup - New User</h3>
+{% block header %}Account Pickup - New User{% endblock %}
 
-	<div id="body-content">
+{% block body_content %}
+	<div class="col_12">
 	<h4>Welcome to Account Pickup</h4>
 	
 	<p>Please enter your PSU ID number, birthday, and the password you received in the mail to get started.
@@ -51,42 +49,39 @@
 	{% csrf_token %}
 	{{ form.non_field_errors }}
 	
-	<div class="ui-widget">
 	{% if error %}
 	<div class="ui-state-error">{{ error }}</div>
 	{% endif %}
-	<fieldset>
-		<div class="wide-input">
-			{{ form.id_number.label_tag }} {{ form.id_number }}
-			{{ form.id_number.errors }}
-		</div>
-		
-		<div class="wide-input">
-			{{ form.birth_date.label_tag }} {{ form.birth_date }}
-			{{ form.birth_date.errors }}
-		</div>
-		
-		<div class="wide-input">
-			{{ form.auth_pass.label_tag }} {{ form.auth_pass }}
-			{{ form.auth_pass.errors }}
-		</div>
-		
-		<div>
-			<label for="showpass">Show password</label>
-			<input type="checkbox" onchange="tick(this)" id="showpass" style="margin-left: 0px"/>
-		</div>
-		
-		{% if captcha %}
-		<div class="captcha">
-		{{ captcha.captcha }}
-		</div>
-		{% endif %}
-	</fieldset>
-	</div>
+			<fieldset>
+				<div class="wide-input">
+					{{ form.id_number.label_tag }} {{ form.id_number }}
+					{{ form.id_number.errors }}
+				</div>
+				
+				<div class="wide-input">
+					{{ form.birth_date.label_tag }} {{ form.birth_date }}
+					{{ form.birth_date.errors }}
+				</div>
+				
+				<div class="wide-input">
+					{{ form.auth_pass.label_tag }} {{ form.auth_pass }}
+					{{ form.auth_pass.errors }}
+				</div>
+				
+				<div>
+					<label for="showpass">Show password</label>
+					<input type="checkbox" onchange="tick(this)" id="showpass" style="margin-left: 0px"/>
+				</div>
+				
+				{% if captcha %}
+				<div class="captcha">
+				{{ captcha.captcha }}
+				</div>
+				{% endif %}
+			</fieldset>
 	
 	<input type="submit" value="Login to Account Pickup" />
 	</form>
 	</div>
 	
-</body>
-</html>
+{% endblock %}

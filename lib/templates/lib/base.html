@@ -1,0 +1,29 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<script src="{% static "lib/js/jquery-1.9.1.js" %}"></script>
+	<script src="{% static "lib/js/jquery-ui-1.10.3.custom.js" %}"></script>
+	<script src="{% static "lib/js/jquery.cookie.js" %}"></script>
+	<script src="{% static "lib/js/ajax-forms.js" %}"></script>
+	<script src="{% static "lib/js/kickstart.js" %}"></script>
+
+	<link href="{% static "lib/css/normalize.css" %}" rel="stylesheet">
+	<link href="{% static "lib/css/jquery-ui-1.10.3.custom.css" %}" rel="stylesheet">
+	<link href="{% static "lib/css/kickstart.css" %}" rel="stylesheet">
+	<link href="{% static "lib/css/myinfo.css" %}" rel="stylesheet">
+
+	<title>PSU - {% block title %}{% endblock %}</title>
+
+	{% block head_js %}{% endblock %}
+</head>
+
+<body>
+	<h3 class="header">{% block header %}{% endblock %}</h3>
+	<div class="grid flex" style="padding-top: 5px;">
+		{% block body_content %}{% endblock %}
+	</div>
+</body>
+</html>
