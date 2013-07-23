@@ -1,64 +1,60 @@
+{% extends "lib\base.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html>
-<head>
-	{% include "MyInfo/shared_head.html" %}
-	<title>PSU - Password Reset</title>
-</head>
 
-<body>
-	<h3 class="header">PSU - Password Reset</h3>
-	
-	<div id="body-content">
-	<p>Blah, blah, blah reset your ODIN password.</p>
-	
-	{% if error %}
-	<div class="ui-state-error">{{ error }}</div>
-	{% endif %}
-	
-	<form id="resetForm" action="/PasswordReset/" method="post">
-	{% csrf_token %}
-	{{ form.non_field_errors }}
-	<fieldset>
-		<legend>Reset Password</legend>
-		{% for field in reset_request %}
-		<div class="wide-input">
-			{{ field.label_tag }} {{ field }}
-			{{ field.errors }}
-		</div>
-		{% endfor %}
-			
-		{% if captcha %}
-		<div class="captcha">
-		{{ captcha.captcha }}
-		</div>
+{% block title %}Password Reset{% endblock %}
+
+{% block header %}Password Reset{% endblock %}
+
+{% block body_content %}
+	<div class="col_12">
+		<p>Blah, blah, blah reset your ODIN password.</p>
+		
+		{% if error %}
+		<div class="ui-state-error">{{ error }}</div>
 		{% endif %}
-	</fieldset>
-	
-	<input type="submit" value="Send Reset Code" />
-	</form>
-	<br/> <br/>
-	<form id="tokenForm" action="/PasswordReset/reset/" method="post">
-	{% csrf_token %}
-	{{ form.non_field_errors }}
-	<fieldset>
-		<legend>Have a Reset Token?</legend>
-		{% for field in reset_token %}
-		<div class="wide-input">
-			{{ field.label_tag }} {{ field }}
-			{{ field.errors }}
-		</div>
-		{% endfor %}
-			
-		{% if reset_captcha %}
-		<div class="captcha">
-		{{ reset_captcha.captcha }}
-		</div>
-		{% endif %}
-	</fieldset>
-	
-	<input type="submit" value="Reset Your Password" />
-	</form>
+		
+		<form id="resetForm" action="/PasswordReset/" method="post">
+		{% csrf_token %}
+		{{ form.non_field_errors }}
+		<fieldset>
+			<legend>Reset Password</legend>
+			{% for field in reset_request %}
+			<div class="wide-input">
+				{{ field.label_tag }} {{ field }}
+				{{ field.errors }}
+			</div>
+			{% endfor %}
+				
+			{% if captcha %}
+			<div class="captcha">
+			{{ captcha.captcha }}
+			</div>
+			{% endif %}
+		</fieldset>
+		
+		<input type="submit" value="Send Reset Code" />
+		</form>
+		<br/> <br/>
+		<form id="tokenForm" action="/PasswordReset/reset/" method="post">
+		{% csrf_token %}
+		{{ form.non_field_errors }}
+		<fieldset>
+			<legend>Have a Reset Token?</legend>
+			{% for field in reset_token %}
+			<div class="wide-input">
+				{{ field.label_tag }} {{ field }}
+				{{ field.errors }}
+			</div>
+			{% endfor %}
+				
+			{% if reset_captcha %}
+			<div class="captcha">
+			{{ reset_captcha.captcha }}
+			</div>
+			{% endif %}
+		</fieldset>
+		
+		<input type="submit" value="Reset Your Password" />
+		</form>
 	</div>
-</body>
-</html>
+{% endblock %}

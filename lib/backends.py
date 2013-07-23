@@ -4,7 +4,7 @@ Created on Mar 25, 2013
 @author: hhauer
 '''
 from django.contrib.auth.models import User
-from PSU_MyInfo.api_calls import identifyAccountPickup, identifyExpiredPassword, identity_from_psu_uuid
+from lib.api_calls import identifyAccountPickup, identifyExpiredPassword, identity_from_psu_uuid
 
 import logging
 logger = logging.getLogger(__name__)

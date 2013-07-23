@@ -109,9 +109,9 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'PSU_MyInfo.backends.ExpiredPasswordBackend',
-    'PSU_MyInfo.backends.AccountPickupBackend',
-    'PSU_MyInfo.backends.ForgotPasswordBackend',
+    'lib.backends.ExpiredPasswordBackend',
+    'lib.backends.AccountPickupBackend',
+    'lib.backends.ForgotPasswordBackend',
     'django_cas.backends.CASBackend',
 )
 
@@ -144,6 +144,7 @@ INSTALLED_APPS = (
     'MyInfo',
     'AccountPickup',
     'PasswordReset',
+    'lib',
     # Apps related to plugins.
     'ajax',
     'widget_tweaks',
