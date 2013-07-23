@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from MyInfo.forms import formPasswordChange, formNewPassword, formExternalContactInformation, formPSUEmployee, expired_password_login_form
 from django.http import HttpResponseServerError, HttpResponseRedirect
-from PSU_MyInfo.api_calls import passwordConstraintsFromIdentity, identity_from_psu_uuid
+from lib.api_calls import passwordConstraintsFromIdentity, identity_from_psu_uuid
 from lib.util_functions import contact_initial, directory_initial
 from django.contrib import auth
 from django.core.urlresolvers import reverse

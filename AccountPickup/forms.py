@@ -7,7 +7,7 @@ https://code.google.com/p/django-sms/
 '''
 
 from django import forms
-from PSU_MyInfo.api_calls import OdinNamesFromIdentity, EmailAliasesFromIdentity
+from lib.api_calls import OdinNamesFromIdentity, EmailAliasesFromIdentity
 from MyInfo.forms import formExternalContactInformation
 
 import logging

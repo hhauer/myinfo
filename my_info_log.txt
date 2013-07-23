@@ -1,6 +1,0 @@
-INFO 2013-07-17 17:23:19,592 - Account claim login attempt with ID: 985234568
-INFO 2013-07-17 17:23:19,667 - Account claim login success with ID: 985234568
-DEBUG 2013-07-17 17:32:40,299 - Valid response to AUP received.
-DEBUG 2013-07-17 17:41:04,059 - Provision new user launched with the following data: <QueryDict: {u'name': [u'jsmith5'], u'aliases': [u'smith.j@pdx.edu']}>
-DEBUG 2013-07-17 17:41:04,059 - Odin name selected: jsmith5
-DEBUG 2013-07-17 17:41:04,059 - Email Aliases: {'aliases': u'smith.j@pdx.edu'}

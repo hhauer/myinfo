@@ -1,7 +1,7 @@
 from MyInfo.forms import formExternalContactInformation, formPSUEmployee
 from MyInfo.forms import formPasswordChange, formNewPassword
-from MyInfo.util_functions import error_state_to_html
-from PSU_MyInfo.api_calls import change_password
+from lib.util_functions import error_state_to_html
+from lib.api_calls import change_password
 from django.core.exceptions import SuspiciousOperation
 from models import UserDataItem
 from ajax.decorators import login_required
@@ -69,8 +69,11 @@ def update_directory_information(request):
         UserDataItem.objects.filter(psu_uuid = ident).filter(key_name = 'PSU_EMPLOYEE_DEPARTMENT_NAME'). \
         update(key_valu = form.cleaned_data['department'])
         
+        # Build a building + room string. E.g. "UTS 625"
+        room_info = form.cleaned_data['office_building'] + ' ' + form.cleaned_data['office_room']
+        
         UserDataItem.objects.filter(psu_uuid = ident).filter(key_name = 'PSU_EMPLOYEE_OFFICE_INFO'). \
-        update(key_valu = form.cleaned_data['office_location'])
+        update(key_valu = room_info)
         
         return {'status' : 'Success', 'message' : '<p>Directory information updated successfully.</p>'}
     
