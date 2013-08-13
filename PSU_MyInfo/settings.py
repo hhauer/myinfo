@@ -217,6 +217,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'lib': {
+            'handlers': ['RotatingFileHandler'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     }
 }
 
