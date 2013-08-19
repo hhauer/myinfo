@@ -104,16 +104,10 @@ def passwordConstraintsFromIdentity(identity):
 # This function returns a list of potential odin names to choose from.
 def truename_odin_names(identity):
     return callSailpoint('PSU_UI_TRUENAME_GEN_USERNAMES', identity)
-#     return (('jsmith5', 'jsmith5'), ('j.smith', 'j.smith'), ('john.smith4', 'john.smith4'))
 
 # This function returns a list of potential email aliases to choose from.
 def truename_email_aliases(identity):
     return callSailpoint('PSU_UI_TRUENAME_GEN_EMAILS', identity)
-#     return (('j.smith@pdx.edu', 'j.smith@pdx.edu'), 
-#             ('smith.j@pdx.edu', 'smith.j@pdx.edu'), 
-#             ('john.j.e.smith@pdx.edu', 'john.j.e.smith@pdx.edu'), 
-#             ('jsmith5@pdx.edu', 'jsmith5@pdx.edu'), 
-#             ('smitty@pdx.edu', 'smitty@pdx.edu'))
     
 # This function calls out to sailpoint to begin a password update event.
 def change_password(identity, new_password):
