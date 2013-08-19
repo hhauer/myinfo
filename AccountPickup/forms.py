@@ -7,7 +7,6 @@ https://code.google.com/p/django-sms/
 '''
 
 from django import forms
-from lib.api_calls import OdinNamesFromIdentity, EmailAliasesFromIdentity
 from MyInfo.forms import formExternalContactInformation
 
 import logging
@@ -24,15 +23,14 @@ class acceptAUP(forms.Form):
 # The pickOdinNames class overrides the __init__ function in order to poll truename for the odin name
 # options. This won't be necessary if we just assign an ODIN name.
 class pickOdinName(forms.Form):
-    def __init__(self, session, *args, **kwargs):
+    def __init__(self, names, *args, **kwargs):
         super(pickOdinName, self).__init__(*args, **kwargs)
-        self.name_options = OdinNamesFromIdentity(session['identity'])
-        self.fields["name"] = forms.ChoiceField(choices=self.name_options, label="Odin Username")
+        self.fields["name"] = forms.ChoiceField(choices=names, label="Odin Username")
                 
 class EmailAliasForm(forms.Form):
-    def __init__(self, identity, *args, **kwargs):
+    def __init__(self, names, *args, **kwargs):
         super(EmailAliasForm, self).__init__(*args, **kwargs)
-        self.fields["aliases"] = forms.ChoiceField(choices = EmailAliasesFromIdentity('stub'), label="Email Alias")
+        self.fields["aliases"] = forms.ChoiceField(choices=names, label="Email Alias")
 
 class password_reset_optout_form(formExternalContactInformation):
     opt_out = forms.BooleanField(required=False, label="Opt Out")

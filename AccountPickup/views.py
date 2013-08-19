@@ -3,14 +3,17 @@
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from AccountPickup.forms import accountClaimLogin, acceptAUP, pickOdinName, EmailAliasForm, password_reset_optout_form
 from django.core.urlresolvers import reverse
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+
 from brake.decorators import ratelimit
 
 from MyInfo.models import UserDataItem
 from MyInfo.forms import ReCaptchaForm
+
+from AccountPickup.forms import accountClaimLogin, acceptAUP, pickOdinName, EmailAliasForm, password_reset_optout_form
+from lib.api_calls import truename_odin_names, truename_email_aliases
 
 import logging
 logger = logging.getLogger(__name__)
@@ -128,9 +131,14 @@ def odinName(request):
     if request.session['NEXT'] != 'AccountPickup:ODIN':
         return HttpResponseRedirect(reverse(request.session['NEXT']) + anchor[request.session['NEXT']])
     
-    # Pass in the session to the odinForm so that it can get appropriate name options.
-    odinForm = pickOdinName(request.session, request.POST or None)
-    mailForm = EmailAliasForm(request.session, request.POST or None)
+    # Get possible odin names
+    request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
+    # Get possible email aliases
+    request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
+    
+    # Build our forms with choices from truename.
+    odinForm = pickOdinName(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
+    mailForm = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
     
     # These forms are processed via an ajax submit to the endpoint provision_new_user
     
