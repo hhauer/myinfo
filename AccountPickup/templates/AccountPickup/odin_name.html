@@ -10,7 +10,17 @@
 			ev.preventDefault();
 			ev.stopPropagation();
 		});
+		
+		$('#email-alias-hide').hide();
 	});
+	
+	function tick(el) {
+		if (el.checked) {
+			$('#email-alias-hide').fadeIn("slow");
+		} else {
+			$('#email-alias-hide').fadeOut("fast");
+		}
+	}
 	</script>
 {% endblock %}
 
@@ -37,9 +47,12 @@
 					</div>
 				</fieldset>
 			
-				<p>You may select an additional email alias. Your email alias will be delivered to your
-				primary PSU email inbox, but may be friendlier to read or remember than your Odin username.</p>
+				<p>You may select an additional email alias. Your email will still be delivered to your
+				primary PSU email inbox, but the address may be friendlier to read or remember than your Odin username.</p>
+
+				<p>Yes, I would like an email alias: <input type="checkbox" onchange="tick(this)" id="selectalias"/></p>
 				
+				<div id="email-alias-hide">
 				<fieldset>
 					<legend>Select Your Email Alias</legend>
 					<div class="wide-input">
@@ -50,6 +63,7 @@
 			
 				<p><strong>Reminder:</strong> Portland State policy requires that you read the email sent to your PSU e-mail address
 			on a regular basis.</p>
+			</div>
 			
 				<input type="submit" value="Continue" />
 				<span class="ajax-errors errorlist"></span>

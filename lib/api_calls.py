@@ -42,6 +42,13 @@ def callSailpoint(link, data=None):
 
 # This function turns a 9num into the user's identity information like name.
 def identifyAccountPickup(spriden_id, birthdate, password): 
+    # Stub for template work.
+    if spriden_id == '123456789':
+        return (True, {
+            'PSU_UUID': '123456789',
+            'DISPLAY_NAME': 'Stub User',
+            'SPRIDEN_ID': '123456789'})
+    
     # Build our packet to send to sailpoint.
     data = {
         "user_spriden_id" : spriden_id,
