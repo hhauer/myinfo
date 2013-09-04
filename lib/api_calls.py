@@ -42,6 +42,13 @@ def callSailpoint(link, data=None):
 
 # This function turns a 9num into the user's identity information like name.
 def identifyAccountPickup(spriden_id, birthdate, password): 
+    # Stub for template work.
+    if spriden_id == '123456789':
+        return (True, {
+            'PSU_UUID': '123456789',
+            'DISPLAY_NAME': 'Stub User',
+            'SPRIDEN_ID': '123456789'})
+    
     # Build our packet to send to sailpoint.
     data = {
         "user_spriden_id" : spriden_id,
@@ -69,7 +76,7 @@ def identifyAccountPickup(spriden_id, birthdate, password):
 
 # Identify a user with an expired password.
 def identifyExpiredPassword(username, password):
-    # TODO: Stubbed return
+    # TODO: Stubbed return (sailpoint rule context.authenticate)
     stub = {
         "PSU_UUID" : 'abc123',
         "DISPLAY_NAME" : "John Smith",
@@ -110,8 +117,18 @@ def truename_email_aliases(identity):
     return callSailpoint('PSU_UI_TRUENAME_GEN_EMAILS', identity)
     
 # This function calls out to sailpoint to begin a password update event.
-def change_password(identity, new_password):
-    # TODO: Stubbed
+def change_password(identity, new_password, old_password):
+    data = {'PSU_UUID' : identity["PSU_UUID"],
+            'password' : new_password,
+            'old_password' : old_password,
+    }
+    
+    status = callSailpoint('PSU_UI_UPDATE_PASSWORD', data)
+    
+    if "Success" in status:
+        return (True, "")
+    else:
+        return (False, status["PasswordError"])
     return (True, "")
 
 def launch_provisioning_workflow(identity, odin_name, email_alias):
