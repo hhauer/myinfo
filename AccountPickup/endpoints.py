@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
 from AccountPickup.forms import pickOdinName, EmailAliasForm
-from PSU_MyInfo.api_calls import launch_provisioning_workflow
+from lib.api_calls import launch_provisioning_workflow
 
 from MyInfo.models import UserDataItem
 
@@ -37,6 +37,8 @@ def provision_new_user(request):
                                     key_name ='MYINFO_PICKUP_STATE').update(key_valu = 'MyInfo:index')
         
         # Send the information to sailpoint to begin provisioning.
-        launch_provisioning_workflow(request.session['identity'], odinForm.cleaned_data, mailForm.cleaned_data)
+        odin_name = request.session['TRUENAME_USERNAMES'][odinForm.cleaned_data['name']]
+        email_alias = request.session['TRUENAME_EMAILS'][mailForm.cleaned_data['aliases']]
+        launch_provisioning_workflow(request.session['identity'], odin_name, email_alias)
     
     return {'status' : 'Forward', 'URL' : reverse('MyInfo:update')}

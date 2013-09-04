@@ -8,6 +8,10 @@ from brake.decorators import ratelimit
 from MyInfo.models import UserDataItem
 from MyInfo.forms import ReCaptchaForm
 
+from PasswordReset.models import TextMessageShortCode
+
+from lib.api_calls import password_reset
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -36,11 +40,13 @@ def index(request):
             error_message = token
             
             if email_response == True:
-                # TODO: Email the thingy.
-                pass
+                password_reset(user_data.psu_uuid, user_data.key_valu, token, "email")
             else:
-                # TODO: Text the thingy.
-                pass
+                shortcode = TextMessageShortCode()
+                shortcode.token = token
+                shortcode.save()
+                
+                password_reset(user_data.psu_uuid, shortcode.code, token, "SMS")
             
     except (UserDataItem.DoesNotExist, UserDataItem.MultipleObjectsReturned):
         # Either we couldn't find it or we couldn't uniquely identify it.

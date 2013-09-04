@@ -8,7 +8,7 @@ from django.conf import settings
 
 from django_cas.models import User
 
-from PSU_MyInfo.api_calls import identity_from_cas
+from lib.api_calls import identity_from_cas
 
 __all__ = ['CASBackend']
 

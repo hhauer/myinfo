@@ -1,12 +1,10 @@
+{% extends "lib\base.html" %}
 {% load staticfiles %}
-{% load widget_tweaks %}
-<!DOCTYPE html>
-<html>
-<head>
-	{% include "MyInfo/shared_head.html" %}
-	<title>PSU - AUP</title>
 
-	<script src="{% static "MyInfo/js/jquery.validate.js" %}"></script>
+{% block title %}PSU - AUP{% endblock %}
+
+{% block head_js %}
+	<script src="{% static "lib/js/jquery.validate.js" %}"></script>
 	
 	<script type="text/javascript">
 	$(function() {
@@ -16,44 +14,40 @@
 		});
 	});
 	</script>
-</head>
+{% endblock %}
 
-<body>
-	<h3 class="header">Acceptable Use Policy</h3>
-	
-	<div id="body-content">
-	<ul class="tabs left">
-		<li><a href="#aup" class="killclick">Acceptable Use</a></li>
-		<li><a href="#reset" class="killclick">Password Reset</a></li>
-		<li><a href="#odin" class="killclick">Odin Username</a></li>
-	</ul>
-	
-	<div id="aup" class="tab-content">
-	<p>Please read and review the following policies regarding the use of computing resources at PSU:</p>
-	
-	<ul>
-	<li><a href="http://www.pdx.edu/oit/sites/www.pdx.edu.oit/files/Acceptable Use Policy.pdf" target="_blank">PSU Acceptable Use Policy</a></li>
-	<li><a href="http://www.pdx.edu/ogc/sites/www.pdx.edu.ogc/files/Email Communication Policy 1.29.13 SIGNED FINAL.pdf" target="_blank">PSU Email Communication Policy</a></li>
-	<li><a href="http://www.pdx.edu/sites/www.pdx.edu.financial-services/files/BAO_rcap_web_policy.pdf" target="_blank">PSU Revoling Charge Account Plan Policy</a></li>
-	</ul>
-	
-	<form id="aupForm" action="/AccountPickup/AUP/" method="post">
-	{% csrf_token %}
-	{{ form.non_field_errors }}
-	
-	<div class="ui-widget">
-	<fieldset>
-		<div>
-			{{ form.accepted.label_tag }} {{ form.accepted }}
-			{{ form.accepted.errors }}
+{% block header %}Acceptable Use Policy{% endblock %}
+
+{% block body_content %}
+	<div class="col_12">
+		<ul class="tabs left">
+			<li><a href="#aup" class="killclick">Acceptable Use</a></li>
+			<li><a href="#reset" class="killclick">Password Reset</a></li>
+			<li><a href="#odin" class="killclick">Odin Username</a></li>
+		</ul>
+		
+		<div id="aup" class="tab-content">
+		<p>Please read and review the following policies regarding the use of computing resources at PSU:</p>
+		
+		<ul>
+			<li><a href="http://www.pdx.edu/oit/sites/www.pdx.edu.oit/files/Acceptable Use Policy.pdf" target="_blank">PSU Acceptable Use Policy</a></li>
+			<li><a href="http://www.pdx.edu/ogc/sites/www.pdx.edu.ogc/files/Email Communication Policy 1.29.13 SIGNED FINAL.pdf" target="_blank">PSU Email Communication Policy</a></li>
+			<li><a href="http://www.pdx.edu/sites/www.pdx.edu.financial-services/files/BAO_rcap_web_policy.pdf" target="_blank">PSU Revoling Charge Account Plan Policy</a></li>
+		</ul>
+		
+		<form id="aupForm" action="/AccountPickup/AUP/" method="post">
+		{% csrf_token %}
+		{{ form.non_field_errors }}
+		
+		<fieldset>
+			<div>
+				{{ form.accepted.label_tag }} {{ form.accepted }}
+				{{ form.accepted.errors }}
+			</div>
+		</fieldset>
+		
+		<input type="submit" value="Continue" />
+		</form>
 		</div>
-	</fieldset>
 	</div>
-	
-	<input type="submit" value="Continue" />
-	</form>
-	</div>
-	</div>
-	
-</body>
-</html>
+{% endblock %}

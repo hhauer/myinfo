@@ -19,7 +19,7 @@ def callSailpoint(link, data=None):
     auth_handler = urllib2.HTTPBasicAuthHandler(password_manager)
     opener = urllib2.build_opener(auth_handler)
     
-    url = 'http://' + settings.SAILPOINT_SERVER_URL + '/iiq/rest/custom/runRule/' + link
+    url = 'http://' + settings.SAILPOINT_SERVER_URL + '/identityiq/rest/custom/runRule/' + link
     if data:
         url += '?json=' + urllib.quote_plus(json.dumps(data))
     
@@ -41,16 +41,13 @@ def callSailpoint(link, data=None):
     return final_response or None
 
 # This function turns a 9num into the user's identity information like name.
-def identifyAccountPickup(spriden_id, birthdate, password):
-    # Dev sailpoint only works for Ty. If it's not him, return a stub.
-    if (spriden_id != "959187734"):
-        # Stubbed return
-        stub = {
-            "PSU_UUID" : spriden_id,
-            "DISPLAY_NAME" : "John Smith",
-            "SPRIDEN_ID" : spriden_id,
-        }
-        return (True, stub)
+def identifyAccountPickup(spriden_id, birthdate, password): 
+    # Stub for template work.
+    if spriden_id == '123456789':
+        return (True, {
+            'PSU_UUID': '123456789',
+            'DISPLAY_NAME': 'Stub User',
+            'SPRIDEN_ID': '123456789'})
     
     # Build our packet to send to sailpoint.
     data = {
@@ -65,6 +62,9 @@ def identifyAccountPickup(spriden_id, birthdate, password):
     if result["DOB"] != "MATCH" or result["SPRIDEN_ID"] != "MATCH" or result["INITPASS"] != "MATCH":
         logger.info("Account pickup authentication failed with the following response: {0}".format(result))
         final_result = (False, None)
+    elif "ERROR" in result:
+        final_result = (False, None)
+        # TODO: Should this be logged?
     else:
         final_result = (True, {
             "PSU_UUID": result["PSU_UUID"],
@@ -76,7 +76,7 @@ def identifyAccountPickup(spriden_id, birthdate, password):
 
 # Identify a user with an expired password.
 def identifyExpiredPassword(username, password):
-    # TODO: Stubbed return
+    # TODO: Stubbed return (sailpoint rule context.authenticate)
     stub = {
         "PSU_UUID" : 'abc123',
         "DISPLAY_NAME" : "John Smith",
@@ -88,27 +88,13 @@ def identifyExpiredPassword(username, password):
 
 # This function turns a UDC_ID into the user's identity information like name.
 def identity_from_cas(udc_id):
-    # TODO: Stubbed return
-    stub = {
-        "PSU_UUID" : udc_id,
-        "DISPLAY_NAME" : "John Smith",
-        "SPRIDEN_ID" : '123456789',
-        "ODIN_NAME" : 'jsmith5',
-        "EMAIL_ADDRESS" : "john.smith@pdx.edu",
-    }
-    return stub
+    data = {'UDC_ID': udc_id}
+    return callSailpoint('PSU_UI_IDENTIFY_UDC_ID', data)
 
 # This function turns a PSU_UUID into the user's identity information like name.
 def identity_from_psu_uuid(psu_uuid):
-    # TODO: Stubbed return
-    stub = {
-        "PSU_UUID" : psu_uuid,
-        "DISPLAY_NAME" : "John Smith",
-        "SPRIDEN_ID" : psu_uuid,
-        "ODIN_NAME" : 'jsmith5',
-        "EMAIL_ADDRESS" : "john.smith@pdx.edu",
-    }
-    return stub
+    data = {'PSU_UUID': psu_uuid}
+    return callSailpoint('PSU_UI_IDENTIFY_UUID', data)
     
 # This function returns the appropriate password constraints based on an identity.
 def passwordConstraintsFromIdentity(identity):
@@ -122,25 +108,39 @@ def passwordConstraintsFromIdentity(identity):
     }
     return
 
-# This function returns a list of potential odin names to choose from based on a 9-number.
-def OdinNamesFromIdentity(identity):
-    # TODO: Stubbed.
-    return (('jsmith5', 'jsmith5'), ('j.smith', 'j.smith'), ('john.smith4', 'john.smith4'))
+# This function returns a list of potential odin names to choose from.
+def truename_odin_names(identity):
+    return callSailpoint('PSU_UI_TRUENAME_GEN_USERNAMES', identity)
 
+# This function returns a list of potential email aliases to choose from.
+def truename_email_aliases(identity):
+    return callSailpoint('PSU_UI_TRUENAME_GEN_EMAILS', identity)
+    
 # This function calls out to sailpoint to begin a password update event.
-def change_password(identity, new_password):
-    # TODO: Stubbed
+def change_password(identity, new_password, old_password):
+    data = {'PSU_UUID' : identity["PSU_UUID"],
+            'password' : new_password,
+            'old_password' : old_password,
+    }
+    
+    status = callSailpoint('PSU_UI_UPDATE_PASSWORD', data)
+    
+    if "Success" in status:
+        return (True, "")
+    else:
+        return (False, status["PasswordError"])
     return (True, "")
-
-# This function returns a list of potential email aliases to choose from based on a 9-number.
-def EmailAliasesFromIdentity(identity):
-    # TODO: Stubbed
-    return (('j.smith@pdx.edu', 'j.smith@pdx.edu'), 
-            ('smith.j@pdx.edu', 'smith.j@pdx.edu'), 
-            ('john.j.e.smith@pdx.edu', 'john.j.e.smith@pdx.edu'), 
-            ('jsmith5@pdx.edu', 'jsmith5@pdx.edu'), 
-            ('smitty@pdx.edu', 'smitty@pdx.edu'))
 
 def launch_provisioning_workflow(identity, odin_name, email_alias):
     # TODO: Stubbed
     return
+
+def password_reset(PSU_UUID, email, token, mode):
+    data = {
+        'PSU_UUID': PSU_UUID,
+        'email': email,
+        'token': token,
+        'mode': mode,
+    }
+    
+    callSailpoint('PSU_UI_PASSWORD_REMINDER', data)

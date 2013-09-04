@@ -1,7 +1,7 @@
 from MyInfo.forms import formExternalContactInformation, formPSUEmployee
 from MyInfo.forms import formPasswordChange, formNewPassword
-from MyInfo.util_functions import error_state_to_html
-from PSU_MyInfo.api_calls import change_password
+from lib.util_functions import error_state_to_html
+from lib.api_calls import change_password
 from django.core.exceptions import SuspiciousOperation
 from models import UserDataItem
 from ajax.decorators import login_required
@@ -13,15 +13,19 @@ logger = logging.getLogger(__name__)
 def update_password(request):
     # Find out which auth backend we used, is this a new user or returning user?
     # TODO: Do we want to send the new user somewhere, or send them an email?
-    new_user = False;
+    new_user = False
+    old_password = None
+    
     if request.session['_auth_user_backend'] == 'django_cas.backends.CASBackend':
         form = formPasswordChange(request.POST or None)
+        old_password = form.cleaned_data['currentPassword']
     else:
         form = formNewPassword(request.POST or None)
         new_user = True;
 
     if form.is_valid():
-        (success, message) = change_password(request.session['identity'], form.cleaned_data['newPassword'])
+        
+        (success, message) = change_password(request.session['identity'], form.cleaned_data['newPassword'], old_password)
         if success:
             return {'status' : 'Success', 'message' : '<p>Password changed successfully.</p>'}
         else:
@@ -69,8 +73,11 @@ def update_directory_information(request):
         UserDataItem.objects.filter(psu_uuid = ident).filter(key_name = 'PSU_EMPLOYEE_DEPARTMENT_NAME'). \
         update(key_valu = form.cleaned_data['department'])
         
+        # Build a building + room string. E.g. "UTS 625"
+        room_info = form.cleaned_data['office_building'] + ' ' + form.cleaned_data['office_room']
+        
         UserDataItem.objects.filter(psu_uuid = ident).filter(key_name = 'PSU_EMPLOYEE_OFFICE_INFO'). \
-        update(key_valu = form.cleaned_data['office_location'])
+        update(key_valu = room_info)
         
         return {'status' : 'Success', 'message' : '<p>Directory information updated successfully.</p>'}
     
