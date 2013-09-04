@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'ajax',
     'widget_tweaks',
     'captcha',
+    'south',
 )
 
 # A sample logging configuration. The only tangible logging

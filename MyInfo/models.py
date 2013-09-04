@@ -23,6 +23,7 @@ class Department(models.Model):
     
 class CellCarrier(models.Model):
     name = models.CharField(unique=True, max_length=50)
+    gateway = models.CharField(max_length=254)
     
     def __unicode__(self):
         return self.name
