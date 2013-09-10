@@ -10,8 +10,10 @@ config.read('secure_settings.ini')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = tuple(config.items('adminmail'))
+# If development is set to true, all calls to Sailpoint are bypassed with stubbed returns.
+DEVELOPMENT = True
 
+ADMINS = tuple(config.items('adminmail'))
 MANAGERS = ADMINS
 
 DATABASES = {

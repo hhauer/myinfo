@@ -1,0 +1,61 @@
+[
+{
+  "pk": 1, 
+  "model": "MyInfo.department", 
+  "fields": {
+    "name": "Office of Information Technology"
+  }
+},
+{
+  "pk": 2, 
+  "model": "MyInfo.department", 
+  "fields": {
+    "name": "Auxiliary Services"
+  }
+},
+{
+  "pk": 3, 
+  "model": "MyInfo.department", 
+  "fields": {
+    "name": "Telecom and Networking"
+  }
+},
+{
+  "pk": 4, 
+  "model": "MyInfo.department", 
+  "fields": {
+    "name": "History"
+  }
+},
+{
+  "pk": 5, 
+  "model": "MyInfo.department", 
+  "fields": {
+    "name": "Mathematics"
+  }
+},
+{
+  "pk": 1, 
+  "model": "MyInfo.cellcarrier", 
+  "fields": {
+    "name": "Verizon", 
+    "gateway": "verizon@verizon.com"
+  }
+},
+{
+  "pk": 2, 
+  "model": "MyInfo.cellcarrier", 
+  "fields": {
+    "name": "T-Mobile", 
+    "gateway": "tmobile@tmobile.com"
+  }
+},
+{
+  "pk": 3, 
+  "model": "MyInfo.cellcarrier", 
+  "fields": {
+    "name": "Sprint", 
+    "gateway": "sprint@sprint.com"
+  }
+}
+]

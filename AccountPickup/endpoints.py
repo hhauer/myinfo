@@ -19,8 +19,8 @@ def provision_new_user(request):
     logger.debug("Provision new user launched with the following data: {0}".format(request.POST))
     
     # Pass in the session to the odinForm so that it can get appropriate name options.
-    odinForm = pickOdinName(request.session, request.POST or None)
-    mailForm = EmailAliasForm(request.session, request.POST or None)
+    odinForm = pickOdinName(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
+    mailForm = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
     
     # Run both validations before the test so that short-circuiting does not bypass a validation.
     odin_valid = odinForm.is_valid()
@@ -37,8 +37,8 @@ def provision_new_user(request):
                                     key_name ='MYINFO_PICKUP_STATE').update(key_valu = 'MyInfo:index')
         
         # Send the information to sailpoint to begin provisioning.
-        odin_name = request.session['TRUENAME_USERNAMES'][odinForm.cleaned_data['name']]
-        email_alias = request.session['TRUENAME_EMAILS'][mailForm.cleaned_data['aliases']]
+        odin_name = request.session['TRUENAME_USERNAMES'][int(odinForm.cleaned_data['name'])]
+        email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['aliases'])]
         launch_provisioning_workflow(request.session['identity'], odin_name, email_alias)
     
     return {'status' : 'Forward', 'URL' : reverse('MyInfo:update')}

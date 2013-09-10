@@ -13,19 +13,20 @@ logger = logging.getLogger(__name__)
 def update_password(request):
     # Find out which auth backend we used, is this a new user or returning user?
     # TODO: Do we want to send the new user somewhere, or send them an email?
+    # TODO: -- NEEDS A REWRITE!!! --
     new_user = False
     old_password = None
     
     if request.session['_auth_user_backend'] == 'django_cas.backends.CASBackend':
         form = formPasswordChange(request.POST or None)
-        old_password = form.cleaned_data['currentPassword']
+        #old_password = form.cleaned_data['currentPassword']
     else:
         form = formNewPassword(request.POST or None)
         new_user = True;
 
     if form.is_valid():
-        
-        (success, message) = change_password(request.session['identity'], form.cleaned_data['newPassword'], old_password)
+        success = True
+        #(success, message) = change_password(request.session['identity'], form.cleaned_data['newPassword'], old_password)
         if success:
             return {'status' : 'Success', 'message' : '<p>Password changed successfully.</p>'}
         else:

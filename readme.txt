@@ -43,6 +43,22 @@ Allow from all
 </Directory>
 ============================= ABOVE =============================
 
+-- Remove initial_data.json if not using vagrant for development. It will populate false data if left in place on a dev server.
 -- Enable the python environment, then syncdb
 -- The default admin username needs to be a PSU_UUID. If not readily available, replace it via SQLDeveloper.
 -- Login to http://host/admin which should work via CAS. Add necessary data.
+
+============================= VAGRANT ===========================
+
+In order to ease the setup of an appropriate dev environment for MyInfo a Vagrantfile and bootstrap.sh file are included.
+First install Vagrant if it is not already available on the development system, then in an appropriate terminal / shell / command window
+change to the PSU_MyInfo root directory and run "vagrant up" which will start the vagrant VM. On windows it may be necessary to open the VirtualBox
+command window so that vagrant doesn't try to write its vm files to the H: drive.
+
+Once vagrant has booted fully MyInfo will be available at 127.0.0.1:8000/MyInfo/
+
+SSH to the vagrant server is available at 127.0.0.1:2222 with username vagrant and password vagrant. The PSU_MyInfo root directory is mapped to /vagrant
+in the VM. If for some reason you need to manually start Django's server with the runserver command, be sure to use 0.0.0.0:8000 so that it will accept
+pass-through connections from the host machine.
+
+As with all MyInfo configurations a secure_settings.ini file will need to be in the root directory before starting vagrant.
