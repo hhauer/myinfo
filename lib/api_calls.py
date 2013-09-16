@@ -149,9 +149,9 @@ def truename_email_aliases(identity):
     if settings.DEVELOPMENT == True:
         stub = [
             'Email Alias 1 - DEV',
-            'Odin Name 2 - DEV',
-            'Odin Name 3 - DEV',
-            'Odin Name 4 - DEV',
+            'Email Alias 2 - DEV',
+            'Email Alias 3 - DEV',
+            'Email Alias 4 - DEV',
         ]
         return stub
         
