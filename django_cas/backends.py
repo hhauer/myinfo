@@ -179,8 +179,7 @@ class CASBackend(object):
             user = User.objects.get(username=request.session['identity']['PSU_UUID'])
         except User.DoesNotExist:
             # user will have an "unusable" password
-            user = User.objects.create_user(request.session['identity']['PSU_UUID'], '')
-            user.save()
+            user = User.objects.create_user(request.session['identity']['PSU_UUID'], password=None)
         return user
 
     def get_user(self, user_id):

@@ -16,10 +16,6 @@ class AccountPickupBackend(object):
         if not id_number or not birth_date or not password:
             return None
         
-        # TODO: Clearly this is just meant for testing and should not make it to production.
-        if password == 'fail':
-            return None
-        
         success, identity = identifyAccountPickup(id_number, birth_date, password)
         if success:
             request.session['identity'] = identity
@@ -27,10 +23,10 @@ class AccountPickupBackend(object):
             return None
         
         try:
-            user = User.objects.get(username=id_number)
+            user = User.objects.get(username=identity['PSU_UUID'])
         except User.DoesNotExist:
             # user will have an "unusable" password
-            user = User.objects.create_user(id_number, '')
+            user = User.objects.create_user(identity['PSU_UUID'], password=None)
         return user
 
 
@@ -54,10 +50,10 @@ class ExpiredPasswordBackend(object):
             return None
 
         try:
-            user = User.objects.get(username=odin_username)
+            user = User.objects.get(username=identity['PSU_UUID'])
         except User.DoesNotExist:
             # user will have an "unusable" password
-            user = User.objects.create_user(odin_username, '')
+            user = User.objects.create_user(identity['PSU_UUID'], password=None)
         return user
 
     def get_user(self, userId):
@@ -80,8 +76,8 @@ class ForgotPasswordBackend(object):
         try:
             user = User.objects.get(username = psu_uuid)
         except User.DoesNotExist:
-            user = User.objects.create_user(psu_uuid, '')
-            user.save()
+            # user will have an "unusable" password
+            user = User.objects.create_user(psu_uuid, password=None)
         return user
     
     def get_user(self, userId):
