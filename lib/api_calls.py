@@ -81,15 +81,27 @@ def identifyAccountPickup(spriden_id, birthdate, password):
 
 # Identify a user with an expired password.
 def identifyExpiredPassword(username, password):
-    # TODO: Stubbed return (sailpoint rule context.authenticate)
-    stub = {
-        "PSU_UUID" : 'abc123',
-        "DISPLAY_NAME" : "John Smith",
-        "SPRIDEN_ID" : '123456789',
-        "ODIN_NAME" : 'jsmith5',
-        "EMAIL_ADDRESS" : "john.smith@pdx.edu",
+    if settings.DEVELOPMENT == True:
+        stub = {
+            "PSU_UUID" : username,
+            "DISPLAY_NAME" : "Development User",
+            "SPRIDEN_ID" : '123456789',
+            "ODIN_NAME" : 'jsmith5',
+            "EMAIL_ADDRESS" : "john.smith@pdx.edu",
+        }
+        
+        return (True, stub)
+    
+    data = {
+        'username': username,
+        'password': password,
     }
-    return (True, stub)
+    res = callSailpoint('PSU_UI_IDENTIFY_EXPIRED_PASS', data)
+    
+    if "ERROR" in res:
+        return (False, res)
+    else:
+        return (True, res)
 
 # This function turns a UDC_ID into the user's identity information like name.
 def identity_from_cas(udc_id):
@@ -171,9 +183,10 @@ def change_password(identity, new_password, old_password):
     
     if "Success" in status:
         return (True, "")
+    elif "Error" in status:
+        return (False, status["Error"])
     else:
         return (False, status["PasswordError"])
-    return (True, "")
 
 def launch_provisioning_workflow(identity, odin_name, email_alias):
     # TODO: Stubbed
@@ -182,6 +195,7 @@ def launch_provisioning_workflow(identity, odin_name, email_alias):
 # Send a password reset email or SMS.
 def password_reset(PSU_UUID, email, token, mode):
     if settings.DEVELOPMENT == True:
+        logger.debug("Password reset called with the following email: {0} and token: {1}".format(email, token))
         return # In development short-circuit the send call.
     
     data = {
