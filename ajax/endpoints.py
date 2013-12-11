@@ -1,7 +1,8 @@
+import json
+
 from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import simplejson as json
 from django.utils.encoding import smart_str
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.fields import FieldDoesNotExist

@@ -4,7 +4,7 @@ Created on Mar 25, 2013
 @author: hhauer
 '''
 from django.contrib.auth.models import User
-from lib.api_calls import identifyAccountPickup, identifyExpiredPassword, identity_from_psu_uuid
+from lib.api_calls import identifyAccountPickup, identify_oam_login, identity_from_psu_uuid
 
 import logging
 logger = logging.getLogger(__name__)
@@ -35,16 +35,15 @@ class AccountPickupBackend(object):
             return User.objects.get(pk=userId)
         except User.DoesNotExist:
             return None
-        
-# This class defines an authentication backend for bypassing CAS, used to auth during
-# password reset for an expired password.
-class ExpiredPasswordBackend(object):
-    def authenticate(self, request, odin_username=None, password=None):
-        if not odin_username or not password:
+
+# Generic front-page login handler for OAM. Passes the buck to Sailpoint.
+class OAMLoginBackend(object):
+    def authenticate(self, request, username=None, password=None):
+        if not username or not password:
             return None
         
-        success, identity = identifyExpiredPassword(odin_username, password)
-        if success:
+        identity = identify_oam_login(username, password)
+        if identity is not None:
             request.session['identity'] = identity
         else:
             return None

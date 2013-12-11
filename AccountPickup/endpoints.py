@@ -5,10 +5,7 @@ AJAX Endpoints
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
-from AccountPickup.forms import pickOdinName, EmailAliasForm
 from lib.api_calls import launch_provisioning_workflow
-
-from MyInfo.models import UserDataItem
 
 import logging
 logger = logging.getLogger(__name__)

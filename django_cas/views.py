@@ -6,7 +6,6 @@ from urlparse import urljoin
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.contrib import messages
 
 __all__ = ['login', 'logout']
 
@@ -30,17 +29,17 @@ def _redirect_url(request):
     set.
     """
 
-    next = request.GET.get(REDIRECT_FIELD_NAME)
-    if not next:
+    _next = request.GET.get(REDIRECT_FIELD_NAME)
+    if not _next:
         if settings.CAS_IGNORE_REFERER:
-            next = settings.CAS_REDIRECT_URL
+            _next = settings.CAS_REDIRECT_URL
         else:
-            next = request.META.get('HTTP_REFERER', settings.CAS_REDIRECT_URL)
+            _next = request.META.get('HTTP_REFERER', settings.CAS_REDIRECT_URL)
         prefix = (('http://', 'https://')[request.is_secure()] +
                   request.get_host())
-        if next.startswith(prefix):
-            next = next[len(prefix):]
-    return next
+        if _next.startswith(prefix):
+            _next = _next[len(prefix):]
+    return _next
 
 
 def _login_url(service):
@@ -69,8 +68,6 @@ def login(request, next_page=None, required=False):
     if not next_page:
         next_page = _redirect_url(request)
     if request.user.is_authenticated():
-        message = "You are logged in as %s." % request.user.username
-        messages.success(request, message)
         return HttpResponseRedirect(next_page)
     ticket = request.GET.get('ticket')
     service = _service_url(request, next_page)
@@ -79,9 +76,6 @@ def login(request, next_page=None, required=False):
         user = auth.authenticate(ticket=ticket, service=service, request=request)
         if user is not None:
             auth.login(request, user)
-            name = user.first_name or user.username
-            message = "Login succeeded. Welcome, %s." % name
-            messages.success(request, message)
             return HttpResponseRedirect(next_page)
         elif settings.CAS_RETRY_LOGIN or required:
             return HttpResponseRedirect(_login_url(service))

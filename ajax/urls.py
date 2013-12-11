@@ -1,4 +1,5 @@
-from django.conf.urls.defaults import *
+#from django.conf.urls.defaults import *
+from django.conf.urls import patterns
 from django.views.static import serve
 import os
 

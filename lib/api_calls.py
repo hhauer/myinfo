@@ -79,8 +79,8 @@ def identifyAccountPickup(spriden_id, birthdate, password):
     
     return final_result
 
-# Identify a user with an expired password.
-def identifyExpiredPassword(username, password):
+# Identify a user with an expired password. TODO: GENERIC OAM LOGIN
+def identify_oam_login(username, password):
     if settings.DEVELOPMENT == True:
         stub = {
             "PSU_UUID" : username,
@@ -88,9 +88,10 @@ def identifyExpiredPassword(username, password):
             "SPRIDEN_ID" : '123456789',
             "ODIN_NAME" : 'jsmith5',
             "EMAIL_ADDRESS" : "john.smith@pdx.edu",
+            "PSU_PUBLISH" : True
         }
         
-        return (True, stub)
+        return stub
     
     data = {
         'username': username,
@@ -99,9 +100,9 @@ def identifyExpiredPassword(username, password):
     res = callSailpoint('PSU_UI_IDENTIFY_EXPIRED_PASS', data)
     
     if "ERROR" in res:
-        return (False, res)
+        return None
     else:
-        return (True, res)
+        return res
 
 # This function turns a UDC_ID into the user's identity information like name.
 def identity_from_cas(udc_id):
@@ -192,16 +193,26 @@ def launch_provisioning_workflow(identity, odin_name, email_alias):
     # TODO: Stubbed
     return
 
-# Send a password reset email or SMS.
-def password_reset(PSU_UUID, email, token, mode):
+# Send a password reset email.
+def password_reset_email(PSU_UUID, email, token):
     if settings.DEVELOPMENT == True:
-        logger.debug("Password reset called with the following email: {0} and token: {1}".format(email, token))
+        logger.debug("password_reset_email called with the following email: {0} and token: {1}".format(email, token))
         return # In development short-circuit the send call.
     
     data = {
         'PSU_UUID': PSU_UUID,
         'email': email,
         'token': token,
-        'mode': mode,
     }
-    callSailpoint('PSU_UI_PASSWORD_REMINDER', data)
+    callSailpoint('PSU_UI_RESET_EMAIL', data)
+
+def password_reset_sms(number, token):
+    if settings.DEVELOPMENT == True:
+        logger.debug("password_reset_sms called with the following number: {0} and token: {1}".format(number, token))
+        return # In development short-circuit the send call.
+    
+    data = {
+    'sms_number': number,
+    'sms_reset_code': token,
+    }
+    callSailpoint('PSU_UI_RESET_SMS', data)

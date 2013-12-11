@@ -147,6 +147,7 @@ INSTALLED_APPS = (
     'ajax',
     'captcha',
     'widget_tweaks',
+    'localflavor',
     'south',
 )
 
