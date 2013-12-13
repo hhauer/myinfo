@@ -9,7 +9,6 @@ from lib.api_calls import password_reset_email, password_reset_sms
 from PasswordReset.forms import ResetRequestForm, ResetTokenForm
 from PasswordReset.models import TextMessageShortCode
 
-from MyInfo.forms import ReCaptchaForm
 from MyInfo.models import ContactInformation
 
 from brake.decorators import ratelimit
@@ -17,19 +16,15 @@ from brake.decorators import ratelimit
 import logging
 logger = logging.getLogger(__name__)
 
-@ratelimit(block = False, rate='5/m')
-@ratelimit(block = True, rate='10/h')
+@ratelimit(block = True, rate='10/m')
+@ratelimit(block = True, rate='50/h')
 def index(request):
     error_message = None
     reset_request = ResetRequestForm(request.POST or None)
     email_response = False
-    captcha = None
-    
-    if getattr(request, 'limited', False):
-        captcha = ReCaptchaForm(request.POST or None)
     
     try:
-        if reset_request.is_valid() and (captcha is None or captcha.is_valid()):
+        if reset_request.is_valid():
             if reset_request.cleaned_data['email'] != '':
                 user_data = ContactInformation.objects.get(alternate_email=reset_request.cleaned_data['email'])
                 email_response = True
@@ -55,17 +50,13 @@ def index(request):
         logger.info("service=myinfo email=" + reset_request.cleaned_data['email'] + " cell=" + reset_request.cleaned_data['cell'] + "error = \"Unable to identify.\"")
         error_message = "We were unable to find an identity that matched your information."
     
-    return render(request, 'PasswordReset/index.html', {'reset_request' : reset_request, 'error' : error_message, 'captcha' : captcha,})
+    return render(request, 'PasswordReset/index.html', {'reset_request' : reset_request, 'error' : error_message,})
 
 @ratelimit(block = False, rate='5/m')
 @ratelimit(block = True, rate='10/h')
 def reset(request, token=None):
     error_message = None
     signer = TimestampSigner()
-    captcha = None
-    
-    if getattr(request, 'limited', False):
-        captcha = ReCaptchaForm(request.POST or None)
         
     reset_token_form = ResetTokenForm(request.POST or None)
     
@@ -74,7 +65,7 @@ def reset(request, token=None):
         token = reset_token_form.cleaned_data['token']
     
     
-    if token is not None and (captcha is None or captcha.is_valid()):
+    if token is not None:
         encrypted_token = None
         # The token might be a shortcode. First try to look up a matching shortcode.
         try:
@@ -110,5 +101,5 @@ def reset(request, token=None):
             error_message = "There was an internal error. Please contact the helpdesk for support."
             logger.debug("Reached end of key signing attempt without an error message for token: {0}".format(token))
 
-    return render(request, 'PasswordReset/reset.html', {'reset_token_form' : reset_token_form, 'error' : error_message, 'reset_captcha' : captcha,})
+    return render(request, 'PasswordReset/reset.html', {'reset_token_form' : reset_token_form, 'error' : error_message,})
 

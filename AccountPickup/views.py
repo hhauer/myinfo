@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 
-from MyInfo.forms import ReCaptchaForm
 from MyInfo.models import ContactInformation
 
 from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm, ContactInformationWithOptOutForm
@@ -20,17 +19,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 # The index of this module performs a non-CAS login to the AccountPickup system.
-@ratelimit(block = False, rate='5/m')
-@ratelimit(block = True, rate='10/h')
+@ratelimit(block = True, rate='10/m')
+@ratelimit(block = True, rate='50/h')
 def index(request):
-    captcha = None
     error_message = ""
     form = AccountClaimLoginForm(request.POST or None)
-    
-    if getattr(request, 'limited', False):
-        captcha = ReCaptchaForm(request.POST or None)
         
-    if form.is_valid() and (captcha is None or captcha.is_valid()):
+    if form.is_valid():
         # For some reason they already have a session. Let's get rid of it and start fresh.
         if request.session is not None:
             request.session.flush()
@@ -52,7 +47,6 @@ def index(request):
     return render(request, 'AccountPickup/index.html', {
         'form' : form,
         'error' : error_message,
-        'captcha' : captcha,
     })
  
 # Acceptable use policy.

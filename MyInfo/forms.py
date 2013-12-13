@@ -1,6 +1,5 @@
 from django import forms
 from MyInfo.models import DirectoryInformation, ContactInformation
-from captcha.fields import ReCaptchaField
 
 import logging
 logger = logging.getLogger(__name__)
@@ -52,7 +51,3 @@ class DirectoryInformationForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField(label="Odin Username or PSU ID Number")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
-
-# reCAPTCHA validation.
-class ReCaptchaForm(forms.Form):
-    captcha = ReCaptchaField()

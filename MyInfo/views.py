@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 
 from lib.api_calls import passwordConstraintsFromIdentity, identity_from_psu_uuid
 
-from MyInfo.forms import formPasswordChange, formNewPassword, LoginForm, DirectoryInformationForm, ContactInformationForm, ReCaptchaForm
+from MyInfo.forms import formPasswordChange, formNewPassword, LoginForm, DirectoryInformationForm, ContactInformationForm
 from MyInfo.models import DirectoryInformation, ContactInformation
 
 from brake.decorators import ratelimit
@@ -15,17 +15,14 @@ from brake.decorators import ratelimit
 import logging
 logger = logging.getLogger(__name__)
 
-@ratelimit(block = False, rate='5/m')
-@ratelimit(block = True, rate='10/h')
+@ratelimit(block = True, rate='10/m')
+@ratelimit(block = True, rate='50/h')
 def index(request):
-    captcha = None
     login_form = LoginForm(request.POST or None)
     error_message = ""
     
-    if getattr(request, 'limited', False):
-        captcha = ReCaptchaForm(request.POST or None)
         
-    if login_form.is_valid() and (captcha is None or captcha.is_valid()):
+    if login_form.is_valid():
         # If for some reason they already have a session, let's get rid of it and start fresh.
         if request.session is not None:
             request.session.flush()
@@ -49,7 +46,6 @@ def index(request):
     return render(request, 'MyInfo/index.html', {
         'form' : login_form,
         'error' : error_message,
-        'captcha' : captcha,
     })
     
         

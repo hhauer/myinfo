@@ -1,37 +1,27 @@
-# Django settings for PSU_MyInfo project.
-
-# To keep certain information out of git, we move it to an ini file. The basic configuration
-# syntax is therefore available to be seen, but the specific values are retained out of git.
+# Basic settings for django. They should enable localhost-only development.
+# These settings are extended for actual production use.
 
 # Before go-live review: https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
-from ConfigParser import RawConfigParser
-config = RawConfigParser()
-config.read('secure_settings.ini')
+import os.path
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
+TEMPLATE_DEBUG = DEBUG = True
 # If development is set to true, all calls to Sailpoint are bypassed with stubbed returns.
 DEVELOPMENT = True
 
-ADMINS = tuple(config.items('adminmail'))
+ADMINS = ()
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE':   config.get('database', 'DATABASE_ENGINE'),
-        'NAME':     config.get('database', 'DATABASE_NAME'),
-        'USER':     config.get('database', 'DATABASE_USER'),
-        'PASSWORD': config.get('database', 'DATABASE_PASS'),
-        'HOST':     config.get('database', 'DATABASE_HOST'),
-        'PORT':     config.get('database', 'DATABASE_PORT'),
+        'ENGINE':   'django.db.backends.sqlite3',
+        'NAME':     'sqlite.db',
     }
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['.pdx.edu']
+# See https://docs.djangoproject.com/en/1.6/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = []
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -62,7 +52,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = config.get('static', 'STATIC_ROOT')
+STATIC_ROOT = '/var/www/oam_static/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -84,12 +74,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = config.get('secrets', 'SECRET_KEY')
-
-# Security
-
-# CSRF cookie is only sent on https connections.
-# CSRF_COOKIE_SECURE = True
+SECRET_KEY = 'developmentkey'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -110,7 +95,7 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'lib.backends.ExpiredPasswordBackend',
+    'lib.backends.OAMLoginBackend',
     'lib.backends.AccountPickupBackend',
     'lib.backends.ForgotPasswordBackend',
     'django_cas.backends.CASBackend',
@@ -123,12 +108,8 @@ ROOT_URLCONF = 'PSU_MyInfo.urls'
 WSGI_APPLICATION = 'PSU_MyInfo.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),
 )
-
-# It is possible that we will need to implement a cache solution for rate limiting.
 
 INSTALLED_APPS = (
     'longerusername', # This must be first so that it can patch the auth model.         
@@ -145,7 +126,6 @@ INSTALLED_APPS = (
     'lib',
     # Apps related to plugins.
     'ajax',
-    'captcha',
     'widget_tweaks',
     'localflavor',
     'south',
@@ -226,18 +206,13 @@ LOGGING = {
 }
 
 # Settings related to CAS authentication.
-CAS_SERVER_URL = config.get('cas', 'CAS_SERVER_URL')
-CAS_VERSION = config.get('cas', 'CAS_VERSION')
+CAS_SERVER_URL = ''
+CAS_VERSION = ''
 
 # Settings related to sailpoint.
-SAILPOINT_SERVER_URL = config.get('sailpoint', 'SAILPOINT_SERVER_URL')
-SAILPOINT_USERNAME = config.get('sailpoint', 'SAILPOINT_USERNAME')
-SAILPOINT_PASSWORD = config.get('sailpoint', 'SAILPOINT_PASSWORD')
-
-# Settings related to reCAPTCHA
-RECAPTCHA_USE_SSL = True
-RECAPTCHA_PUBLIC_KEY = config.get('recaptcha', 'RECAPTCHA_PUBLIC_KEY')
-RECAPTCHA_PRIVATE_KEY = config.get('recaptcha', 'RECAPTCHA_PRIVATE_KEY')
+SAILPOINT_SERVER_URL = ''
+SAILPOINT_USERNAME = ''
+SAILPOINT_PASSWORD = ''
 
 # Username length patch.
 MAX_USERNAME_LENGTH = 36
