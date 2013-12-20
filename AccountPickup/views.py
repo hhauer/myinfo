@@ -11,7 +11,7 @@ from MyInfo.models import ContactInformation
 from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm, ContactInformationWithOptOutForm
 from AccountPickup.models import OAMStatusTracker
 
-from lib.api_calls import truename_odin_names, truename_email_aliases, launch_provisioning_workflow
+from lib.api_calls import truename_odin_names, truename_email_aliases, launch_provisioning_workflow, identity_from_psu_uuid
 
 from brake.decorators import ratelimit
 
@@ -84,11 +84,14 @@ def contact_info(request):
     request.session['opt-out'] = False
     
     if form.is_valid():
-        request.session['opt-out'] = form.cleaned_data['opt_out']
-        form.save()
+        if form.cleaned_data['opt_out'] is True and form.cleaned_data['cell_phone'] is None and form.cleaned_data['alternate_email'] is None:
+            request.session['opt-out'] = True
+        else:
+            request.session['opt-out'] = form.cleaned_data['opt_out']
+            form.save()
         
-        oam_status.set_contact_info = True
-        oam_status.save()
+            oam_status.set_contact_info = True
+            oam_status.save()
         
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " password_reset=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
@@ -156,6 +159,9 @@ def provisioning_complete(request):
     oam_status.provisioned = True
     oam_status.save()
     
+    # Because identity values may have changed due to SP Provisioning, update our identity.
+    request.session['identity'] = identity_from_psu_uuid(request.session['identity']['PSU_UUID'])
+    
     return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
 @login_required(login_url=reverse_lazy('AccountPickup:index'))   
@@ -164,16 +170,26 @@ def oam_status_router(request):
     
     if oam_status.agree_aup is None:
         return HttpResponseRedirect(reverse('AccountPickup:aup'))
+    
     elif oam_status.select_names is False:
         return HttpResponseRedirect(reverse('AccountPickup:odin'))
-    elif oam_status.set_contact_info is False:
+    
+    # If they haven't set their contact_info and haven't opted out for the session, have them do that.
+    elif oam_status.set_contact_info is False and (not "opt-out" in request.session or request.session("opt-out") == False):
         return HttpResponseRedirect(reverse('AccountPickup:contact_info'))
+    
     elif oam_status.provisioned is False:
         return HttpResponseRedirect(reverse('AccountPickup:wait_for_provisioning'))
-    elif oam_status.set_directory is False:
+    
+    # The identity should be expected to exist and be loaded into the session for any user past provisioning.
+    
+    # Only identities with PSU_PUBLISH == True should be directed to set their identity information.
+    elif oam_status.set_directory is False and request.session['identity']['PSU_PUBLISH'] is True:
         return HttpResponseRedirect(reverse('MyInfo:set_directory', kwargs={'workflow_mode': True}))
+    
     elif oam_status.set_password is False:
         return HttpResponseRedirect(reverse('MyInfo:set_password', kwargs={'workflow_mode': True}))
+    
     else:
         # OAM has been completed. Dump them to MyInfo main page.
         return HttpResponseRedirect(reverse('MyInfo:set_password'))

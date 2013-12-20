@@ -183,7 +183,7 @@ def change_password(identity, new_password, old_password):
     status = callSailpoint('PSU_UI_UPDATE_PASSWORD', data)
     
     if "Success" in status:
-        return (True, "")
+        return (True, "Password changed succesfully.")
     elif "Error" in status:
         return (False, status["Error"])
     else:
