@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Contact Information{% endblock %}
+
+{% block body_content %}
+	<div class="containerTop2 grid flex col_12 column">
+	<div class="container grid">
+	
+		<div class="topLeftInfo center col_5">
+		{% if newStudent %}
+		Hello, Graham!
+		{% else %}
+		Hello, {{ identity.DISPLAY_NAME }}. <span style="float:right;"><a href="../../accounts/logout/">Logout</a></span>
+		{% endif %}
+		</div>
+		
+		<div class="col_1"></div>
+		<div class="col_1"></div>
+		
+		<div class="topRightInfo center col_5">
+		<div><span class="infolabel">Odin Username:</span> {{ identity.ODIN_NAME }}</div>
+			<div><span class="infolabel">PSU Email:</span> {{ identity.EMAIL_ADDRESS }}</div>
+			<div><span class="infolabel">ID Number:</span> {{ identity.ID_NUMBER }}</div>
+		</div>
+			
+	</div>
+</div>
+		<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody">
+			<div class="">
+				<div class="middleTabArea">
+				<ul class="tabs center">
+					<li class="tab1 disabled"><a href="#">Acceptable Use</a></li>
+					<li class="tab2 current"><a href="#">Password Reset</a></li>
+					<li class="tab3 disabled"><a href="#">Odin Username</a></li>
+				</ul>
+
+					<div id="tabc2" class="tab-content col_12 grid flex">
+						<div class="tabContent col_5 grid">
+							<input class="formField" id="id_alternate_email" name="email" type="text" placeholder="Email Address" /><br>
+							<input class="formField" id="id_cell_number" type="text" placeholder="-OR- Cell Phone #" />
+									{% if captcha %}
+									<div class="captcha">
+									{{ captcha.captcha }}
+									</div>
+									{% endif %}
+							<a class="resetSubmit" type="submit" value="Continue">Send Reset Code</a>
+						</div>
+				<div class="col_1"></div>		
+				<div class="passwordResetText grid col_6">In order to facilitate a password reset in the event that your password is ever lost or expired you must provide either a valid US cell phone # capable of receiving text messages, or an alternate (non-PSU) email address where we can send a password reset code.
+				<hr>
+				<p class="optOut">If you would like to opt out of the ability to reset  your password automatically (for example you do not have a non-PSU email or cell phone number,) you may select that option here. Please keep in mind that this will make it much harder to recover our account in the event that your password expires.
+							</p><a class="optOutLink" href="#">Opt Out</a>
+							
+				</div>
+			
+			</div>
+					
+					</div>
+					
+						
+				
+				</div>
+			</div>
+	</div>
+	</div>
+{% endblock %}

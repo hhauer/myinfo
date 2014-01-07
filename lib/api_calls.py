@@ -52,7 +52,8 @@ def identifyAccountPickup(spriden_id, birthdate, password):
         return (True, {
             'PSU_UUID': spriden_id,
             'DISPLAY_NAME': 'Development User',
-            'SPRIDEN_ID': spriden_id})
+            'SPRIDEN_ID': spriden_id,
+            'PSU_PUBLISH': True,})
 
     # Build our packet to send to sailpoint.
     data = {
@@ -88,7 +89,7 @@ def identify_oam_login(username, password):
             "SPRIDEN_ID" : '123456789',
             "ODIN_NAME" : 'jsmith5',
             "EMAIL_ADDRESS" : "john.smith@pdx.edu",
-            "PSU_PUBLISH" : True
+            "PSU_PUBLISH" : True,
         }
         
         return stub
@@ -113,6 +114,7 @@ def identity_from_cas(udc_id):
             "SPRIDEN_ID" : '123456789',
             "ODIN_NAME" : 'jsmith5',
             "EMAIL_ADDRESS" : "john.smith@pdx.edu",
+            "PSU_PUBLISH" : True,
         }
         
     data = {'UDC_ID': udc_id}
@@ -127,6 +129,7 @@ def identity_from_psu_uuid(psu_uuid):
             "SPRIDEN_ID" : '123456789',
             "ODIN_NAME" : 'jsmith5',
             "EMAIL_ADDRESS" : "john.smith@pdx.edu",
+            "PSU_PUBLISH" : True,
         }
         
     data = {'PSU_UUID': psu_uuid}
@@ -190,6 +193,7 @@ def change_password(identity, new_password, old_password):
         return (False, status["PasswordError"])
 
 def launch_provisioning_workflow(identity, odin_name, email_alias):
+    # email_alias can be 'None' (string) and should be converted to None (value) if so.
     # TODO: Stubbed
     return
 

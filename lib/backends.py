@@ -71,6 +71,7 @@ class ForgotPasswordBackend(object):
         # TODO: Might want to check it just to be sure, but low-priority.
         
         request.session['identity'] = identity_from_psu_uuid(psu_uuid)
+        logger.debug("service=myinfo psu_uuid=" + psu_uuid + " authenticate=passwordreset")
 
         try:
             user = User.objects.get(username = psu_uuid)

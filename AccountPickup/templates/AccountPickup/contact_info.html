@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Password Reset Information{% endblock %}
+
+{% block head_js %}
+	<script src="{% static "lib/js/jquery.validate.js" %}"></script>
+	
+	<script type="text/javascript">
+	$(function() {
+		$("#passwordResetForm").validate({
+			rules: {
+				alternate_email: "email",
+			},
+			errorPlacement: function(label, invalid) {
+				label.insertAfter(invalid);
+			}
+		});
+		
+		$("#opt_out_link").click(function() {
+			$("#id_opt_out").prop('value', true);
+			$("#passwordResetForm").submit();
+		});
+	});
+	</script>
+{% endblock %}
+
+
+{% block body_content %}
+<div class="containerTop2 grid flex col_12 column">
+	<div class="container grid">
+	
+		<div class="topLeftInfo center col_5">
+		Hello, Graham!
+		</div>
+		
+		<div class="col_1"></div>
+		<div class="col_1"></div>
+		
+		<div class="topRightInfo center col_5">
+		<strong>Odin Username:</strong> GrahamJohnson2<br>
+		<strong>PSU Email:</strong> GrahamJohnson2@pdx.edu<br>
+		<strong>ID Number:</strong> 123456789<br>
+		</div>	
+	</div>
+</div>
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody">
+		<div class="">
+			<div class="middleTabArea">
+				<ul class="tabs center">
+					<li class="tab1 disabled"><a href="#">Acceptable Use</a></li>
+					<li class="tab2 disabled"><a href="#">Odin Username</a></li>
+					<li class="tab3 current"><a href="#">Contact Information</a></li>
+				</ul>
+
+				<div id="tabc2" class="tab-content col_12 grid flex">
+					<div class="tabContent col_5 grid">
+						<form id="passwordResetForm" action="{% url 'AccountPickup:contact_info' %}" method="post">
+							{% csrf_token %}
+							{{ contact_form.non_field_errors }}
+							
+							{{ contact_form.alternate_email.label }}
+							<input class="formField" id="{{ contact_form.alternate_email.auto_id }}" name="{{ contact_form.alternate_email.name }}" type="text" /><br>
+							{{ contact_form.alternate_email.errors }}
+							
+							{{ contact_form.cell_phone.label }}
+							<input class="formField" id="{{ contact_form.cell_phone.auto_id }}" name="{{ contact_form.cell_phone.name }}" type="text" />
+							{{ contact_form.cell_phone.errors }}
+							
+							{{ opt_out_form.opt_out.as_hidden }}
+							
+							<input class="resetSubmit" type="submit" value="Set Contact Information" />
+						</form>
+					</div>
+					
+					<div class="col_1"></div>	
+						
+					<div class="passwordResetText grid col_6">In order to facilitate a password reset in the event that your password is ever lost or expired you must provide either a valid US cell phone # capable of receiving text messages, or an alternate (non-PSU) email address where we can send a password reset code.
+						<hr>
+						<p class="optOut">If you would like to opt out of the ability to reset  your password automatically (for example you do not have a non-PSU email or cell phone number,) you may select that option here. Please keep in mind that this will make it much harder to recover our account in the event that your password expires.
+						</p><a class="optOutLink" id="opt_out_link">Opt Out</a>		
+					</div>
+				</div>
+			</div>		
+		</div>
+	</div>
+</div>
+{% endblock %}

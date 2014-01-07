@@ -1,5 +1,5 @@
 from django.db import models
-from localflavor.us.models import PhoneNumberField, USPostalCodeField, USStateField
+from localflavor.us.models import PhoneNumberField, USStateField
 
 import logging
 logger = logging.getLogger(__name__)
@@ -22,18 +22,18 @@ class Department(models.Model):
 class DirectoryInformation(models.Model):
     COMPANY_CHOICES = (
         ('PSU', 'Portland State University'),
-        ('PSUF', 'Portland State University Foundation'),
+        ('PSUF', 'PSU Foundation'),
     )
     
     psu_uuid = models.CharField(unique=True, max_length=36, primary_key=True)
     
-    company = models.CharField(max_length=4, choices=COMPANY_CHOICES)
+    company = models.CharField(max_length=4, choices=COMPANY_CHOICES, null=True, blank=True)
     
     telephone = PhoneNumberField(null=True, blank=True)
     fax = PhoneNumberField(null=True, blank=True)
     
     job_title = models.CharField(max_length=50, blank=True)
-    department = models.ForeignKey(Department)
+    department = models.ForeignKey(Department, null=True, blank=True)
     office_building = models.CharField(max_length=50, blank=True)
     office_room = models.CharField(max_length=50, blank=True)
     
@@ -41,7 +41,8 @@ class DirectoryInformation(models.Model):
     street_address = models.CharField(max_length=150, blank=True)
     city = models.CharField(max_length=50, blank=True)
     state = USStateField(blank=True, null=True)
-    zip_code = USPostalCodeField(blank=True, null=True)
+    zip_code = models.CharField(max_length=10, null=True, blank=True)
+    
     
     def __unicode__(self):
         return self.psu_uuid

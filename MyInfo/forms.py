@@ -1,4 +1,7 @@
 from django import forms
+
+from localflavor.us.forms import USZipCodeField
+
 from MyInfo.models import DirectoryInformation, ContactInformation
 
 import logging
@@ -28,9 +31,11 @@ class formPasswordChange(formNewPassword):
 
 # Contact information used for resetting passwords.   
 class ContactInformationForm(forms.ModelForm):
+    zip_code = USZipCodeField()
+    
     class Meta:
         model = ContactInformation
-        include = ['cell_phone', 'alternate_email']
+        fields = ['cell_phone', 'alternate_email']
     
     # Verify that they did not use an @pdx.edu address in the external email field.
     def clean_alternate_email(self):
@@ -49,5 +54,5 @@ class DirectoryInformationForm(forms.ModelForm):
     
 # Main MyInfo login form.
 class LoginForm(forms.Form):
-    username = forms.CharField(label="Odin Username or PSU ID Number")
-    password = forms.CharField(label="Password", widget=forms.PasswordInput())
+    username = forms.CharField(max_length=32, label="Odin Username or PSU ID Number")
+    password = forms.CharField(max_length=32, label="Password", widget=forms.PasswordInput())

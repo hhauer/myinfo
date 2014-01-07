@@ -1,7 +1,7 @@
 {% extends "lib/base.html" %}
 {% load staticfiles %}
 
-{% block title %}MyInfo{% endblock %}
+{% block title %}MyInfo - Update Information - Set Password{% endblock %}
 
 {% block head_js %}
 	<script src="{% static "MyInfo/zxcvbn.js" %}"></script>
@@ -51,134 +51,93 @@
 	</script>
 {% endblock %}
 
-{% block header %}PSU - MyInfo{% endblock %}
+{% block header %}{% endblock %}
 
 {% block body_content %}
-	<div class="col_12">
+	<div class="containerTop2 grid flex col_12 column">
+	<div class="container grid">
+	
+		<div class="topLeftInfo center col_5">
 		{% if newStudent %}
-		<h4>Hello, {{ identity.DISPLAY_NAME }}. </h4>
+		Hello, Graham!
 		{% else %}
-		<h4>Hello, {{ identity.DISPLAY_NAME }}. <span style="float:right;"><a href="../../accounts/logout/">Logout</a></span></h4>
+		Hello, {{ identity.DISPLAY_NAME }}. <span style="float:right;"><a href="../../accounts/logout/">Logout</a></span>
 		{% endif %}
+		</div>
 		
+		<div class="col_1"></div>
+		<div class="col_1"></div>
 		
-		<div id="user-information">
-			<div><span class="infolabel">Odin Username:</span> {{ identity.ODIN_NAME }}</div>
+		<div class="topRightInfo center col_5">
+		<div><span class="infolabel">Odin Username:</span> {{ identity.ODIN_NAME }}</div>
 			<div><span class="infolabel">PSU Email:</span> {{ identity.EMAIL_ADDRESS }}</div>
 			<div><span class="infolabel">ID Number:</span> {{ identity.ID_NUMBER }}</div>
 		</div>
+			
+	</div>
+</div>
+		<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody">
+			
+				<div class="middleTabArea">
+				<ul class="tabs center">
+					<li class="tab1 current"><a href="#">Change Password</a></li>
+					<li class="tab2 disabled"><a href="#">Password Reset</a></li>
+					{% if PSUEmployeeForm %}<li class="tab3 disabled"><a href="#">Directory Information</a></li>{% endif %}
+				</ul>
 
-		<ul class="tabs left">
-			<li><a href="#passwordtab">Change Password</a></li>
-			<li><a href="#contacttab">Optional: Password Reset</a></li>
-			{% if PSUEmployeeForm %}<li><a href="#directorytab">Optional: Directory Information</a></li>{% endif %}
-		</ul>
-		
-		<div id="passwordtab" class="tab-content">
-			<form id="passwordForm" action="/ajax/MyInfo/update_password.json" method="post" class="ajaxform">
+					<div id="tabc1" class="tab-content col_12 grid flex">
+			<form action="/ajax/MyInfo/update_password.json" method="post" class="ajaxform">
 			{% csrf_token %}
-			{{ passwordForm.non_field_errors }}
-				<div class="col_5">
-					<fieldset>
-					{% for field in passwordForm %}
-					<div class="wide-input">
-						{{ field.label_tag }} {{ field }}
-						{{ field.errors }}
+			
+				<div class="tabContent grid col_5">
+					
+					
+					<div class="passwordReset2">
+						<input class="formField" id="id_newPassword" maxlength="32" name="newPassword" placeholder="New Password" type="password">
 					</div>
-					{% endfor %}
-					</fieldset>
+					<div class="passwordReset2">
+						<input class="formField" id="id_confirmPassword" maxlength="32" name="confirmPassword" placeholder="Confirm Password" type="password">
+					</div>
+					
+					
 					
 					{% if not newStudent %}
 					<div id="formInfo"><p>Your password expires on: {{ password_expiration }}</p></div>
 					{% endif %}
 					
-					<input id="password-button" type="submit" value="Update Password"/>
+					<input id="password-button" type="submit" class="resetSubmit" value="Update Password"/>
 					<span class="ajax-message"></span>
 				</div>
-				
-				<div class="col_7">
+					<div class="col_7 passwordStrength">
 					Passwords must meet the following requirements:
-					<ul>
-						<li id="lettercount" class="invalid">At least <strong>{{ password_rules.letter_count }}</strong> letters.</li>
-						<li id="numbercount" class="invalid">At least <strong>{{ password_rules.number_count }}</strong> numbers.</li>
-						<li id="specialcount" class="invalid">At least <strong>{{ password_rules.special_count }}</strong> special characters.</li>
-						<li id="totalcount" class="invalid">Between <strong>{{ password_rules.minimum_count }}</strong> and <strong>{{ password_rules.maximum_count }}</strong> total characters.</li>
-						<li id="password-same" class="invalid">The passwords must match.</li>
+					<ul class="pStrength">
+						<li id="lettercount" class="invalid"><p>At least <strong>{{ password_rules.letter_count }}</strong> letters.</p></li>
+						<li id="numbercount" class="invalid"><p>At least <strong>{{ password_rules.number_count }}</strong> numbers.</p></li>
+						<li id="specialcount" class="invalid"><p>At least <strong>{{ password_rules.special_count }}</strong> special characters.</p></li>
+						<li id="totalcount" class="invalid"><p>Between <strong>{{ password_rules.minimum_count }}</strong> and <strong>{{ password_rules.maximum_count }}</strong> total characters.</p></li>
+						<li id="password-same" class="invalid"><p>The passwords must match.</p></li>
 					</ul>
 					<h6>Your password strength is: </h6>
 					<div id="passwordbar"><div class="password-ttc"></div></div>
 				</div>
 			</form>
 		</div>
-		
-		<div id="contacttab"  class="tab-content">
-			<form id="passwordReset" action="/ajax/MyInfo/update_external_contact.json" method="post" class="ajaxform">
-			<fieldset>
-			<div class="wide-input">
-				{{ contactForm.alternate_email.label_tag }} {{ contactForm.alternate_email }}
-				<input type="image" src="/static/lib/images/cancel.png" class="deletebutton" value="{{ contactForm.alternate_email.html_name }}">
-			</div>
-			{{ contactForm.alternate_email.errors }}
-			
-			<div class="wide-input">
-				{{ contactForm.cell_number.label_tag }} {{ contactForm.cell_number }}
-				<input type="image" src="/static/lib/images/cancel.png" class="deletebutton" value="{{ contactForm.cell_number.html_name }}">
-			</div>
-			{{ contactForm.cell_number.errors }}
-			
-			<div class="wide-input">
-				{{ contactForm.cell_carrier.label_tag }} {{ contactForm.cell_carrier }}
-				<input type="image" src="/static/lib/images/cancel.png" class="deletebutton" value="{{ contactForm.cell_carrier.html_name }}">
-			</div>
-			</fieldset>
-			{{ contactForm.cell_carrier.errors }}
-			<input type="submit" value="Update" />
-			<span class="ajax-message"></span>
-			</form>
-			<p>If you would like to opt out of the ability to reset your password automatically (for example you do not
-			have a non-PSU email or cell phone,) you may select that option here. Please keep in mind that this will make it
-			much harder to recover your account in the event that your password expires.</p>
-			<label for="password-reset-optout">Opt Out</label><input type="checkbox" id="password-reset-optout" {{ checked }}/>
-		</div>
-		
-		{% if PSUEmployeeForm %}
-		<div id="directorytab" class="tab-content">
-				<form id="directoryInformation" action="/ajax/MyInfo/update_directory_information.json" method="post" class="ajaxform">
-				<fieldset>
-				<div class="wide-input">
-					{{ PSUEmployeeForm.job_title.label_tag }} {{ PSUEmployeeForm.job_title }}
-					<input type="image" src="/static/lib/images/cancel.png" class="deletebutton" value="{{ PSUEmployeeForm.job_title.html_name }}">
-				</div>
-				{{ PSUEmployeeForm.job_title.errors }}
-				
-				<div class="wide-input">
-					{{ PSUEmployeeForm.office_building.label_tag }} {{ PSUEmployeeForm.office_building }}
-					<input type="image" src="/static/lib/images/cancel.png" class="deletebutton" value="{{ PSUEmployeeForm.office_building.html_name }}">
-				</div>
-				{{ PSUEmployeeForm.office_building.errors }}
-				
-				<div class="wide-input">
-					{{ PSUEmployeeForm.office_room.label_tag }} {{ PSUEmployeeForm.office_room }}
-					<input type="image" src="/static/lib/images/cancel.png" class="deletebutton" value="{{ PSUEmployeeForm.office_room.html_name }}">
-				</div>
-				{{ PSUEmployeeForm.office_room.errors }}
-				
-				<div class="wide-input">
-					{{ PSUEmployeeForm.department.label_tag }} {{ PSUEmployeeForm.department }}
-					<input type="image" src="/static/lib/images/cancel.png" class="deletebutton" value="{{ PSUEmployeeForm.department.html_name }}">
-				</div>
-				{{ PSUEmployeeForm.department.errors }}
-				
-				</fieldset>
-				<input type="submit" value="Update" />
-				<span class="ajax-message"></span>
-				</form>
-		</div>
-		{% endif %}
-	</div>
-
-	<div class="ajax-wait-dialog" title="Please wait">
+		<div class="ajax-wait-dialog" title="Please wait">
 		<p>Please wait, your information is being updated.</p>
 		<div id="ajax-progressbar"></div>
+	</div>
+		
+					</div>
+					</div>
+					
+					</div>
+					</div>
+					</div>
+						
+				
+				</div>
+			</div>
+	</div>
 	</div>
 {% endblock %}

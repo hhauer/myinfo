@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Directory Information{% endblock %}
+
+{% block body_content %}
+<div class="containerTop2 grid flex col_12 column">
+	<div class="container grid">
+	
+		<div class="topLeftInfo center col_5">
+		Hello, {{ identity.DISPLAY_NAME }}.
+		</div>
+		
+		<div class="col_1"></div>
+		<div class="col_1"></div>
+		
+		<div id="user-information">
+			<div><span class="infolabel">Odin Username:</span> {{ identity.ODIN_NAME }}</div>
+			<div><span class="infolabel">PSU Email:</span> {{ identity.EMAIL_ADDRESS }}</div>
+			<div><span class="infolabel">ID Number:</span> {{ identity.ID_NUMBER }}</div>
+		</div>
+			
+	</div>
+</div>
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody">
+		<div class="">
+			<div class="middleTabArea">
+				<form id="directoryInformation" action="{% url 'MyInfo:set_directory' %}" method="post">
+					{% csrf_token %}
+					{{ form.non_field_errors }}
+					
+					{% if error %}
+					<ul class="errorlist">
+						<li class="first last">{{ error }}</li>
+					</ul>
+					{% endif %}
+					
+					{% for field in form %}
+					{{ field.errors }}
+					{{ field.label_tag }}
+					{{ field }}<br>
+					{% endfor %}
+					
+					<input type="submit" value="Submit">
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

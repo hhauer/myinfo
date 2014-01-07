@@ -1,0 +1,5 @@
+*.pyc
+*.db
+my_info_log.txt
+.vagrant
+nohup.out

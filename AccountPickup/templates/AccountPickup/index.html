@@ -1,4 +1,4 @@
-{% extends "lib/base.html" %}
+{% extends "base.html" %}
 {% load staticfiles %}
 
 {% block title %}Account Pickup{% endblock %}
@@ -35,53 +35,51 @@
 	</script>
 {% endblock %}
 
-{% block header %}Account Pickup - New User{% endblock %}
-
 {% block body_content %}
-	<div class="col_12">
-	<h4>Welcome to Account Pickup</h4>
-	
-	<p>Please enter your PSU ID number, birthday, and the password you received in the mail to get started.
-	You will be guided through the process of setting up you accounts and setting your initial password.
-	Please follow instructions carefully.</p>
-	
-	<form id="login-form" action="/AccountPickup/" method="post">
-	{% csrf_token %}
-	{{ form.non_field_errors }}
-	
-	{% if error %}
-	<div class="ui-state-error">{{ error }}</div>
-	{% endif %}
-			<fieldset>
-				<div class="wide-input">
-					{{ form.id_number.label_tag }} {{ form.id_number }}
-					{{ form.id_number.errors }}
-				</div>
-				
-				<div class="wide-input">
-					{{ form.birth_date.label_tag }} {{ form.birth_date }}
-					{{ form.birth_date.errors }}
-				</div>
-				
-				<div class="wide-input">
-					{{ form.auth_pass.label_tag }} {{ form.auth_pass }}
-					{{ form.auth_pass.errors }}
-				</div>
-				
-				<div>
-					<label for="showpass">Show password</label>
-					<input type="checkbox" onchange="tick(this)" id="showpass" style="margin-left: 0px"/>
-				</div>
-				
-				{% if captcha %}
-				<div class="captcha">
-				{{ captcha.captcha }}
-				</div>
-				{% endif %}
-			</fieldset>
-	
-	<input type="submit" value="Login to Account Pickup" />
-	</form>
+<div class="containerTop grid">
+	<div class="topBody grid center">
+		<h6 class="topBodyHeaderBold2">Welcome to Account Pickup</h6>
 	</div>
-	
+</div>
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+			<div class="col_6">
+				<div class="homeLeft center">
+					<h5>Login to your Odin Account</h5>
+					<form id="login-form" action="{% url 'AccountPickup:index' %}" method="post">
+						{% csrf_token %}
+						{{ form.non_field_errors }}
+						
+						{% if error %}
+						<div class="ui-state-error">{{ error }}</div>
+						{% endif %}
+						{% for field in form %}
+						{{ field.errors }}
+						{{ field.label_tag }}
+						{{ field }}<br>
+						{% endfor %}
+						
+						
+						<span>
+						<label for="showpass" style="display: inline-block;">Show Password:</label>
+						<input id="showpass" type="checkbox" onchange="tick(this)"/>
+						</span>
+						
+						
+						<br>
+						<input type="submit" value="Login to Account Pickup">
+					</form>
+				</div>
+			</div>
+			<div class="col_6">
+				<div class="homeRight center">
+					<h5 class="left">Getting Started</h5>
+					<p class="left">Please enter your PSU ID number, birthday, and the password you received in the mail to get started.
+	You will be guided through the process of setting up you accounts and setting your initial password.
+	Please follow instructions carefully.</p><br>
+				</div>
+			</div>
+	</div>
+</div>
 {% endblock %}
+{% block footer %}{% endblock %}

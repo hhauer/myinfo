@@ -1,1 +1,64 @@
-Stub.
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Your Accounts are Being Created{% endblock %}
+
+{% block head_js %}	
+	<script type="text/javascript">
+	$(function() {
+		$('#progressbar').progressbar({
+			value: false
+		});
+		
+		var checkStatus = function() {
+			$.ajax({
+				type: "POST",
+				url: '/ajax/AccountPickup/check_provisioning.json',
+				dataType: 'json',
+				success: function(data) {
+					if (data.data.complete != true) {
+						setTimeout(checkStatus, 3000);
+					} else {
+						// We've finished provisioning, time to move along.
+						window.location.replace('/AccountPickup/next');
+					}
+				}
+			});
+		};
+		
+		checkStatus();
+	});
+	</script>
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body_content %}
+<div class="containerTop2 grid flex col_12 column">
+	<div class="container grid">
+	
+		<div class="topLeftInfo center col_5">
+		Hello, {{ identity.DISPLAY_NAME }}!
+		</div>
+		
+		<div class="col_1"></div>
+		<div class="col_1"></div>
+		
+		<div class="topRightInfo center col_5">
+			<strong>ID Number:</strong> 123456789<br>
+		</div>
+			
+	</div>
+</div>
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody">
+		<div class="">
+			<div class="middleTabArea">
+				<p>Your accounts are currently being created. This can be a very long process. Please do not close your browser or use the back button.</p>
+				<div id="progressbar"></div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

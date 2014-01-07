@@ -50,7 +50,7 @@ def index(request):
         logger.info("service=myinfo email=" + reset_request.cleaned_data['email'] + " cell=" + reset_request.cleaned_data['cell'] + "error = \"Unable to identify.\"")
         error_message = "We were unable to find an identity that matched your information."
     
-    return render(request, 'PasswordReset/index.html', {'reset_request' : reset_request, 'error' : error_message,})
+    return render(request, 'PasswordReset/index.html', {'form' : reset_request, 'error' : error_message,})
 
 @ratelimit(block = False, rate='5/m')
 @ratelimit(block = True, rate='10/h')
@@ -83,7 +83,7 @@ def reset(request, token=None):
             
             if user is not None:
                 auth.login(request, user)
-                return HttpResponseRedirect(reverse('AccountPickup:oam_status_router'))
+                return HttpResponseRedirect(reverse('AccountPickup:next_step'))
             
             logger.error("service=myinfo psu_uuid={0} error=\"Password token decrypted succesfully but unable to authenticate.\"".format(psu_uuid))
             error_message = "There was an internal error. Please contact the helpdesk for support."
@@ -101,5 +101,5 @@ def reset(request, token=None):
             error_message = "There was an internal error. Please contact the helpdesk for support."
             logger.debug("Reached end of key signing attempt without an error message for token: {0}".format(token))
 
-    return render(request, 'PasswordReset/reset.html', {'reset_token_form' : reset_token_form, 'error' : error_message,})
+    return render(request, 'PasswordReset/verification.html', {'form' : reset_token_form, 'error' : error_message,})
 

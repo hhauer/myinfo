@@ -23,16 +23,19 @@ def index(request):
     login_form = LoginForm(request.POST or None)
     error_message = ""
     
+    logger.debug(request)
+    # The form attribute and CSRF stuff is now missing from the template.
         
     if login_form.is_valid():
         # If for some reason they already have a session, let's get rid of it and start fresh.
         if request.session is not None:
             request.session.flush()
             
+        logger.debug("OAM Login Attempt: {0}".format(login_form.cleaned_data['username']))
+            
         user = auth.authenticate(username=login_form.cleaned_data['username'],
                                  password=login_form.cleaned_data['password'],
                                  request=request)
-        logger.debug("OAM Login Attempt: {0}".format(login_form.cleaned_data['username']))
         
         if user is not None:
             #Identity is valid.
@@ -40,10 +43,12 @@ def index(request):
             logger.info("service=myinfo login_username=" + login_form.cleaned_data['username'] + " success=true")
             
             # Head to the oam status router in case they have any unmet oam tasks.
-            return HttpResponseRedirect(reverse("AccountPickup:oam_status_router"))
+            return HttpResponseRedirect(reverse("AccountPickup:next_step"))
         
         #If identity is invalid, prompt re-entry.
         error_message = "That identity was not found."
+    
+        #logger.debug("Error during login with username: {0} and password: {1}".format(login_form.cleaned_data["username"], login_form.cleaned_data["password"]))
     
     return render(request, 'MyInfo/index.html', {
         'form' : login_form,
@@ -95,8 +100,8 @@ def set_directory(request, workflow_mode = False):
     
     # Are they an employee with information to update?
     if request.session['identity']['PSU_PUBLISH'] == True:
-        directory_info, _ = DirectoryInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-        directory_info_form = DirectoryInformationForm(instance=directory_info, request.POST or None)
+        (directory_info, _) = DirectoryInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+        directory_info_form = DirectoryInformationForm(request.POST or None, instance=directory_info)
     else:
         return HttpResponseRedirect(reverse("AccountPickup:next_step")) # Shouldn't be here.
     
@@ -121,8 +126,8 @@ def set_contact(request):
     # version of this page. This is just for changing existing contact info.
     
     # Build our password reset information form.
-    contact_info = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-    contact_info_form = ContactInformationForm(instance=contact_info, request.POST or None)
+    (contact_info, _) = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+    contact_info_form = ContactInformationForm(request.POST or None, instance=contact_info)
     
     if contact_info_form.is_valid():
         # First check to see if they removed all their contact info.

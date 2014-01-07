@@ -102,10 +102,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-ROOT_URLCONF = 'PSU_MyInfo.urls'
+ROOT_URLCONF = 'oam_base.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'PSU_MyInfo.wsgi.application'
+WSGI_APPLICATION = 'oam_base.wsgi.application'
 
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),
@@ -207,7 +207,7 @@ LOGGING = {
 
 # Settings related to CAS authentication.
 CAS_SERVER_URL = ''
-CAS_VERSION = ''
+CAS_VERSION = '1'
 
 # Settings related to sailpoint.
 SAILPOINT_SERVER_URL = ''
