@@ -83,6 +83,9 @@ def reset(request, token=None):
             
             if user is not None:
                 auth.login(request, user)
+                
+                # If they logged in through PasswordReset then allow_cancel is false until they fall through the bottom of the OAM Status Router.
+                request.session['ALLOW_CANCEL'] = False
                 return HttpResponseRedirect(reverse('AccountPickup:next_step'))
             
             logger.error("service=myinfo psu_uuid={0} error=\"Password token decrypted succesfully but unable to authenticate.\"".format(psu_uuid))

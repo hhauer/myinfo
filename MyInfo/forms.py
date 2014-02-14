@@ -31,7 +31,6 @@ class formPasswordChange(formNewPassword):
 
 # Contact information used for resetting passwords.   
 class ContactInformationForm(forms.ModelForm):
-    zip_code = USZipCodeField()
     
     class Meta:
         model = ContactInformation

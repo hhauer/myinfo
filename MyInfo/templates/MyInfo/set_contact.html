@@ -4,65 +4,65 @@
 {% block title %}Contact Information{% endblock %}
 
 {% block body_content %}
-	<div class="containerTop2 grid flex col_12 column">
+<div class="containerTop2 grid flex col_12 column">
 	<div class="container grid">
 	
 		<div class="topLeftInfo center col_5">
-		{% if newStudent %}
-		Hello, Graham!
-		{% else %}
-		Hello, {{ identity.DISPLAY_NAME }}. <span style="float:right;"><a href="../../accounts/logout/">Logout</a></span>
-		{% endif %}
+		Hello, {{ identity.DISPLAY_NAME }}.
 		</div>
 		
 		<div class="col_1"></div>
 		<div class="col_1"></div>
 		
 		<div class="topRightInfo center col_5">
-		<div><span class="infolabel">Odin Username:</span> {{ identity.ODIN_NAME }}</div>
-			<div><span class="infolabel">PSU Email:</span> {{ identity.EMAIL_ADDRESS }}</div>
-			<div><span class="infolabel">ID Number:</span> {{ identity.ID_NUMBER }}</div>
+			<strong>Odin Username: </strong>{{ identity.ODIN_NAME }}<br>
+			<strong>PSU Email: </strong>{{ identity.EMAIL_ADDRESS }}<br>
+			<strong>ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
 		</div>
 			
 	</div>
 </div>
-		<div class="containerMiddle grid flex col_12 column">
-	<div class="middleBody">
-			<div class="">
-				<div class="middleTabArea">
-				<ul class="tabs center">
-					<li class="tab1 disabled"><a href="#">Acceptable Use</a></li>
-					<li class="tab2 current"><a href="#">Password Reset</a></li>
-					<li class="tab3 disabled"><a href="#">Odin Username</a></li>
-				</ul>
 
-					<div id="tabc2" class="tab-content col_12 grid flex">
-						<div class="tabContent col_5 grid">
-							<input class="formField" id="id_alternate_email" name="email" type="text" placeholder="Email Address" /><br>
-							<input class="formField" id="id_cell_number" type="text" placeholder="-OR- Cell Phone #" />
-									{% if captcha %}
-									<div class="captcha">
-									{{ captcha.captcha }}
-									</div>
-									{% endif %}
-							<a class="resetSubmit" type="submit" value="Continue">Send Reset Code</a>
-						</div>
-				<div class="col_1"></div>		
-				<div class="passwordResetText grid col_6">In order to facilitate a password reset in the event that your password is ever lost or expired you must provide either a valid US cell phone # capable of receiving text messages, or an alternate (non-PSU) email address where we can send a password reset code.
-				<hr>
-				<p class="optOut">If you would like to opt out of the ability to reset  your password automatically (for example you do not have a non-PSU email or cell phone number,) you may select that option here. Please keep in mind that this will make it much harder to recover our account in the event that your password expires.
-							</p><a class="optOutLink" href="#">Opt Out</a>
-							
-				</div>
-			
-			</div>
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+		<div class="col_6">
+			<div class="homeLeft center">
+			<h5>Change Contact Information</h5>
+				<form id="directoryInformation" action="{% url 'MyInfo:set_directory' %}" method="post">
+					{% csrf_token %}
+					{{ form.non_field_errors }}
 					
-					</div>
+					{% if error %}
+					<ul class="errorlist">
+						<li class="first last">{{ error }}</li>
+					</ul>
+					{% endif %}
 					
-						
-				
+					{% for field in form %}
+					{{ field.errors }}
+					{{ field.label_tag }}
+					{{ field }}<br>
+					{% endfor %}
+					
+					<input class="loginButton" type="submit" value="Submit">
+					
+
+				</form>
+				{% if allow_cancel %}
+					<a class="forgotPassword center" href="{% url 'MyInfo:pick_action' %}">Cancel</a>
+				{% endif %}
+			</div>
+		</div>
+		
+		<div class="col_6">
+				<div class="homeRight center">
+					<h5 class="left">Title</h5>
+					<p class="left" style="position:relative;top:10px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><br>
 				</div>
 			</div>
+		
 	</div>
-	</div>
+</div>
+{% endblock %}
+{% block footer %}{% if allow_cancel %}<a href="#">Logout</a>{% endif %}
 {% endblock %}

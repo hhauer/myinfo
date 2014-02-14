@@ -1,4 +1,13 @@
-body {font-size: 1.1em;}
+body {
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 24px;
+}
+
+* {
+	margin: 0;
+}
+
 h1, h2, h3, h4, h5, h6 {
 	font-family: 'source_sans_prolight', Helvetica, Arial, sans-serif;
 }
@@ -13,7 +22,6 @@ body, p, form {
 	font-family: 'source_sans_proregular', Helvetica, Arial, sans-serif;
 }
 
-
 html, body {
 	background-color: #eee1b5;
 	width: 100%;
@@ -21,7 +29,18 @@ html, body {
 	font-family: 'source_sans_proregular', Helvetica, Arial, sans-serif;
 }
 
+html {
+    height: 100%;
+   }
+   body {
+    height: 100%;
+   } 
+
 hr{clear:both;border-bottom:0;border-top:1px dotted #ffffff;border-right:0;border-left:0;margin:30px 0;min-height: 0px;height:1px;}
+
+a{
+	color: #b8c128;
+}
 
 @font-face {
     font-family: 'source_sans_probold';
@@ -35,9 +54,6 @@ hr{clear:both;border-bottom:0;border-top:1px dotted #ffffff;border-right:0;borde
 
 }
 
-
-
-
 @font-face {
     font-family: 'source_sans_prolight';
     src: url('/static/lib/fonts/sourcesanspro-light-webfont.eot');
@@ -48,9 +64,6 @@ hr{clear:both;border-bottom:0;border-top:1px dotted #ffffff;border-right:0;borde
     font-weight: normal;
     font-style: normal;
 }
-
-
-
 
 @font-face {
     font-family: 'source_sans_proregular';
@@ -79,19 +92,13 @@ hr{clear:both;border-bottom:0;border-top:1px dotted #ffffff;border-right:0;borde
 .containerBot {
 	background-color: #4d4f31;
 	margin: 0px auto;
-	position: fixed;
-	bottom: 0;
-	padding: 0px;
-	max-width: 100%;
-	padding: 10px;
-	padding: 0px;
 }
 
 .containerMiddle {
 	background: #eee1b5;
-	margin: 0px auto;
 	padding: 0px;
 	max-width: 100%;
+	position: relative;
 }
 
 .oamLogo {
@@ -136,7 +143,7 @@ header.header.col_12.column.grid.flex {
 }
 
 .containerTop2 {
-	background: url('/static/MyInfo/images/psuBackground.jpg') no-repeat;
+	background: url('/static/MyInfo/images/psuBackground.jpg') no-repeat center;
 	margin: 0px;
 	margin: 0px auto;
 	padding: 0px;
@@ -146,7 +153,8 @@ header.header.col_12.column.grid.flex {
 
 .topLeftInfo {
     background: #b0ba23;
-    padding: 40px 0px 40px 0px;
+    height: 105px;
+    padding: 37px 0px 40px 0px;
     margin: 0px;
     font-size: 20px;
 	border-radius: 9px;
@@ -155,13 +163,16 @@ header.header.col_12.column.grid.flex {
 
 .topRightInfo {
 	background: #b0ba23;
-	padding: 30px;
-    margin: 0px;
+	padding: 28px 20px;
+	/* padding-left: 10px; */
+	margin: 0px;
     font-size: 12px;
 	position: relative;
 	left: 28px;
 	border-radius: 9px;
-	text-align: left;
+	text-align: center;
+	height: 105px;
+	line-height: 16px;
 }
 
 .topRightInfoAup {
@@ -186,8 +197,6 @@ header.header.col_12.column.grid.flex {
 	float: none;
 	min-width: 980px;
 }
-
-
 
 .topBodyHeaderBold {
 	font-family: 'source_sans_probold', Helvetica, Arial, Sans-Serif;
@@ -220,18 +229,23 @@ header.header.col_12.column.grid.flex {
 
 .middleBody {
 	width: 980px;
-	margin-top: 10px;
 	color: #000000;
-	margin: 0px;
 	z-index: 0;
 	position: relative;
-	width: 980px;
-	margin: 0px auto;
+	margin: 0 auto;
+}
+
+.wrapper2 {
+	 min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -40x;
+	 margin-bottom: -64px;
 }
 
 
 .homeLeft {
-	margin: 90px 0px;
+	margin: 45px 0px;
 }
 
 .homeLeft h5 {
@@ -244,12 +258,12 @@ header.header.col_12.column.grid.flex {
 	font-size: 13px;
 	position: relative;
 	top: 10px;
-	color: #4c4f30;
+	color: #898A86;
 }
 
 
 .homeRight {
-	margin: 90px 0px;
+	margin: 45px 0px;
 }
 
 .homeRight p{
@@ -268,14 +282,16 @@ header.header.col_12.column.grid.flex {
 .optOutLink {
 	font-size: 12px;
 	color: #ffffff;	
+	position: relative;
+	/* right: 202px; */
 }
 
 .odinTextTop {
-	padding: 0px 0px 20px 0px;;
+	padding: 0px 0px 10px 0px;;
 }
 
 .odinTextBot {
-	padding: 20px 0px 10px 0px;;
+	padding: 10px 0px 10px 0px;;
 }
 
 .passwordResetText {
@@ -331,7 +347,7 @@ box-shadow: 0px 12px 5px -6px rgba(0,0,0,0.22);
 	margin: 0px 0px 25px 0px;
 }
 .greenBgLinks a{
-	color:#ffffff;
+	color: #585858;
 	/** text-decoration: none; **/
 }
 
@@ -373,7 +389,7 @@ label.checkbox1 {
 
 input#showpass.checkbox {
 	position: relative;
-	top: -20px;
+	top: -24px;
 	left: 4px;
 }
 
@@ -474,7 +490,8 @@ input.loginButton {
         padding:10px 20px;
         text-decoration:none;
         text-shadow:0px 1px 0px #a8a8a8;
-		padding: 12px 15px;
+		padding: 10px 15px;
+	margin-top: 15px;
 }
 
 
@@ -522,6 +539,18 @@ a.loginButton:active {
         top:1px;
 }
 
+.pickActionButton input{
+	width: 170px;
+	height: 40px;
+	font-size: 13px;
+	font-weight: 300;
+	font-family: 'source_sans_proregular', Helvetica, Arial, Sans-Serif;
+}
+
+.pickAction {
+	padding-left: 80px;
+}
+
 div.grid.flex.col_12.column.containerBot {
 	padding: 15px 0px;
 }
@@ -529,11 +558,12 @@ div.grid.flex.col_12.column.containerBot {
 .footer {
 	width: 980px;
 	font-size: 12px;
-	/* display: block; */
-	bottom: 0;
 	color: white;
-	margin: 0 auto;
-	/* padding: 10px 50px; */
+}
+
+.push,.footer2{
+	height: 30px;
+	clear: both;
 }
 
 div.footerLeft.grid.left {
@@ -550,7 +580,7 @@ div.footerRight.grid.right {
 
 div.footer.grid {
 	padding: 0px;
-	margin: 0px auto;
+	/* margin: 0px auto; */
 }
 
 .footer a{
@@ -559,9 +589,9 @@ div.footer.grid {
 }
 
 .copyRight {
-	border-right: 1px solid #b8c128;
+	/* border-right: 1px solid #b8c128; */
 	padding: 0px 10px 0px 0px;
-	margin-right: 7px;
+	/* margin-right: 7px; */
 }
 
 fieldset {
@@ -591,8 +621,9 @@ label {
 }
 
 div.wide-input input, select {
-	width: 15em;
+	width: 240px;
 	border: 1px solid #ccc;
+	margin-bottom: 15px;
 }
 
 div.wide-input input.deletebutton {
@@ -650,6 +681,19 @@ div.center {
 	background-color: 
 }
 
+.pickAction p{
+	padding-right: 20px;
+}
+
+.pickAction a{
+	text-decoration: none;
+	}
+
+.middleTabArea label {
+	position: relative;
+	left: -5px;
+}
+
 .tab-content {
 	background: #b8c128;
 	border: none;
@@ -674,8 +718,7 @@ div.center {
 ul.tabs li a:hover {
 	background:#b8c128;
 	color: #4c4f30;
-}
-	
+}	
 
 ul.tabs li a {
 	border: none;
@@ -738,7 +781,7 @@ ul.tabs li.disabled a{
 
 input#id_accepted.checkbox{
 	position:relative;
-	top: -21px;
+	top: -23px;
 	left: 70px;
 }
 
@@ -798,6 +841,10 @@ a.resetSubmit:active {
 /* Errorlist class is used by Django when form validation errors are output. */
 .errorlist {
 	color: #D2492A; /* PSU Red */
+	font-size: 13px;
+	line-height: 14px;
+	margin: 0;
+	padding: 5px 0;
 }
 
 .no-close .ui-dialog-titlebar-close {
@@ -890,8 +937,9 @@ label.checkbox1 {
 
 .topLeftInfo {
     background: #b0ba23;
-    padding: 40px 0px 40px 0px;
+    padding: 37px 0px 40px 0px;
     margin: 0px;
+    height: 105px;
     font-size: 20px;
     border-radius: 9px;
 }
@@ -905,6 +953,8 @@ label.checkbox1 {
 	left: 25px;
 	border-radius: 9px;
 	text-align: left;
+	/* padding-left: 60px; */
+	text-align: center;
 }
 
 .middleBody {
@@ -977,7 +1027,7 @@ img.oamLogo {
     font-size: 12px;
 	position: relative;
 	left: 0px;
-	text-align: left;
+	text-align: center;
 }
 
 .middleBody {
@@ -999,20 +1049,24 @@ img.oamLogo {
 	margin-top: 50px;
 }
 
+.pickAction {
+	padding-left: 0px;
+}
+
 }
 
 @media all and (max-width: 480px) {
 
 .topLeftInfo {
     background: #b0ba23;
-    padding: 20px 0px 20px 0px;
+    padding: 38px 0px;
     margin: 0px;
     font-size: 15px;
 }
 	
 .topRightInfo {
 	background: #b0ba23;
-	padding: 20px;
+	padding: 28px 30px;
     margin: 0px;
     font-size: 10px;
 	position: relative;
@@ -1068,6 +1122,10 @@ img.oamLogo {
 
 .passwordStrength {
 	margin-top: 50px;
+}
+
+.pickAction {
+	padding-left: 0px;
 }
 }
 

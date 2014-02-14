@@ -12,5 +12,7 @@ class OAMStatusTracker(models.Model):
     set_directory = models.BooleanField(default=False)
     provisioned = models.BooleanField(default=False)
     
+    welcome_displayed = models.BooleanField(default=False)
+    
     # Set to the time they last agreed to the AUP/Documents
     agree_aup = models.DateField(blank=True, null=True)

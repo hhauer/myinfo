@@ -41,6 +41,9 @@ def index(request):
             auth.login(request, user)
             logger.info("Account claim login success with ID: {0}".format(form.cleaned_data['id_number']))
             
+            # If they logged in through AccountPickup then allow_cancel is false until they fall through the bottom of the OAM Status Router.
+            request.session['ALLOW_CANCEL'] = False
+            
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
         #If identity is invalid, prompt re-entry.
         error_message = "That identity was not found."
@@ -68,6 +71,7 @@ def AUP(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/aup.html', {
+        'identity': request.session['identity'],
         'form' : form,
     })
     
@@ -110,6 +114,7 @@ def contact_info(request):
         logger.debug(request.POST)
     
     return render(request, 'AccountPickup/contact_info.html', {
+        'identity': request.session['identity'],
         'contact_form': contact_form,
         'opt_out_form': opt_out_form,
     })
@@ -144,6 +149,9 @@ def odinName(request):
         email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
         launch_provisioning_workflow(request.session['identity'], odin_name, email_alias)
         
+        request.session['identity']['ODIN_NAME'] = odin_name
+        request.session['identity']['EMAIL_ADDRESS'] = odin_name + "@pdx.edu"
+        
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odin_name + " email_alias=" + email_alias)
         
         oam_status.select_names = True
@@ -151,6 +159,7 @@ def odinName(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/odin_name.html', {
+        'identity': request.session['identity'],
         'odin_form' : odinForm,
         'mail_form' : mailForm,
     })
@@ -164,7 +173,9 @@ def wait_for_provisioning(request):
     if oam_status.provisioned is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
-    return render(request, 'AccountPickup/wait_for_provisioning.html')
+    return render(request, 'AccountPickup/wait_for_provisioning.html', {
+        'identity': request.session['identity'],
+    })
 
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def provisioning_complete(request):
@@ -198,8 +209,6 @@ def oam_status_router(request):
     elif oam_status.provisioned is False:
         return HttpResponseRedirect(reverse('AccountPickup:wait_for_provisioning'))
     
-    # The identity should be expected to exist and be loaded into the session for any user past provisioning.
-    
     # Only identities with PSU_PUBLISH == True should be directed to set their identity information.
     elif oam_status.set_directory is False and request.session['identity']['PSU_PUBLISH'] is True:
         return HttpResponseRedirect(reverse('MyInfo:set_directory'))
@@ -207,6 +216,9 @@ def oam_status_router(request):
     elif oam_status.set_password is False:
         return HttpResponseRedirect(reverse('MyInfo:set_password'))
     
+    elif oam_status.welcome_displayed is False:
+        return HttpResponseRedirect(reverse('MyInfo:welcome_landing'))
+    
     else:
         # OAM has been completed. Dump them to MyInfo main page.
-        return HttpResponseRedirect(reverse('MyInfo:set_password'))
+        return HttpResponseRedirect(reverse('MyInfo:pick_action'))

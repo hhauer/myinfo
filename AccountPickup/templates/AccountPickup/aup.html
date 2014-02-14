@@ -4,8 +4,6 @@
 {% block title %}Acceptable Use Policy{% endblock %}
 
 {% block head_js %}
-	<script src="{% static "lib/js/jquery.validate.js" %}"></script>
-	
 	<script type="text/javascript">
 	$(function() {
 		$('.disabled').click(function(ev) {
@@ -23,35 +21,27 @@
 	<div class="container grid">
 	
 		<div class="topLeftInfo center col_5">
-		Hello, Graham!
+		Hello, {{ identity.DISPLAY_NAME }}.
 		</div>
 		
 		<div class="col_1"></div>
 		<div class="col_1"></div>
 		
 		<div class="topRightInfo center col_5">
-			<strong>ID Number:</strong> 123456789<br>
+			<strong>ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
 		</div>
-			
 	</div>
 </div>
-		<div class="containerMiddle grid flex col_12 column">
-	<div class="middleBody">
-			<div class="">
-				<div class="middleTabArea">
-				<ul class="tabs center">
-					<li class="tab1 current"><a href="#">Acceptable Use</a></li>
-					<li class="tab2 disabled"><a href="#">Odin Username</a></li>
-					<li class="tab3 disabled"><a href="#">Contact Information</a></li>
-				</ul>
 
-					<div id="tabc1" class="tab-content">
-			<div id="aup" class="tab-content">
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody">
+		<div class="col_6 column">
+			<h5>Acceptable Use Policy</h5>
 				<p>Please read and review the following policies regarding the use of computing resources at PSU:
 				</p>
 			<ul class="greenBgLinks">
-				<li><a href="http://www.pdx.edu/oit/sites/www.pdx.edu.oit/files/Acceptable Use Policy.pdf" target="_blank">PSU Acceptable Use Policy</a></li>
-				<li><a href="http://www.pdx.edu/ogc/sites/www.pdx.edu.ogc/files/Email Communication Policy 1.29.13 SIGNED FINAL.pdf" target="_blank">PSU Email Communication Policy</a></li>
+				<li><a href="http://www.pdx.edu/oit/acceptable-use-policy" target="_blank">PSU Acceptable Use Policy</a></li>
+				<li><a href="http://www.pdx.edu/ogc/sites/www.pdx.edu.ogc/files/Email%20Communication%20Policy%201.29.13%20SIGNED%20FINAL.pdf" target="_blank">PSU Email Communication Policy</a></li>
 				<li><a href="http://www.pdx.edu/sites/www.pdx.edu.financial-services/files/BAO_rcap_web_policy.pdf" target="_blank">PSU Revoling Charge Account Plan Policy</a></li>
 			</ul>
 		
@@ -64,18 +54,15 @@
 				{{ form.accepted.label_tag }} {{ form.accepted }}
 				{{ form.accepted.errors }}
 			</div>
-		
-		
-		<input class="resetSubmit" type="submit" value="Continue" />
+		<input class="Submit" type="submit" value="Continue"/>
+		</div>
+		</div><div class="col_6"></div>
+		</div>
 		</form>
 		</div>
 					
-					</div>
 					
-						
-				
-				</div>
-			</div>
 	</div>
-	</div>
+{% endblock %}
+{% block footer %}
 {% endblock %}

@@ -38,14 +38,14 @@
 {% block body_content %}
 <div class="containerTop grid">
 	<div class="topBody grid center">
-		<h6 class="topBodyHeaderBold2">Welcome to Account Pickup</h6>
+		<h6 class="topBodyHeaderBold">Odin Account Manager</h6><h6 class="topBodyHeaderLight"> is the easy-to-use tool for managing your PSU computer account</h6>
 	</div>
 </div>
 <div class="containerMiddle grid flex col_12 column">
 	<div class="middleBody grid">
 			<div class="col_6">
 				<div class="homeLeft center">
-					<h5>Login to your Odin Account</h5>
+					<h5>Activate your Odin account</h5>
 					<form id="login-form" action="{% url 'AccountPickup:index' %}" method="post">
 						{% csrf_token %}
 						{{ form.non_field_errors }}
@@ -67,16 +67,14 @@
 						
 						
 						<br>
-						<input type="submit" value="Login to Account Pickup">
+						<input type="submit" value="Activate Account">
 					</form>
 				</div>
 			</div>
 			<div class="col_6">
 				<div class="homeRight center">
 					<h5 class="left">Getting Started</h5>
-					<p class="left">Please enter your PSU ID number, birthday, and the password you received in the mail to get started.
-	You will be guided through the process of setting up you accounts and setting your initial password.
-	Please follow instructions carefully.</p><br>
+					<p class="left" style="position:relative;top:10px;">Enter your PSU ID number, birth date, and the activation code you received in your admission letter or letter of offer. You will be guided through the process of setting up your accounts and setting your initial password. Please follow instructions carefully.</p><br>
 				</div>
 			</div>
 	</div>

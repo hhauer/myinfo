@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-{% block title %}Your Accounts are Being Created{% endblock %}
+{% block title %}Your Accounts Are Being Created{% endblock %}
 
 {% block head_js %}	
 	<script type="text/javascript">
@@ -45,14 +45,13 @@
 		<div class="col_1"></div>
 		
 		<div class="topRightInfo center col_5">
-			<strong>ID Number:</strong> 123456789<br>
-		</div>
-			
+			<strong>ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
+		</div>		
 	</div>
 </div>
 
 <div class="containerMiddle grid flex col_12 column">
-	<div class="middleBody">
+	<div class="middleBody grid">
 		<div class="">
 			<div class="middleTabArea">
 				<p>Your accounts are currently being created. This can be a very long process. Please do not close your browser or use the back button.</p>
@@ -61,4 +60,6 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
+{% block footer %}
 {% endblock %}

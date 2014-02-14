@@ -13,15 +13,6 @@
 		}
 	}
 	</script>
-	
-	<script type="text/javascript">
-	$(function() {
-		$('.disabled').click(function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-		});
-	});
-	</script>
 {% endblock %}
 
 {% block body_content %}
@@ -29,16 +20,14 @@
 	<div class="container grid">
 	
 		<div class="topLeftInfo center col_5">
-		Hello, Graham!
+		Hello, {{ identity.DISPLAY_NAME }}.
 		</div>
 		
 		<div class="col_1"></div>
 		<div class="col_1"></div>
 		
 		<div class="topRightInfo center col_5">
-		<strong>Odin Username:</strong> GrahamJohnson2<br>
-		<strong>PSU Email:</strong> GrahamJohnson2@pdx.edu<br>
-		<strong>ID Number:</strong> 123456789<br>
+			<strong>ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
 		</div>
 			
 	</div>
@@ -46,37 +35,28 @@
 
 <div class="containerMiddle grid flex col_12 column">
 	<div class="middleBody">
-		<div class="">
-			<div class="middleTabArea">
-				<ul class="tabs center">
-					<li class="tab1 disabled"><a href="#">Acceptable Use</a></li>
-					<li class="tab2 current"><a href="#">Odin Username</a></li>
-					<li class="tab3 disabled"><a href="#">Password Reset</a></li>
-
-				</ul>
-
-				<div id="tabc2" class="tab-content col_12 grid flex">
-					<div class="tabContent2 col_12 grid">
-						<p class="odinTextTop">Please select your Odin Username. This username will be used to log you into PSU's electronic systems. You will keep this username for the duration of your stay at PSU.</p>
+	<div class="col_6 left">
+			<h5>Choose your Odin Username</h5>
+						<p class="odinTextTop">Select your Odin username here. You will use your username to log into PSU's electronic systems. Your username will remain the same for the duration of your stay at PSU.</p>
 						<form id="provisionAccount" action="{% url 'AccountPickup:odin' %}" method="post">
 							{% csrf_token %}
 							{{ odin_form.name }}
-							<p class="odinTextBot">You may select an additional email alias. Your email will still be delivered to your primary PSU email inbox, but the address may be friendlier to read or remember than your Odin username.</p>
-							<p>Yes, I would like an email alias: <input type="checkbox" onchange="tick(this)" id="selectalias" class="checkbox2"></p>
+							<p class="odinTextBot">You may also select an email alias. An email alias is an alternative email address that you can use for the same mailbox. Email sent to your alias will be sent to your PSU Gmail inbox. Unlike your Odin username, your email alias can be more than 8 characters and can contain periods.</p>
+							<p style="margin-top:15px;">Yes, I would like an email alias: <input type="checkbox" onchange="tick(this)" id="selectalias" class="checkbox2"></p>
 							<div id="email-alias-hide" style="display: none;">
 								<div class="odinBottom">
 									<h6>Select Your Email Alias</h6>
 									{{ mail_form.alias }}
 								</div>
 							</div>
-							
-							<p><strong>Reminder:</strong> Portland State policy requires that you read the email sent to your PSU e-mail address on a regular basis.</p>
-							<input class="resetSubmit" type="submit" value="Continue">
+				
+							<p style="margin-top:20px;"><strong>Reminder:</strong>  PSU policy requires that you read the email sent to your PSU email address on a regular basis. It is your responsibility to check your inbox for important announcements and notifications.</p>
+							<input class="Submit" type="submit" value="Continue" style="margin-bottom:30px;">
 						</form>
 					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	</div><div class="col_6"></div>
 </div>				
 {% endblock %}
+{% block footer %}
+{% endblock %}
+

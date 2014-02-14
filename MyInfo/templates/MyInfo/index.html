@@ -9,14 +9,14 @@
 {% block body_content %}
 <div class="containerTop grid">
 	<div class="topBody grid center">
-		<h6 class="topBodyHeaderBold">Odin Account Manager</h6><h6 class="topBodyHeaderLight"> is the easy to use tool for managing your PSU computer account.</h6>
+		<h6 class="topBodyHeaderBold">Odin Account Manager</h6><h6 class="topBodyHeaderLight"> is the easy-to-use tool for managing your PSU computer account</h6>
 	</div>
 </div>
 <div class="containerMiddle grid flex col_12 column">
 	<div class="middleBody grid">
 			<div class="col_6">
 				<div class="homeLeft center">
-					<h5>Login to your Odin Account</h5>
+					<h5>Log in to your Odin account</h5>
 					
 					<form action="{% url 'MyInfo:index' %}" method="post">
 						{% csrf_token %}
@@ -37,18 +37,21 @@
 						<input class="loginButton" type="submit" value="Login">
 					</form>
 					<a class="forgotPassword" href="{% url 'PasswordReset:index' %}">Forgot your password?</a>
+					<br>
+					<a class="forgotPassword" href="{% url 'AccountPickup:index' %}">New? Activate Account</a>
 				</div>
 			</div>
 			<div class="col_6">
 				<div class="homeRight center">
-					<h5 class="left">New to PSU? Activate your Odin computer account!</h5>
-					<p class="left">Enter the PSU ID number and password you received when you were admitted as a student or began employment with Portland State. You will be guided through the process of resetting your password and activating your PSU Odin computer account. Follow the instructions carefully.</p><br>
+					<h5 class="left">Log In or Activate Your Account!</h5>
+					<p class="left" style="position:relative;top:8px;">If you've already activated your Odin account, enter your username and password to log in and manage your account.
+					<br><br>If you still need to activate your Odin account, select the "Activate Account" link to be guided through the account activation process.</p><br>
 				</div>
 			</div>
 	</div>
 </div>
 {% endblock %}
-{% block footer %}<a class="footerRightText" href="{% url 'CASLogin' %}">Login to CAS</a>{% endblock %}
+{% block footer %}<a class="footerRightText" href="{% url 'CASLogin' %}">Log in with PSU SSO</a>{% endblock %}
 
 
 

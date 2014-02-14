@@ -24,6 +24,7 @@
 	</head>
 
 	<body>
+		<div class="wrapper2">
 		<header class="header col_12 column grid flex">
 			<div class="container grid">
 				<div class="logo">
@@ -34,15 +35,18 @@
 		</header>
 		
 		{% block body_content %}{% endblock %}
-		
+		<div class="clear"></div>
+		</div>
+		<div class="footer2">
 		<div class="grid flex col_12 column containerBot">
 			<div class="footer grid">
 				<div class="footerLeft grid col_6 left column">
-					<a href="#" class="copyRight">©2013</a>  Need Help? Contact us. <a href="http://www.pdx.edu/oit/contact">http://www.pdx.edu/oit/contact</a>
+					<a href="#" class="copyRight">©2013</a> | <span style="margin-left:10px;">Need Help? <a href="http://www.pdx.edu/oit/contact" style="margin-left:5px;"> Contact us.</a></span>
 				</div>
 				
 				<div class="footerRight grid col_6 right column">
 					{% block footer %}{% endblock %}
+				</div>
 				</div>
 			</div>
 		</div>
