@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Your Accounts Are Ready{% endblock %}
+
+{% block body_content %}
+<div class="containerTop2 grid flex col_12 column">
+	<div class="container grid">
+	
+		<div class="topLeftInfo center col_5">
+		Hello, {{ identity.DISPLAY_NAME }}.
+		</div>
+		
+		<div class="col_1"></div>
+		<div class="col_1"></div>
+		
+		<div class="topRightInfo center col_5">
+			<strong>Odin Username: </strong>{{ identity.ODIN_NAME }}<br>
+			<strong>PSU Email: </strong>{{ identity.EMAIL_ADDRESS }}<br>
+			<strong>ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
+		</div>
+			
+	</div>
+</div>
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody center">
+			<div class="pickAction">
+			<div class="col_4 column center" style="text-align:left;padding-right:20px;">
+				<h5>Update Password</h5>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+				<div class="pickActionButton">
+				<a href="{% url 'MyInfo:set_password' %}"><input class="loginButton" type="submit" value="Update Password" style="margin-bottom:40px;"></a>
+				</div>
+			</div>
+			<div class="col_4 column center" style="text-align:left;padding-right:20px;">
+				<h5>Update Contact Information</h5>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+				<div class="pickActionButton">
+				<a href="{% url 'MyInfo:set_contact' %}"><input class="loginButton" type="submit" value="Update Contact Info" style="margin-bottom:40px;"></a>
+				</div>
+			</div>
+			<div class="col_4 column center" style="text-align:left;padding-right:20px;">
+				{% if identity.PSU_PUBLISH %}
+				<h5>Update Directory Information</h5>
+				<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+				<div class="pickActionButton">
+				<a href="{% url 'MyInfo:set_directory' %}"><input class="loginButton" type="submit" value="Update Directory Info" style="margin-bottom:40px;"></a>
+				</div>
+				{% endif %}
+			</div>
+			</div>
+		
+	</div>
+</div>
+{% endblock %}
+{% block footer %}{% if allow_cancel %}<a href="#">Logout</a>{% endif %}
+{% endblock %}

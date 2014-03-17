@@ -23,18 +23,5 @@ class EmailAliasForm(forms.Form):
         super(EmailAliasForm, self).__init__(*args, **kwargs)
         self.fields["alias"] = forms.ChoiceField(choices=names, label="Email Alias")
 
-class ContactInformationWithOptOutForm(ContactInformationForm):
+class ContactOptOutForm(forms.Form):
     opt_out = forms.BooleanField(required=False, label="Opt Out")
-    
-    def clean(self):
-        cleaned_data = super(ContactInformationWithOptOutForm, self).clean()
-        
-        email = cleaned_data.get("alternate_email")
-        cell_number = cleaned_data.get("cell_phone")
-        opt_out = cleaned_data.get('opt_out')
-        
-        
-        if opt_out is False and email =='' and cell_number == '':
-            raise forms.ValidationError('You must provide a valid password reset method or opt out of password resets.')
-        
-        return cleaned_data

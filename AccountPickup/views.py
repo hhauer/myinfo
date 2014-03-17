@@ -7,8 +7,9 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 
 from MyInfo.models import ContactInformation
+from MyInfo.forms import ContactInformationForm
 
-from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm, ContactInformationWithOptOutForm
+from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm, ContactOptOutForm
 from AccountPickup.models import OAMStatusTracker
 
 from lib.api_calls import truename_odin_names, truename_email_aliases, launch_provisioning_workflow, identity_from_psu_uuid
@@ -40,6 +41,9 @@ def index(request):
             auth.login(request, user)
             logger.info("Account claim login success with ID: {0}".format(form.cleaned_data['id_number']))
             
+            # If they logged in through AccountPickup then allow_cancel is false until they fall through the bottom of the OAM Status Router.
+            request.session['ALLOW_CANCEL'] = False
+            
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
         #If identity is invalid, prompt re-entry.
         error_message = "That identity was not found."
@@ -67,6 +71,7 @@ def AUP(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/aup.html', {
+        'identity': request.session['identity'],
         'form' : form,
     })
     
@@ -80,24 +85,38 @@ def contact_info(request):
     
     # Build our password reset information form.
     (contact_info, _) = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-    form = ContactInformationWithOptOutForm(request.POST or None, instance=contact_info)
+    contact_form = ContactInformationForm(request.POST or None, instance=contact_info)
+    opt_out_form = ContactOptOutForm(request.POST or None)
+    
     request.session['opt-out'] = False
     
-    if form.is_valid():
-        if form.cleaned_data['opt_out'] is True and form.cleaned_data['cell_phone'] is None and form.cleaned_data['alternate_email'] is None:
-            request.session['opt-out'] = True
-        else:
-            request.session['opt-out'] = form.cleaned_data['opt_out']
-            form.save()
+    # First we check to see if they opted-out, and if so we send them along.
+    if opt_out_form.is_valid() and opt_out_form.cleaned_data["opt_out"] is True:
+        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " opt_out=true")
+        request.session['opt-out'] = True
         
-            oam_status.set_contact_info = True
-            oam_status.save()
+        oam_status.set_contact_info = True
+        oam_status.save()
+        
+        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+    
+    # Next we check to see if they provided valid contact information, and if so we send them along.
+    if contact_form.is_valid():
+        contact_form.save()
+        
+        oam_status.set_contact_info = True
+        oam_status.save()
         
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " password_reset=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+    elif request.method == 'POST':
+        logger.debug(contact_info)
+        logger.debug(request.POST)
     
-    return render(request, 'AccountPickup/password_reset.html', {
-        'form': form,
+    return render(request, 'AccountPickup/contact_info.html', {
+        'identity': request.session['identity'],
+        'contact_form': contact_form,
+        'opt_out_form': opt_out_form,
     })
     
 # Select ODIN name
@@ -113,6 +132,9 @@ def odinName(request):
     # Get possible email aliases
     request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
     
+    # Prepend a "None" option at the start of the emails.
+    request.session['TRUENAME_EMAILS'].insert(0, 'None')
+    
     # Build our forms with choices from truename.
     odinForm = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
     mailForm = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
@@ -122,18 +144,22 @@ def odinName(request):
     mail_valid = mailForm.is_valid()
         
     if odin_valid and mail_valid:
-        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odinForm.cleaned_data['name'] + " email_alias=" + mailForm.cleaned_data['alias'])
-        
         # Send the information to sailpoint to begin provisioning.
         odin_name = request.session['TRUENAME_USERNAMES'][int(odinForm.cleaned_data['name'])]
         email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
         launch_provisioning_workflow(request.session['identity'], odin_name, email_alias)
+        
+        request.session['identity']['ODIN_NAME'] = odin_name
+        request.session['identity']['EMAIL_ADDRESS'] = odin_name + "@pdx.edu"
+        
+        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odin_name + " email_alias=" + email_alias)
         
         oam_status.select_names = True
         oam_status.save()
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/odin_name.html', {
+        'identity': request.session['identity'],
         'odin_form' : odinForm,
         'mail_form' : mailForm,
     })
@@ -147,7 +173,9 @@ def wait_for_provisioning(request):
     if oam_status.provisioned is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
-    return render(request, 'AccountPickup/wait_for_provisioning.html')
+    return render(request, 'AccountPickup/wait_for_provisioning.html', {
+        'identity': request.session['identity'],
+    })
 
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def provisioning_complete(request):
@@ -181,15 +209,16 @@ def oam_status_router(request):
     elif oam_status.provisioned is False:
         return HttpResponseRedirect(reverse('AccountPickup:wait_for_provisioning'))
     
-    # The identity should be expected to exist and be loaded into the session for any user past provisioning.
-    
     # Only identities with PSU_PUBLISH == True should be directed to set their identity information.
     elif oam_status.set_directory is False and request.session['identity']['PSU_PUBLISH'] is True:
-        return HttpResponseRedirect(reverse('MyInfo:set_directory', kwargs={'workflow_mode': True}))
+        return HttpResponseRedirect(reverse('MyInfo:set_directory'))
     
     elif oam_status.set_password is False:
-        return HttpResponseRedirect(reverse('MyInfo:set_password', kwargs={'workflow_mode': True}))
+        return HttpResponseRedirect(reverse('MyInfo:set_password'))
+    
+    elif oam_status.welcome_displayed is False:
+        return HttpResponseRedirect(reverse('MyInfo:welcome_landing'))
     
     else:
         # OAM has been completed. Dump them to MyInfo main page.
-        return HttpResponseRedirect(reverse('MyInfo:set_password'))
+        return HttpResponseRedirect(reverse('MyInfo:pick_action'))

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Your Accounts Are Ready{% endblock %}
+
+{% block body_content %}
+<div class="containerTop2 grid flex col_12 column">
+	<div class="container grid">
+	
+		<div class="topLeftInfo center col_5">
+		Hello, {{ identity.DISPLAY_NAME }}.
+		</div>
+		
+		<div class="col_1"></div>
+		<div class="col_1"></div>
+		
+		<div class="topRightInfo center col_5">
+			<strong>Odin Username: </strong>{{ identity.ODIN_NAME }}<br>
+			<strong>PSU Email: </strong>{{ identity.EMAIL_ADDRESS }}<br>
+			<strong>ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
+		</div>
+			
+	</div>
+</div>
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+		<div class="col_6">
+			<div class="homeLeft center">
+			<h5 style="text-align:left; padding-left:5px;">Weclome to PSU!</h5>
+			<p class="left" style="position:relative;top:10px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			</div>
+			</div>
+			
+			<div class="col_6">
+				<div class="homeRight center">
+							<h5 class="left">Title</h5>
+					<p class="left" style="position:relative;top:20px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+						<hr>
+						<p class="left">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br>
+						</p>
+					</div>
+				</div>
+				</div>
+				</div>
+			
+			
+			
+			
+{% endblock %}
+{% block footer %}
+{% endblock %}

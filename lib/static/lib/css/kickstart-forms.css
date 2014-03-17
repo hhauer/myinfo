@@ -80,22 +80,22 @@ display:inline-block;
 *display:inline;
 vertical-align: middle;
 width:auto;
-zoom:1;
+/* zoom:1; */
 margin:0;
 border:1px solid #ccc;
 font-size:1em;
 padding:5px 0;
 text-indent: 5px;
 -moz-border-radius:5px;
--webkit-border-radius:5px;
+/* -webkit-border-radius:5px; */
 border-radius:5px;
 background:#fff;
 -moz-box-shadow:inset 0px 0px 6px #ccc;
--webkit-box-shadow:inset 0px 1px 6px #ccc;
-box-shadow:inset 0px 1px 6px #ccc;
+/* -webkit-box-shadow:inset 0px 1px 6px #ccc; */
+/* box-shadow:inset 0px 1px 6px #ccc; */
 -moz-box-sizing: border-box;
 -webkit-box-sizing: border-box;
-box-sizing: border-box;
+/* box-sizing: border-box; */
 }
 
 	input::-webkit-input-placeholder,
@@ -125,7 +125,7 @@ box-sizing: border-box;
 	-webkit-box-shadow: 0 0 7px #6DB9FF;
 	-moz-box-shadow   : 0 0 7px #6DB9FF;
 	box-shadow        : 0 0 7px #6DB9FF;
-	border: 1px solid #50B1FE;
+	/* border: 1px solid #50B1FE; */
 	outline: none;
 	}
 	
@@ -137,9 +137,9 @@ box-sizing: border-box;
 	a,
 	input[type="file"]{
 	-moz-transition: -moz-box-shadow 0.5s, border 0.5s, background 0.5s;
-	-webkit-transition: -webkit-box-shadow 0.5s, border 0.5s, background 0.5s;
+	/* -webkit-transition: -webkit-box-shadow 0.5s, border 0.5s, background 0.5s; */
 	-o-transition:  box-shadow 0.5s, border 0.5s, background 0.5s;
-	transition: box-shadow 0.5s, border 0.5s, background 0.5s;
+	/* transition: box-shadow 0.5s, border 0.5s, background 0.5s; */
 	}
 
 input.checkbox,
