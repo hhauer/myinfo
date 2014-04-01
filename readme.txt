@@ -1,31 +1,39 @@
-To Install:
+# Installation on RHEL6 
+1) cd /var/www
+2) virtualenv --no-site-packages myinfo
+3) cd myinfo
+4) git clone myinfo
+5) git clone myinfo-config
+6) cd myinfo/oam_base
+7) ln -s /var/www/myinfo/myinfo-config/settings(?) ./
 
-Clone the repository into /var/www/myinfo/psu-myinfo
-Set up the virtualenv at /var/www/myinfo/myinfo-env
-Use pip to install python requirements into the environment.
+8) Edit manage.py to point to the correct settings file.
+9) Download oracle instant client and SDK headers.
+10) Unzip oracle parts into /var/www/myinfo
+11) Update /etc/sysconfig/httpd to set ORACLE_HOME and LD_LIBRARY_PATH to include oracle.
+12) Activate python virtualenv.
+13) Install requirements file.
+14) Manually install cx_oracle with pip.
+15) Reboot httpd.
 
-Create a user named "myinfo"
-Put secure_settings.ini in the myinfo user's home directory.
+16) [If necessary] create /var/log/myinfo.log and chown to myinfo:myinfo.
 
-Install the cx_Oracle 64-bit Centos5 for oracle 11g RPM.
-Install the oracle 64-bit 11g instantclient RPM.
-export ORACLE_HOME = /usr/lib/oracle/11.2/client64
-sudo echo "/usr/lib/oracle/11.2/client64/lib" > /etc/ld.so.conf.d/oracle.conf
-sudo ldconfig
-(cx_Oracle is now working in global python.)
-Copy the cx_Oracle.so out of the global python into the local environment. (As opposed to building from source, which is probably better but I never got it to work on my short deadline.)
+# Preparing the database
+1) Remove initial_data.json from the myinfo project folder.
+2) Run './manage.py syncdb' to create initial tables.
+3) Run './manage.py createcachetable CACHE_TABLE' to build the DB cache.
+4) Run './manage.py collectstatic' to build static files directory.
+
+5) Eventually run './manage.py createsuperuser' to create first admin user.
+* Username is a PSU_UUID as per the sailpoint instance MyInfo is pointing at.
 
 
-# sudo execstack -c /usr/lib/oracle/11.2/client64/lib/libnnz11.so
-# selinux /home/myinfo to allow httpd read.
-
-Create /etc/httpd/conf.d/psu-myinfo.conf with the following:
-
-============================= BELOW =============================
+###
+# Sample apache config for myinfo.
 # WSGI Config
-WSGIScriptAlias / /var/www/myinfo/psu-myinfo/PSU_MyInfo/wsgi.py
-WSGIDaemonProcess psu-myinfo python-path=/var/www/myinfo/myinfo-env:/var/www/myinfo/psu-myinfo user=myinfo group=myinfo
-WSGIProcessGroup psu-myinfo
+WSGIScriptAlias / /var/www/myinfo/myinfo/oam_base/wsgi.py
+WSGIDaemonProcess myinfo python-path=/var/www/myinfo/myinfo-env:/var/www/myinfo/lib/python2.6/site-packages user=myinfo group=myinfo
+WSGIProcessGroup myinfo
 
 <Directory /var/www/myinfo/psu-myinfo/PSU_MyInfo>
 <Files wsgi.py>
@@ -41,12 +49,7 @@ Alias /static/ /var/www/html/static/
 Order deny,allow
 Allow from all
 </Directory>
-============================= ABOVE =============================
 
--- Remove initial_data.json if not using vagrant for development. It will populate false data if left in place on a dev server.
--- Enable the python environment, then syncdb
--- The default admin username needs to be a PSU_UUID. If not readily available, replace it via SQLDeveloper.
--- Login to http://host/admin which should work via CAS. Add necessary data.
 
 ============================= VAGRANT ===========================
 
@@ -60,5 +63,3 @@ Once vagrant has booted fully MyInfo will be available at 127.0.0.1:8000/MyInfo/
 SSH to the vagrant server is available at 127.0.0.1:2222 with username vagrant and password vagrant. The PSU_MyInfo root directory is mapped to /vagrant
 in the VM. If for some reason you need to manually start Django's server with the runserver command, be sure to use 0.0.0.0:8000 so that it will accept
 pass-through connections from the host machine.
-
-As with all MyInfo configurations a secure_settings.ini file will need to be in the root directory before starting vagrant.
