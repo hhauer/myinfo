@@ -29,4 +29,4 @@ class ResetRequestForm(forms.Form):
         return cleaned_data
     
 class ResetTokenForm(forms.Form):
-    token = forms.CharField(label="Reset Token")
+    token = forms.CharField(label="Reset Code")

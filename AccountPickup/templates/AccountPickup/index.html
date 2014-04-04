@@ -8,27 +8,6 @@
 	<script src="{% static "lib/js/additional-methods.js" %}"></script>
 	
 	<script type="text/javascript">
-	$(function() {
-		$("#login-form").validate({
-			rules: {
-				id_number: {
-					required: true,
-					minlength: 9,
-					maxlength: 9,
-					number: true
-				},
-				birth_date: {
-					required: true,
-					dateUS: true
-				},
-				auth_pass: "required"
-			},
-			errorPlacement: function(label, invalid) {
-				label.insertAfter(invalid);
-			}
-		});
-	});
-	
 	function tick(el) {
 		$('#id_auth_pass').attr('type', el.checked ? 'text' : 'password');
 	}
@@ -45,7 +24,7 @@
 	<div class="middleBody grid">
 			<div class="col_6">
 				<div class="homeLeft center">
-					<h5>Activate your Odin account</h5>
+					<h5>Activate Your Odin account</h5>
 					<form id="login-form" action="{% url 'AccountPickup:index' %}" method="post">
 						{% csrf_token %}
 						{{ form.non_field_errors }}

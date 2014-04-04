@@ -5,27 +5,22 @@
 
 {% block head_js %}
 	<script type="text/javascript">
-	$(function() {
-		$('.disabled').click(function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-		});
-	});
+
 	</script>
 {% endblock %}
 
 {% block header %}{% endblock %}
 
 {% block body_content %}
-	<div class="containerTop2 grid flex col_12 column">
+<div class="containerTop2 grid flex col_12 column">
 	<div class="container grid">
 	
 		<div class="topLeftInfo center col_5">
 		Hello, {{ identity.DISPLAY_NAME }}.
 		</div>
 		
-		<div class="col_1"></div>
-		<div class="col_1"></div>
+		<div class="col_1"> </div>
+		<div class="col_1"> </div>
 		
 		<div class="topRightInfo center col_5">
 			<strong>ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
@@ -45,24 +40,20 @@
 				<li><a href="http://www.pdx.edu/sites/www.pdx.edu.financial-services/files/BAO_rcap_web_policy.pdf" target="_blank">PSU Revolving Charge Account Plan Policy</a></li>
 			</ul>
 		
-		<form id="aupForm" action="{% url 'AccountPickup:aup' %}" method="post">
-		{% csrf_token %}
-		{{ form.non_field_errors }}
-		
-		
-			<div>
-				{{ form.accepted.label_tag }} {{ form.accepted }}
-				{{ form.accepted.errors }}
-			</div>
-		<input class="Submit" type="submit" value="Continue"/>
+			<form id="aupForm" action="{% url 'AccountPickup:aup' %}" method="post">
+				{% csrf_token %}
+				{{ form.non_field_errors }}
+				
+				
+					<div>
+						{{ form.accepted.label_tag }} {{ form.accepted }}
+						{{ form.accepted.errors }}
+					</div>
+				<input class="Submit" type="submit" value="Continue"/>
+			</form>
 		</div>
-		</div><div class="col_6"></div>
-		</div>
-		</form>
-		</div>
-					
-					
-	</div>
+	</div><div class="col_6"> </div>
+</div>
 {% endblock %}
 {% block footer %}
 {% endblock %}

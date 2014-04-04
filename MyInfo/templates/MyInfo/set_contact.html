@@ -11,8 +11,8 @@
 		Hello, {{ identity.DISPLAY_NAME }}.
 		</div>
 		
-		<div class="col_1"></div>
-		<div class="col_1"></div>
+		<div class="col_1"> </div>
+		<div class="col_1"> </div>
 		
 		<div class="topRightInfo center col_5">
 			<strong>Odin Username: </strong>{{ identity.ODIN_NAME }}<br>
@@ -27,7 +27,7 @@
 	<div class="middleBody grid">
 		<div class="col_6">
 			<div class="homeLeft center">
-			<h5>Change Contact Information</h5>
+			<h5>Password Reset Information</h5>
 				<form id="directoryInformation" action="{% url 'MyInfo:set_directory' %}" method="post">
 					{% csrf_token %}
 					{{ form.non_field_errors }}
@@ -56,8 +56,10 @@
 		
 		<div class="col_6">
 				<div class="homeRight center">
-					<h5 class="left">Title</h5>
-					<p class="left" style="position:relative;top:10px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><br>
+					<h5 class="left">Password Reset</h5>
+					<p class="left" style="position:relative;top:10px;">
+						Providing your cell phone number and/or external (non-PSU) email address will allow you to use OAM’s self-service password reset features. In the event that you need to reset your password, an automated message will be sent to your email/phone with a reset code. 
+					</p><br>
 				</div>
 			</div>
 		

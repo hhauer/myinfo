@@ -533,6 +533,16 @@ a.loginButton:hover {
         background-color:#ccd62f;
 		color: #404040;
 }
+
+html input[disabled]:hover {
+	background-color: #b7c128;
+	color: #999;
+}
+
+html input[disabled] {
+	background-color: #b7c128;
+	color: #999;
+}
     
 a.loginButton:active {
         position:relative;

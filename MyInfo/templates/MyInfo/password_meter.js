@@ -2,15 +2,13 @@ $(document).ready(function() {
 	
 	window.lengthValid = false;
 	window.numberValid = false;
-	window.letterValid = false;
-	window.specialValid = false;
 	window.passwordSame = false;
 	
 	$('#id_newPassword').keyup(function() {
 		window.passwordSame = false;
 		var password = $(this).val();
 		
-		if( (password.length < {{ password_rules.minimum_count }}) || (password.length > {{ password_rules.maximum_count }}) ) {
+		if( (password.length < 8) || (password.length > 30) ) {
 			$('#totalcount').removeClass('valid').addClass('invalid');
 			window.lengthValid = false;
 		} else {
@@ -18,28 +16,12 @@ $(document).ready(function() {
 			window.lengthValid = true;
 		}
 		
-		if( (password.match(/\d/g) || [] ).length < {{ password_rules.number_count }} ) {
+		if( (password.match(/\d/g) || [] ).length < 1) {
 			$('#numbercount').removeClass('valid').addClass('invalid');
 			window.numberValid = false;
 		} else {
 			$('#numbercount').removeClass('invalid').addClass('valid');
 			window.numberValid = true;
-		}
-		
-		if( (password.match(/[a-zA-Z]/g) || [] ).length < {{ password_rules.letter_count }} ) {
-			$('#lettercount').removeClass('valid').addClass('invalid');
-			window.letterValid = false;
-		} else {
-			$('#lettercount').removeClass('invalid').addClass('valid');
-			window.letterValid = true;
-		}
-		
-		if( (password.match(/[\\\^\]\-~`!@#$%&*()[{};:'",.<>/?_=+|]/g) || [] ).length < {{ password_rules.special_count }} ) {
-			$('#specialcount').removeClass('valid').addClass('invalid');
-			window.specialValid = false;
-		} else {
-			$('#specialcount').removeClass('invalid').addClass('valid');
-			window.specialValid = true;
 		}
 		
 		var result = zxcvbn(password, []);
@@ -66,7 +48,7 @@ $(document).ready(function() {
 			window.passwordSame = true;
 		}
 		
-		if (window.lengthValid && window.numberValid && window.letterValid && window.specialValid && window.passwordSame) {
+		if (window.lengthValid && window.numberValid && window.passwordSame) {
 			$("#password-button").removeAttr("disabled");
 		} else {
 			$("#password-button").attr("disabled", "disabled");
@@ -74,7 +56,7 @@ $(document).ready(function() {
 	});
 	
 	$('#passwordForm').submit(function() {
-		if (window.lengthValid && window.numberValid && window.letterValid && window.specialValid && window.passwordSame) {
+		if (window.lengthValid && window.numberValid && window.passwordSame) {
 			return true;
 		} else {
 			return false;

@@ -13,7 +13,7 @@
 	<div class="middleBody grid">
 			<div class="col_6">
 				<div class="homeLeft center">
-					<h5>Request a password reset</h5>
+					<h5>Request a Password Reset</h5>
 					
 					<form action="{% url 'PasswordReset:reset_notoken' %}" method="post">
 						{% csrf_token %}
@@ -37,9 +37,9 @@
 			</div>
 			<div class="col_6">
 				<div class="homeRight center">
-					<h5 class="left">Please enter your verification code</h5>
+					<h5 class="left">Enter Your Reset Code</h5>
 					<p class="left">
-						Your verification code has been sent to you either by SMS or email. Please enter it here to proceed.
+						Your reset code has been sent to you either by SMS or email. Please enter it here to proceed.
 					</p><br>
 				</div>
 			</div>

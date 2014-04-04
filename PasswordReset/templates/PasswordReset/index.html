@@ -13,7 +13,7 @@
 	<div class="middleBody grid">
 			<div class="col_6">
 				<div class="homeLeft center">
-					<h5>Request a password reset</h5>
+					<h5>Request a Password Reset</h5>
 					
 					<form action="{% url 'PasswordReset:index' %}" method="post">
 						{% csrf_token %}
@@ -37,8 +37,10 @@
 			</div>
 			<div class="col_6">
 				<div class="homeRight center">
-					<h5 class="left">New to PSU? Activate your Odin computer account!</h5>
-					<p class="left">Enter the PSU ID number and password you received when you were admitted as a student or began employment with Portland State. You will be guided through the process of resetting your password and activating your PSU Odin computer account. Follow the instructions carefully.</p><br>
+					<h5 class="left">Reset Your Password</h5>
+					<p class="left">
+						Enter the external (non-PSU) email address or cell phone number that you provided when you set up your password recovery information. You will then receive the reset code needed to reset your password.
+					</p><br>
 				</div>
 			</div>
 	</div>
