@@ -487,10 +487,9 @@ input.loginButton {
         font-size:14px;
         font-weight:bold;
 		font-family: source_sans_proregular, helvetica, arial, sans-serif;
-        padding:10px 20px;
         text-decoration:none;
         text-shadow:0px 1px 0px #a8a8a8;
-		padding: 10px 15px;
+		/* padding: 10px 15px; */
 	margin-top: 15px;
 }
 
@@ -550,7 +549,7 @@ a.loginButton:active {
 }
 
 .pickActionButton input{
-	width: 170px;
+	width: 210px;
 	height: 40px;
 	font-size: 13px;
 	font-weight: 300;
