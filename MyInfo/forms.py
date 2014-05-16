@@ -35,6 +35,17 @@ class ContactInformationForm(forms.ModelForm):
     class Meta:
         model = ContactInformation
         fields = ['cell_phone', 'alternate_email']
+
+    def clean(self):
+        cleaned_data = super(ContactInformationForm, self).clean()
+
+        email = cleaned_data.get('alternate_email')
+        phone = cleaned_data.get('cell_phone')
+
+        if email == "" and phone == "":
+            raise forms.ValidationError("Must provide either an alternate email address or text-capable phone number.")
+
+        return cleaned_data
     
     # Verify that they did not use an @pdx.edu address in the external email field.
     def clean_alternate_email(self):

@@ -4,34 +4,15 @@
 {% block title %}Password Reset Information{% endblock %}
 
 {% block head_js %}
-	<script src="{% static "lib/js/jquery.validate.js" %}"></script>
-	
-	<script type="text/javascript">
-	$(function() {
-		$("#passwordResetForm").validate({
-			rules: {
-				alternate_email: "email",
-			},
-			errorPlacement: function(label, invalid) {
-				label.insertAfter(invalid);
-			}
-		});
-		
-		$("#opt_out_link").click(function() {
-			$("#id_opt_out").prop('value', true);
-			$("#passwordResetForm").submit();
-		});
-	});
-	</script>
 {% endblock %}
 
 
 {% block body_content %}
 <div class="containerTop2 grid flex col_12 column">
 	<div class="container grid">
-	
+
 		<div class="topLeftInfo center col_5">
-		Hello, {{ identity.DISPLAY_NAME }}.
+			Hello, {{ identity.DISPLAY_NAME }}.
 		</div>
 		
 		<div class="col_1"> </div>
@@ -40,48 +21,45 @@
 		<div class="topRightInfo center col_5">
 			<strong>ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
 		</div>
-			
+
 	</div>
 </div>
 
 <div class="containerMiddle grid flex col_12 column">
 	<div class="middleBody grid">
-			<div class="col_6 column">
-				<div class="homeLeft center">
+		<div class="col_6 column">
+			<div class="homeLeft center">
 				<h5 style="text-align:left; padding-left:5px;">Change Contact Information</h5>
 				<form id="passwordResetForm" action="{% url 'AccountPickup:contact_info' %}" method="post" style="text-align:left">
-							{% csrf_token %}
-							{{ contact_form.non_field_errors }}
-							
-							{{ contact_form.alternate_email.label }}<br>
-							<input class="formField" id="{{ contact_form.alternate_email.auto_id }}" name="{{ contact_form.alternate_email.name }}" type="text" style="text-align:left"/><br>
-							{{ contact_form.alternate_email.errors }}
-							
-							{{ contact_form.cell_phone.label }}<br>
-							<input class="formField" id="{{ contact_form.cell_phone.auto_id }}" name="{{ contact_form.cell_phone.name }}" type="text" style="text-align:left"/>
-							{{ contact_form.cell_phone.errors }}
-							
-							{{ opt_out_form.opt_out.as_hidden }}
-							<br>
-							<input class="Submit" type="submit" value="Continue" style="margin-top:20px;"/>
-						</form>
-					</div>	
-					</div>
-					
-					
-				<div class="col_6">
-				<div class="homeRight center">
-							<h5 class="left">Log In or Activate Your Account!</h5>
-					<p class="left" style="position:relative;top:10px;">In order to allow us to reset your password, in the event that it is ever forgotten or expired, you must provide either a valid US mobile phone number that is capable of receiving text messages or an alternate (non-PSU) email address to which we can send a password reset code.</p>
-						<hr>
-						<p class="left">If you would like to opt out of the ability to reset your password automatically (for instance, if you do not have a non-PSU email address or a mobile phone), you may select the opt out link below. Please keep in mind that this will make it much harder to regain access to your account if your password expires or is forgotten.<br>
-						<a class="optOutLink" id="opt_out_link" style="text-align:left">Click here to opt out</a></p>
-					</div>
-				</div>
-				</div>
-				</div>
-				
-			
+					{% csrf_token %}
+					{{ contact_form.non_field_errors }}
+
+					{{ contact_form.alternate_email.label }}<br>
+					<input class="formField" id="{{ contact_form.alternate_email.auto_id }}" name="{{ contact_form.alternate_email.name }}" type="text" style="text-align:left"/><br>
+					{{ contact_form.alternate_email.errors }}
+
+					{{ contact_form.cell_phone.label }}<br>
+					<input class="formField" id="{{ contact_form.cell_phone.auto_id }}" name="{{ contact_form.cell_phone.name }}" type="text" style="text-align:left"/>
+					{{ contact_form.cell_phone.errors }}
+
+					{{ opt_out_form.opt_out.as_hidden }}
+					<br>
+					<input class="Submit" type="submit" value="Continue" style="margin-top:20px;"/>
+				</form>
+			</div>	
+		</div>
+
+
+		<div class="col_6">
+			<div class="homeRight center">
+				<h5 class="left">Log In or Activate Your Account!</h5>
+				<p class="left" style="position:relative;top:10px;">In order to allow us to reset your password, in the event that it is ever forgotten or expired, you must provide either a valid US mobile phone number that is capable of receiving text messages or an alternate (non-PSU) email address to which we can send a password reset code.
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
+
 {% block footer %}
 {% endblock %}
