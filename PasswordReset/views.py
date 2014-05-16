@@ -11,6 +11,8 @@ from PasswordReset.models import TextMessageShortCode
 
 from MyInfo.models import ContactInformation
 
+from AccountPickup.models import OAMStatusTracker
+
 from brake.decorators import ratelimit
 
 import logging
@@ -83,9 +85,12 @@ def reset(request, token=None):
             
             if user is not None:
                 auth.login(request, user)
-                
-                # If they logged in through PasswordReset then allow_cancel is false until they fall through the bottom of the OAM Status Router.
-                request.session['ALLOW_CANCEL'] = False
+
+                # Now they need to reset their password.
+                (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+                oam_status.set_password = False
+                oam_status.save()
+
                 return HttpResponseRedirect(reverse('AccountPickup:next_step'))
             
             logger.error("service=myinfo psu_uuid={0} error=\"Password token decrypted succesfully but unable to authenticate.\"".format(psu_uuid))

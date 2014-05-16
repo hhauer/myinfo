@@ -41,9 +41,6 @@ def index(request):
             auth.login(request, user)
             logger.info("Account claim login success with ID: {0}".format(form.cleaned_data['id_number']))
             
-            # If they logged in through AccountPickup then allow_cancel is false until they fall through the bottom of the OAM Status Router.
-            request.session['ALLOW_CANCEL'] = False
-            
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
         #If identity is invalid, prompt re-entry.
         error_message = "That identity was not found."
@@ -195,6 +192,7 @@ def provisioning_complete(request):
 @login_required(login_url=reverse_lazy('AccountPickup:index'))   
 def oam_status_router(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    request.session['ALLOW_CANCEL']= False
     
     if oam_status.agree_aup is None:
         return HttpResponseRedirect(reverse('AccountPickup:aup'))
@@ -220,5 +218,6 @@ def oam_status_router(request):
         return HttpResponseRedirect(reverse('MyInfo:welcome_landing'))
     
     else:
+        request.session['ALLOW_CANCEL']= True
         # OAM has been completed. Dump them to MyInfo main page.
         return HttpResponseRedirect(reverse('MyInfo:pick_action'))
