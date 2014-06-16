@@ -56,26 +56,24 @@ def identifyAccountPickup(spriden_id, birthdate, password):
             'PSU_PUBLISH': True,})
 
     # Build our packet to send to sailpoint.
+    authpass = birthdate.replace('/', '') + password
     data = {
         "user_spriden_id" : spriden_id,
-        "user_dob" : birthdate,
-        "user_initpass" : password
+        "user_authpass" : authpass,
     }
     
     result = callSailpoint('PSU_UI_ACCOUNT_CLAIM_AUTH', data)
     
     # If any of our tests fail, auth fails. 
-    if result["DOB"] != "MATCH" or result["SPRIDEN_ID"] != "MATCH" or result["INITPASS"] != "MATCH":
-        logger.info("Account pickup authentication failed with the following response: {0}".format(result))
-        final_result = (False, None)
-    elif "ERROR" in result:
-        final_result = (False, None)
-        # TODO: Should this be logged?
+    if "ERROR" in result:
+        # Error was logged on the sailpoint side. Almost certainly an authentication error.
+        final_result = (False, result["ERROR"])
     else:
         final_result = (True, {
             "PSU_UUID": result["PSU_UUID"],
-            "DISPLAY_NAME": result["IDENTITY_DISPLAY_NAME"],
-            "SPRIDEN_ID": spriden_id
+            "DISPLAY_NAME": result["DISPLAY_NAME"],
+            "SPRIDEN_ID": result["SPRIDEN_ID"],
+            "PSU_PUBLISH": result["PSU_PUBLISH"],
         })
     
     return final_result
