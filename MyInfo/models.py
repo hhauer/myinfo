@@ -1,5 +1,7 @@
 from django.db import models
-from localflavor.us.models import PhoneNumberField, USStateField
+from localflavor.us.models import USStateField, PhoneNumberField
+
+from validators import validate_psu_phone
 
 import logging
 logger = logging.getLogger(__name__)
@@ -20,6 +22,7 @@ class Department(models.Model):
 
 # Buildings
 class Building(models.Model):
+    code = models.CharField(max_length=10, unique=True, primary_key=True)
     name = models.CharField(max_length=50, unique=True)
 
     def __unicode__(self):
@@ -37,10 +40,10 @@ class DirectoryInformation(models.Model):
     
     company = models.CharField(max_length=50, choices=COMPANY_CHOICES, null=True, blank=True, default="Portland State University")
     
-    telephone = PhoneNumberField(null=True, blank=True, help_text="Please use the format XXX-XXX-XXXX")
-    fax = PhoneNumberField(null=True, blank=True, help_text="Please use the format XXX-XXX-XXXX")
+    telephone = models.CharField(max_length=32, null=True, blank=True, validators=[validate_psu_phone])
+    fax = models.CharField(max_length=32, null=True, blank=True, validators=[validate_psu_phone])
     
-    job_title = models.CharField(max_length=50, null=True, blank=True)
+    job_title = models.CharField(max_length=255, null=True, blank=True)
     department = models.ForeignKey(Department, null=True, blank=True)
     office_building = models.ForeignKey(Building, null=True, blank=True)
     office_room = models.CharField(max_length=50, null=True, blank=True)
