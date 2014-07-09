@@ -46,41 +46,13 @@ def callSailpoint(link, data=None):
 
     return final_response or None
 
-# This function turns a 9num into the user's identity information like name.
+# For new users build their birthdate + activation code password and hand off to login.
 def identifyAccountPickup(spriden_id, birthdate, password):
-    if settings.DEVELOPMENT == True:
-        return (True, {
-            'PSU_UUID': spriden_id,
-            'DISPLAY_NAME': 'Development User',
-            'SPRIDEN_ID': spriden_id,
-            'PSU_PUBLISH': True,})
-
     # Build our packet to send to sailpoint.
-    data = {
-        "user_spriden_id" : spriden_id,
-        "user_dob" : birthdate,
-        "user_initpass" : password
-    }
-    
-    result = callSailpoint('PSU_UI_ACCOUNT_CLAIM_AUTH', data)
-    
-    # If any of our tests fail, auth fails. 
-    if result["DOB"] != "MATCH" or result["SPRIDEN_ID"] != "MATCH" or result["INITPASS"] != "MATCH":
-        logger.info("Account pickup authentication failed with the following response: {0}".format(result))
-        final_result = (False, None)
-    elif "ERROR" in result:
-        final_result = (False, None)
-        # TODO: Should this be logged?
-    else:
-        final_result = (True, {
-            "PSU_UUID": result["PSU_UUID"],
-            "DISPLAY_NAME": result["IDENTITY_DISPLAY_NAME"],
-            "SPRIDEN_ID": spriden_id
-        })
-    
-    return final_result
+    authpass = birthdate.replace('/', '') + password
+    return identify_oam_login(username, password)
 
-# Identify a user with an expired password. TODO: GENERIC OAM LOGIN
+# Identify a user with an expired password.
 def identify_oam_login(username, password):
     if settings.DEVELOPMENT == True:
         stub = {
@@ -98,27 +70,12 @@ def identify_oam_login(username, password):
         'username': username,
         'password': password,
     }
-    res = callSailpoint('PSU_UI_IDENTIFY_EXPIRED_PASS', data)
+    res = callSailpoint('PSU_UI_MYINFO_LOGIN_PASSWORD', data)
     
     if "ERROR" in res:
         return None
     else:
         return res
-
-# This function turns a UDC_ID into the user's identity information like name.
-def identity_from_cas(udc_id):
-    if settings.DEVELOPMENT == True:
-        return {
-            "PSU_UUID" : udc_id,
-            "DISPLAY_NAME" : "Development User - CAS",
-            "SPRIDEN_ID" : '123456789',
-            "ODIN_NAME" : 'jsmith5',
-            "EMAIL_ADDRESS" : "john.smith@pdx.edu",
-            "PSU_PUBLISH" : True,
-        }
-        
-    data = {'UDC_ID': udc_id}
-    return callSailpoint('PSU_UI_IDENTIFY_UDC_ID', data)
 
 # This function turns a PSU_UUID into the user's identity information like name.
 def identity_from_psu_uuid(psu_uuid):
