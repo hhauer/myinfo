@@ -28,7 +28,7 @@
 		<div class="col_6">
 			<div class="homeLeft center">
 			<h5>Password Reset Information</h5>
-				<form id="directoryInformation" action="{% url 'MyInfo:set_directory' %}" method="post">
+				<form id="directoryInformation" action="{% url 'MyInfo:set_contact' %}" method="post">
 					{% csrf_token %}
 					{{ form.non_field_errors }}
 					
@@ -66,5 +66,5 @@
 	</div>
 </div>
 {% endblock %}
-{% block footer %}{% if allow_cancel %}<a href="#">Logout</a>{% endif %}
+{% block footer %}{% if allow_cancel %}<a href="/accounts/logout/">Logout</a>{% endif %}
 {% endblock %}

@@ -1,10 +1,13 @@
 from django.db import models
-from localflavor.us.models import PhoneNumberField, USStateField
+from localflavor.us.models import USStateField, PhoneNumberField
+
+from validators import validate_psu_phone
 
 import logging
 logger = logging.getLogger(__name__)
 
-class MailCode(models.Model):
+# PSU Mailcode
+class Mailcode(models.Model):
     code = models.CharField(max_length=255, unique=True)
     
     def __unicode__(self):
@@ -12,8 +15,16 @@ class MailCode(models.Model):
 
 # For departmental dropdown choices.
 class Department(models.Model):
-    name = models.CharField(unique=True, max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     
+    def __unicode__(self):
+        return self.name
+
+# Buildings
+class Building(models.Model):
+    code = models.CharField(max_length=10, unique=True, primary_key=True)
+    name = models.CharField(max_length=50, unique=True)
+
     def __unicode__(self):
         return self.name
     
@@ -21,27 +32,27 @@ class Department(models.Model):
 # all fields except psu_uuid are to be rendered and editable.
 class DirectoryInformation(models.Model):
     COMPANY_CHOICES = (
-        ('PSU', 'Portland State University'),
-        ('PSUF', 'PSU Foundation'),
+        ('Portland State University', 'Portland State University'),
+        ('Portland State University Foundation', 'PSU Foundation'),
     )
     
     psu_uuid = models.CharField(unique=True, max_length=36, primary_key=True)
     
-    company = models.CharField(max_length=4, choices=COMPANY_CHOICES, null=True, blank=True)
+    company = models.CharField(max_length=50, choices=COMPANY_CHOICES, null=True, blank=True, default="Portland State University")
     
-    telephone = PhoneNumberField(null=True, blank=True)
-    fax = PhoneNumberField(null=True, blank=True)
+    telephone = models.CharField(max_length=32, null=True, blank=True, validators=[validate_psu_phone])
+    fax = models.CharField(max_length=32, null=True, blank=True, validators=[validate_psu_phone])
     
-    job_title = models.CharField(max_length=50, blank=True)
+    job_title = models.CharField(max_length=255, null=True, blank=True)
     department = models.ForeignKey(Department, null=True, blank=True)
-    office_building = models.CharField(max_length=50, blank=True)
-    office_room = models.CharField(max_length=50, blank=True)
+    office_building = models.ForeignKey(Building, null=True, blank=True)
+    office_room = models.CharField(max_length=50, null=True, blank=True)
     
-    psu_mail_code = models.ForeignKey(MailCode, null=True, blank=True)
-    street_address = models.CharField(max_length=150, blank=True)
-    city = models.CharField(max_length=50, blank=True)
-    state = USStateField(blank=True, null=True)
-    zip_code = models.CharField(max_length=10, null=True, blank=True)
+    mail_code = models.ForeignKey(Mailcode, null=True, blank=True)
+    street_address = models.CharField(max_length=150, null=True, blank=True, default="1825 SW Broadway")
+    city = models.CharField(max_length=50, null=True, blank=True, default="Portland")
+    state = USStateField(blank=True, null=True, default="OR")
+    zip_code = models.CharField(max_length=10, null=True, blank=True, default="97201")
     
     
     def __unicode__(self):
@@ -53,6 +64,6 @@ class ContactInformation(models.Model):
     
     cell_phone = PhoneNumberField(blank=True, null=True)
     alternate_email = models.EmailField(max_length=254, blank=True, null=True)
-    
-    
- 
+
+    def __unicode__(self):
+        return self.psu_uuid

@@ -22,9 +22,6 @@ logger = logging.getLogger(__name__)
 def index(request):
     login_form = LoginForm(request.POST or None)
     error_message = ""
-    
-    logger.debug(request)
-    # The form attribute and CSRF stuff is now missing from the template.
         
     if login_form.is_valid():
         # If for some reason they already have a session, let's get rid of it and start fresh.
@@ -59,10 +56,10 @@ def index(request):
 # This serves as a navigation menu.
 @login_required(login_url=reverse_lazy('MyInfo:index'))
 def pick_action(request):
-    request.session['ALLOW_CANCEL']= True
     
     return render(request, 'MyInfo/pick_action.html', {
         'identity': request.session['identity'],
+        'allow_cancel': request.session['ALLOW_CANCEL'],
     })
     
 @login_required(login_url=reverse_lazy('MyInfo:index'))

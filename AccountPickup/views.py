@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from MyInfo.models import ContactInformation
 from MyInfo.forms import ContactInformationForm
 
-from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm, ContactOptOutForm
+from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm
 from AccountPickup.models import OAMStatusTracker
 
 from lib.api_calls import truename_odin_names, truename_email_aliases, launch_provisioning_workflow, identity_from_psu_uuid
@@ -40,9 +40,6 @@ def index(request):
             #Identity is valid.
             auth.login(request, user)
             logger.info("Account claim login success with ID: {0}".format(form.cleaned_data['id_number']))
-            
-            # If they logged in through AccountPickup then allow_cancel is false until they fall through the bottom of the OAM Status Router.
-            request.session['ALLOW_CANCEL'] = False
             
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
         #If identity is invalid, prompt re-entry.
@@ -86,21 +83,8 @@ def contact_info(request):
     # Build our password reset information form.
     (contact_info, _) = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     contact_form = ContactInformationForm(request.POST or None, instance=contact_info)
-    opt_out_form = ContactOptOutForm(request.POST or None)
     
-    request.session['opt-out'] = False
-    
-    # First we check to see if they opted-out, and if so we send them along.
-    if opt_out_form.is_valid() and opt_out_form.cleaned_data["opt_out"] is True:
-        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " opt_out=true")
-        request.session['opt-out'] = True
-        
-        oam_status.set_contact_info = True
-        oam_status.save()
-        
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-    
-    # Next we check to see if they provided valid contact information, and if so we send them along.
+    # Did they provide valid contact information, if so we send them along.
     if contact_form.is_valid():
         contact_form.save()
         
@@ -116,7 +100,6 @@ def contact_info(request):
     return render(request, 'AccountPickup/contact_info.html', {
         'identity': request.session['identity'],
         'contact_form': contact_form,
-        'opt_out_form': opt_out_form,
     })
     
 # Select ODIN name
@@ -195,6 +178,7 @@ def provisioning_complete(request):
 @login_required(login_url=reverse_lazy('AccountPickup:index'))   
 def oam_status_router(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    request.session['ALLOW_CANCEL']= False
     
     if oam_status.agree_aup is None:
         return HttpResponseRedirect(reverse('AccountPickup:aup'))
@@ -203,7 +187,7 @@ def oam_status_router(request):
         return HttpResponseRedirect(reverse('AccountPickup:odin'))
     
     # If they haven't set their contact_info and haven't opted out for the session, have them do that.
-    elif oam_status.set_contact_info is False and (not "opt-out" in request.session or request.session("opt-out") == False):
+    elif oam_status.set_contact_info is False:
         return HttpResponseRedirect(reverse('AccountPickup:contact_info'))
     
     elif oam_status.provisioned is False:
@@ -220,5 +204,6 @@ def oam_status_router(request):
         return HttpResponseRedirect(reverse('MyInfo:welcome_landing'))
     
     else:
+        request.session['ALLOW_CANCEL']= True
         # OAM has been completed. Dump them to MyInfo main page.
         return HttpResponseRedirect(reverse('MyInfo:pick_action'))
