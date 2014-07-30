@@ -8,7 +8,7 @@ from django.conf import settings
 
 from django_cas.models import User
 
-from lib.api_calls import identity_from_cas
+from lib.api_calls import identity_from_psu_uuid
 
 __all__ = ['CASBackend']
 
@@ -172,7 +172,7 @@ class CASBackend(object):
         username, attributes = _verify(ticket, service)
         if attributes:
             request.session['attributes'] = attributes
-            request.session['identity'] = identity_from_cas(request.session['attributes']['UDC_IDENTIFIER'])
+            request.session['identity'] = identity_from_psu_uuid(request.session['attributes']['PSU_UUID'])
         if not username:
             return None
         try:
