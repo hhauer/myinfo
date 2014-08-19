@@ -3,5 +3,6 @@
 my_info_log.txt
 .vagrant
 nohup.out
+.idea
 
 oam_base/settings_*
