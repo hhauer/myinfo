@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'ajax',
     'widget_tweaks',
     'localflavor',
+    'debug_toolbar.apps.DebugToolbarConfig',
 )
 
 # A sample logging configuration. The only tangible logging
