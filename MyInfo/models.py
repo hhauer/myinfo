@@ -1,7 +1,7 @@
 from django.db import models
 from localflavor.us.models import USStateField, PhoneNumberField
 
-from validators import validate_psu_phone
+from MyInfo.validators import validate_psu_phone
 
 import logging
 logger = logging.getLogger(__name__)

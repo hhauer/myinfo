@@ -24,7 +24,7 @@ class TextMessageShortCode(models.Model):
         unique = False
         while not unique:
             new_code = ''
-            for _ in xrange(LENGTH):
+            for _ in range(LENGTH):
                 new_code += CHARSET[randrange(0, len(CHARSET))]
             if not TextMessageShortCode.objects.filter(code = new_code):
                 self.code = new_code

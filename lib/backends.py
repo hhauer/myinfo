@@ -4,7 +4,7 @@ Created on Mar 25, 2013
 @author: hhauer
 '''
 from django.contrib.auth.models import User
-from lib.api_calls import identifyAccountPickup, identify_oam_login, identity_from_psu_uuid
+from lib.api_calls import identify_oam_login, identity_from_psu_uuid
 
 import logging
 logger = logging.getLogger(__name__)
@@ -15,9 +15,11 @@ class AccountPickupBackend(object):
     def authenticate(self, request, id_number=None, birth_date=None, password=None):
         if not id_number or not birth_date or not password:
             return None
-        
-        success, identity = identifyAccountPickup(id_number, birth_date, password)
-        if success:
+
+        authpass = "{:%m%d%y}{}".format(birth_date, password)
+        identity = identify_oam_login(id_number, authpass)
+
+        if identity is not None:
             request.session['identity'] = identity
         else:
             return None
