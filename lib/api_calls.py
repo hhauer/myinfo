@@ -1,8 +1,8 @@
 '''
 For managing API calls out to external resources such as sailpoint.
 '''
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import json
 from django.conf import settings
 
@@ -14,27 +14,27 @@ logger = logging.getLogger(__name__)
 # param. If there is postData, it is JSON encoded and posted to the link. This function returns
 # a file-like object from which the response can be read.
 def callSailpoint(link, data=None):
-    password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
+    password_manager = urllib.request.HTTPPasswordMgrWithDefaultRealm()
     password_manager.add_password(None, settings.SAILPOINT_SERVER_URL, settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD)
-    auth_handler = urllib2.HTTPBasicAuthHandler(password_manager)
-    opener = urllib2.build_opener(auth_handler)
+    auth_handler = urllib.request.HTTPBasicAuthHandler(password_manager)
+    opener = urllib.request.build_opener(auth_handler)
     
     url = 'http://' + settings.SAILPOINT_SERVER_URL + '/identityiq/rest/custom/runRule/' + link
     if data:
-        url += '?json=' + urllib.quote_plus(json.dumps(data))
+        url += '?json=' + urllib.parse.quote_plus(json.dumps(data))
     
     try:
         logger.debug("Making sailpoint call: {0}".format(url))
         response = opener.open(url)
         final_response = json.load(response)
         logger.debug("Sailpoint response: {0}".format(final_response))
-    except urllib2.HTTPError as e:
+    except urllib.error.HTTPError as e:
         if hasattr(e, 'reason'):
             logger.critical("An HTTPError occurred attempting to reach sailpoint with the following reason: {0}".format(e.reason))
         if hasattr(e, 'code'):
             logger.critical("An HTTPError occurred attempting to reach sailpoint with the following code: {0}".format(e.code))
         return None
-    except urllib2.URLError as e:
+    except urllib.error.URLError as e:
         if hasattr(e, 'reason'):
             logger.critical("An URLError occurred attempting to reach sailpoint with the following reason: {0}".format(e.reason))
         if hasattr(e, 'code'):
@@ -45,12 +45,6 @@ def callSailpoint(link, data=None):
         return None
 
     return final_response or None
-
-# For new users build their birthdate + activation code password and hand off to login.
-def identifyAccountPickup(spriden_id, birthdate, password):
-    # Build our packet to send to sailpoint.
-    authpass = birthdate.replace('/', '') + password
-    return identify_oam_login(username, password)
 
 # Identify a user with an expired password.
 def identify_oam_login(username, password):

@@ -128,7 +128,6 @@ INSTALLED_APPS = (
     'ajax',
     'widget_tweaks',
     'localflavor',
-    'south',
 )
 
 # A sample logging configuration. The only tangible logging
