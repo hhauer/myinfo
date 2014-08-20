@@ -1,6 +1,6 @@
 *.pyc
 *.db
-my_info_log.txt
+myinfo.log
 .vagrant
 nohup.out
 .idea

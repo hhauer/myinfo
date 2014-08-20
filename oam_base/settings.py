@@ -159,7 +159,7 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'RotatingFileHandler': {
-            'filename': 'my_info_log.txt',
+            'filename': 'myinfo.log',
             'maxBytes' : 262144,
             'backupCount' : 5,
             'formatter': 'verbose',
@@ -172,7 +172,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'PSU_MyInfo': {
+        'oam_base': {
             'handlers': ['RotatingFileHandler'],
             'level': 'DEBUG',
             'propagate': False,
