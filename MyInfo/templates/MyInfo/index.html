@@ -18,7 +18,7 @@
 				<div class="homeLeft center">
 					<h5>Log in to Your Odin Account</h5>
 					
-					<form action="{% url 'MyInfo:index' %}" method="post">
+					<form action="{% url 'index' %}" method="post">
 						{% csrf_token %}
 						{{ form.non_field_errors }}
 						

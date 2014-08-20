@@ -5,6 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^$', 'MyInfo.views.index', name='index'),
     url(r'^MyInfo/', include('MyInfo.urls', namespace='MyInfo')),
     url(r'^AccountPickup/', include('AccountPickup.urls', namespace='AccountPickup')),
     url(r'^PasswordReset/', include('PasswordReset.urls', namespace='PasswordReset')),
