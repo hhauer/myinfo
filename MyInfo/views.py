@@ -54,7 +54,7 @@ def index(request):
     
 # Present the user with a list of appropriate actions for them to be able to take.
 # This serves as a navigation menu.
-@login_required(login_url=reverse_lazy('MyInfo:index'))
+@login_required(login_url=reverse_lazy('index'))
 def pick_action(request):
     
     return render(request, 'MyInfo/pick_action.html', {
@@ -62,7 +62,7 @@ def pick_action(request):
         'allow_cancel': request.session['ALLOW_CANCEL'],
     })
     
-@login_required(login_url=reverse_lazy('MyInfo:index'))
+@login_required(login_url=reverse_lazy('index'))
 def set_password(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
     
@@ -97,7 +97,7 @@ def set_password(request):
         'allow_cancel': request.session['ALLOW_CANCEL'],
     })
 
-@login_required(login_url=reverse_lazy('MyInfo:index'))
+@login_required(login_url=reverse_lazy('index'))
 def set_directory(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
     
@@ -126,7 +126,7 @@ def set_directory(request):
     
     
 
-@login_required(login_url=reverse_lazy('MyInfo:index'))
+@login_required(login_url=reverse_lazy('index'))
 def set_contact(request):
     # We don't check OAMStatusTracker because if they don't have contact info set they will be sent to the AccountPickup
     # version of this page. This is just for changing existing contact info.
@@ -152,7 +152,7 @@ def set_contact(request):
         'allow_cancel': request.session['ALLOW_CANCEL'],
     })
     
-@login_required(login_url=reverse_lazy('MyInfo:index'))
+@login_required(login_url=reverse_lazy('index'))
 def welcome_landing(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
     oam_status.welcome_displayed = True
