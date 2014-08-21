@@ -9,6 +9,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 
 __all__ = ['login', 'logout']
 
+
 def _service_url(request, redirect_to=None):
     """Generates application service URL for CAS"""
 
