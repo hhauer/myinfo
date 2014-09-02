@@ -1,5 +1,4 @@
-#Django==1.7c3
-https://www.djangoproject.com/download/1.7c3/tarball/
+Django==1.7
 decorator>=3.4.0
 django-localflavor>=1.0
 django-widget-tweaks>=1.3
