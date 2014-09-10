@@ -84,6 +84,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'downtime.middleware.DowntimeMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,6 +129,7 @@ INSTALLED_APPS = (
     'ajax',
     'widget_tweaks',
     'localflavor',
+    'downtime',
     'debug_toolbar.apps.DebugToolbarConfig',
 )
 
@@ -216,3 +218,8 @@ SAILPOINT_PASSWORD = ''
 
 # Username length patch.
 MAX_USERNAME_LENGTH = 36
+
+# Downtime exempt paths.
+DOWNTIME_EXEMPT_PATHS = (
+	'/admin',
+)
