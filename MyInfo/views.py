@@ -1,4 +1,5 @@
-# Create your views here.
+import datetime
+
 from django.shortcuts import render
 from django.http import HttpResponseServerError, HttpResponseRedirect
 from django.contrib import auth
@@ -8,7 +9,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from lib.api_calls import change_password
 
 from MyInfo.forms import formPasswordChange, formNewPassword, LoginForm, DirectoryInformationForm, ContactInformationForm
-from MyInfo.models import DirectoryInformation, ContactInformation
+from MyInfo.models import DirectoryInformation, ContactInformation, MaintenanceNotice
 
 from AccountPickup.models import OAMStatusTracker
 
@@ -46,10 +47,18 @@ def index(request):
         error_message = "That identity was not found."
     
         #logger.debug("Error during login with username: {0} and password: {1}".format(login_form.cleaned_data["username"], login_form.cleaned_data["password"]))
+
+    # Determine whether or not to render a maintenance notice.
+    notices = MaintenanceNotice.objects.filter(
+        start_display__lte=datetime.datetime.now()
+    ).filter(
+        end_display__gte=datetime.datetime.now()
+    )
     
     return render(request, 'MyInfo/index.html', {
         'form' : login_form,
         'error' : error_message,
+        'notices' : notices,
     })
     
 # Present the user with a list of appropriate actions for them to be able to take.

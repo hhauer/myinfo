@@ -14,6 +14,14 @@
 </div>
 <div class="containerMiddle grid flex col_12 column">
 	<div class="middleBody grid">
+        {%  if notices %}
+        <div class="center">
+            <h6>Maintenance Notice</h6>
+            {% for notice in notices %}
+            <p>{{ notice.message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
 			<div class="col_6">
 				<div class="homeLeft center">
 					<h5>Log in to Your Odin Account</h5>

@@ -67,3 +67,13 @@ class ContactInformation(models.Model):
 
     def __unicode__(self):
         return self.psu_uuid
+
+# Maintenance notice.
+class MaintenanceNotice(models.Model):
+    start_display = models.DateTimeField()
+    end_display = models.DateTimeField()
+
+    message = models.TextField()
+
+    def __str__(self):
+        return "Maintenance starting: " + str(self.start_display)
