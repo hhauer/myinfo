@@ -10,14 +10,14 @@ logger = logging.getLogger(__name__)
 class Mailcode(models.Model):
     code = models.CharField(max_length=255, unique=True)
     
-    def __unicode__(self):
+    def __str__(self):
         return self.code
 
 # For departmental dropdown choices.
 class Department(models.Model):
     name = models.CharField(max_length=50, unique=True)
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 # Buildings
@@ -25,7 +25,7 @@ class Building(models.Model):
     code = models.CharField(max_length=10, unique=True, primary_key=True)
     name = models.CharField(max_length=50, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
     
 # Directory information for users with psuPublish = y. Upstream logic assumes that
@@ -55,7 +55,7 @@ class DirectoryInformation(models.Model):
     zip_code = models.CharField(max_length=10, null=True, blank=True, default="97201")
     
     
-    def __unicode__(self):
+    def __str__(self):
         return self.psu_uuid
     
 # Password reset contact information.
@@ -65,7 +65,7 @@ class ContactInformation(models.Model):
     cell_phone = PhoneNumberField(blank=True, null=True)
     alternate_email = models.EmailField(max_length=254, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.psu_uuid
 
 # Maintenance notice.
