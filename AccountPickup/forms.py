@@ -22,6 +22,3 @@ class EmailAliasForm(forms.Form):
     def __init__(self, names, *args, **kwargs):
         super(EmailAliasForm, self).__init__(*args, **kwargs)
         self.fields["alias"] = forms.ChoiceField(choices=names, label="Email Alias")
-
-class ContactOptOutForm(forms.Form):
-    opt_out = forms.BooleanField(required=False, label="Opt Out")

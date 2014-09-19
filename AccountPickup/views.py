@@ -99,7 +99,7 @@ def contact_info(request):
     
     return render(request, 'AccountPickup/contact_info.html', {
         'identity': request.session['identity'],
-        'contact_form': contact_form,
+        'form': contact_form,
     })
     
 # Select ODIN name

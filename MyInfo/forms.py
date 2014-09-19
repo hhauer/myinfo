@@ -34,7 +34,7 @@ class ContactInformationForm(forms.ModelForm):
     
     class Meta:
         model = ContactInformation
-        fields = ['cell_phone', 'alternate_email']
+        fields = ['alternate_email', 'cell_phone']
 
     def clean(self):
         cleaned_data = super(ContactInformationForm, self).clean()

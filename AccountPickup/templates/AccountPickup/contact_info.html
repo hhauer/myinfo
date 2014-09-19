@@ -17,18 +17,19 @@
 				<h5 style="text-align:left; padding-left:5px;">Change Contact Information</h5>
 				<form id="passwordResetForm" action="{% url 'AccountPickup:contact_info' %}" method="post" style="text-align:left">
 					{% csrf_token %}
-					{{ contact_form.non_field_errors }}
+					{{ form.non_field_errors }}
 
-					{{ contact_form.alternate_email.label }}<br>
-					<input class="formField" id="{{ contact_form.alternate_email.auto_id }}" name="{{ contact_form.alternate_email.name }}" type="text" style="text-align:left"/><br>
-					{{ contact_form.alternate_email.errors }}
+					{% if error %}
+					<ul class="errorlist">
+						<li class="first last">{{ error }}</li>
+					</ul>
+					{% endif %}
 
-					{{ contact_form.cell_phone.label }}<br>
-					<input class="formField" id="{{ contact_form.cell_phone.auto_id }}" name="{{ contact_form.cell_phone.name }}" type="text" style="text-align:left"/>
-					{{ contact_form.cell_phone.errors }}
-
-					{{ opt_out_form.opt_out.as_hidden }}
-					<br>
+					{% for field in form %}
+					{{ field.errors }}
+					{{ field.label_tag }}
+					{{ field }}<br>
+					{% endfor %}
 					<input class="Submit" type="submit" value="Continue" style="margin-top:20px;"/>
 				</form>
 			</div>	
