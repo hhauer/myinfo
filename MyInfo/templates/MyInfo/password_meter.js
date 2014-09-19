@@ -25,16 +25,22 @@ $(document).ready(function() {
 		}
 		
 		var result = zxcvbn(password, []);
-		
+
+        var passwordColor = '#D2492A';
 		if (result.score <= 2) {
 			$(".password-ttc").text("Weak");
 		} else if (result.score == 3) {
 			$(".password-ttc").text("Moderate");
 		} else {
 			$(".password-ttc").text("Strong");
+            passwordColor = '#6A7F10';
 		}
-		
-		$("#passwordbar").progressbar("option", {value: (result.score * 25)});
+
+        var passwordBar = $("#passwordbar");
+		passwordBar.progressbar("option", {value: (result.score * 25)});
+        passwordBar.find( ".ui-progressbar-value").css({
+            "background": passwordColor
+        });
 		
 		$('#id_confirmPassword').keyup();
 	});
