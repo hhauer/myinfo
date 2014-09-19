@@ -4,24 +4,8 @@
 {% block title %}Contact Information{% endblock %}
 
 {% block body_content %}
-<div class="containerTop2 grid flex col_12 column">
-	<div class="container grid">
-	
-		<div class="topLeftInfo center col_5">
-		Hello, {{ identity.DISPLAY_NAME }}.
-		</div>
-		
-		<div class="col_1"> </div>
-		<div class="col_1"> </div>
-		
-		<div class="topRightInfo center col_5">
-			<strong>Odin Username: </strong>{{ identity.ODIN_NAME }}<br>
-			<strong>PSU Email: </strong>{{ identity.EMAIL_ADDRESS }}<br>
-			<strong>ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
-		</div>
-			
-	</div>
-</div>
+{% include 'fragments/user_info.html' %}
+
 
 <div class="containerMiddle grid flex col_12 column">
 	<div class="middleBody grid">
