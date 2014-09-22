@@ -26,14 +26,6 @@
 			<form id="provisionAccount" action="{% url 'AccountPickup:odin' %}" method="post">
 				{% csrf_token %}
 				{{ odin_form.name }}
-				<p class="odinTextBot">You may also select an email alias. An email alias is an alternative email address that you can use for the same mailbox. Email sent to your alias will be sent to your PSU Gmail inbox. Unlike your Odin username, your email alias can be more than 8 characters and can contain periods.</p>
-				<p style="margin-top:15px;">Yes, I would like an email alias: <input type="checkbox" onchange="tick(this)" id="selectalias" class="checkbox2"></p>
-				<div id="email-alias-hide" style="display: none;">
-					<div class="odinBottom">
-						<h6>Select Your Email Alias</h6>
-						{{ mail_form.alias }}
-					</div>
-				</div>
 	
 				<p style="margin-top:20px;"><strong>Reminder:</strong>  PSU policy requires that you read the email sent to your PSU email address on a regular basis. It is your responsibility to check your inbox for important announcements and notifications.</p>
 				<input class="Submit" type="submit" value="Continue" style="margin-bottom:30px;">

@@ -6,7 +6,8 @@ logger = logging.getLogger(__name__)
 class OAMStatusTracker(models.Model):
     psu_uuid = models.CharField(unique=True, max_length=36, primary_key=True)
     
-    select_names = models.BooleanField(default=False)
+    select_odin_username = models.BooleanField(default=False)
+    select_email_alias = models.BooleanField(default=False)
     set_contact_info = models.BooleanField(default=False)
     set_password = models.BooleanField(default=False)
     set_directory = models.BooleanField(default=False)

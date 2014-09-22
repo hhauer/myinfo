@@ -143,7 +143,11 @@ def change_password(identity, new_password, old_password):
     else:
         return (False, status["PasswordError"])
 
-def launch_provisioning_workflow(identity, odin_name, email_alias):
+def set_odin_username(identity, odin_name):
+    # TODO: Stubbed
+    return
+
+def set_email_alias(identity, email_alias):
     # email_alias can be 'None' (string) and should be converted to None (value) if so.
     # TODO: Stubbed
     return

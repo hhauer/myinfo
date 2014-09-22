@@ -12,7 +12,7 @@ from MyInfo.forms import ContactInformationForm
 from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm
 from AccountPickup.models import OAMStatusTracker
 
-from lib.api_calls import truename_odin_names, truename_email_aliases, launch_provisioning_workflow, identity_from_psu_uuid
+from lib.api_calls import truename_odin_names, truename_email_aliases, set_odin_username, identity_from_psu_uuid, set_email_alias
 
 from brake.decorators import ratelimit
 
@@ -107,43 +107,67 @@ def contact_info(request):
 def odinName(request):
     # If someone has already completed this step, move them along:
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
-    if oam_status.select_names is True:
+    if oam_status.select_odin_username is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     # Get possible odin names
     request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
-    # Get possible email aliases
-    request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
-    
-    # Prepend a "None" option at the start of the emails.
-    request.session['TRUENAME_EMAILS'].insert(0, 'None')
     
     # Build our forms with choices from truename.
     odinForm = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
-    mailForm = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
-    
-    # Run both validations before the test so that short-circuiting does not bypass a validation.
-    odin_valid = odinForm.is_valid()
-    mail_valid = mailForm.is_valid()
         
-    if odin_valid and mail_valid:
+    if odinForm.is_valid():
         # Send the information to sailpoint to begin provisioning.
         odin_name = request.session['TRUENAME_USERNAMES'][int(odinForm.cleaned_data['name'])]
-        email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
-        launch_provisioning_workflow(request.session['identity'], odin_name, email_alias)
+        set_odin_username(request.session['identity'], odin_name)
         
         request.session['identity']['ODIN_NAME'] = odin_name
         request.session['identity']['EMAIL_ADDRESS'] = odin_name + "@pdx.edu"
         
-        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odin_name + " email_alias=" + email_alias)
+        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odin_name)
         
-        oam_status.select_names = True
+        oam_status.select_odin_username = True
         oam_status.save()
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/odin_name.html', {
         'identity': request.session['identity'],
         'odin_form' : odinForm,
+    })
+
+# Select ODIN name
+@login_required(login_url=reverse_lazy('AccountPickup:index'))
+def email_alias(request):
+    # If someone has already completed this step, move them along:
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    if oam_status.select_email_alias is True:
+        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+
+    # Get possible email aliases
+    request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
+
+    # Prepend a "None" option at the start of the emails.
+    request.session['TRUENAME_EMAILS'].insert(0, 'None')
+
+    # Build our forms with choices from truename.
+    mailForm = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
+
+
+    if mailForm.is_valid():
+        # Send the information to sailpoint to begin provisioning.
+        email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
+        set_email_alias(request.session['identity'], email_alias)
+
+        request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
+
+        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + email_alias)
+
+        oam_status.select_email_alias = True
+        oam_status.save()
+        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+
+    return render(request, 'AccountPickup/email_alias.html', {
+        'identity': request.session['identity'],
         'mail_form' : mailForm,
     })
     
@@ -183,8 +207,11 @@ def oam_status_router(request):
     if oam_status.agree_aup is None:
         return HttpResponseRedirect(reverse('AccountPickup:aup'))
     
-    elif oam_status.select_names is False:
+    elif oam_status.select_odin_username is False:
         return HttpResponseRedirect(reverse('AccountPickup:odin'))
+
+    elif oam_status.select_email_alias is False:
+        return HttpResponseRedirect(reverse('AccountPickup:alias'))
     
     # If they haven't set their contact_info and haven't opted out for the session, have them do that.
     elif oam_status.set_contact_info is False:
