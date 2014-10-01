@@ -13,20 +13,21 @@ logger = logging.getLogger(__name__)
 # This function authenticates sailPoint and makes a call to the REST api pointed to by the link
 # param. If there is postData, it is JSON encoded and posted to the link. This function returns
 # a file-like object from which the response can be read.
-def callSailpoint(link, data=None):
+def call_iiq(link, data=None):
     password_manager = urllib.request.HTTPPasswordMgrWithDefaultRealm()
     password_manager.add_password(None, settings.SAILPOINT_SERVER_URL, settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD)
     auth_handler = urllib.request.HTTPBasicAuthHandler(password_manager)
     opener = urllib.request.build_opener(auth_handler)
     
-    url = 'http://' + settings.SAILPOINT_SERVER_URL + '/identityiq/rest/custom/runRule/' + link
+    url = 'https://' + settings.SAILPOINT_SERVER_URL + '/identityiq/rest/custom/runRule/' + link
     if data:
         url += '?json=' + urllib.parse.quote_plus(json.dumps(data))
     
     try:
         logger.debug("Making sailpoint call: {0}".format(url))
         response = opener.open(url)
-        final_response = json.load(response)
+        response_body = response.read()
+        final_response = json.loads(response_body.decode('UTF-8'))
         logger.debug("Sailpoint response: {0}".format(final_response))
     except urllib.error.HTTPError as e:
         if hasattr(e, 'reason'):
@@ -64,7 +65,7 @@ def identify_oam_login(username, password):
         'username': username,
         'password': password,
     }
-    res = callSailpoint('PSU_UI_MYINFO_LOGIN_PASSWORD', data)
+    res = call_iiq('PSU_UI_MYINFO_LOGIN_PASSWORD', data)
     
     if "ERROR" in res:
         return None
@@ -84,7 +85,7 @@ def identity_from_psu_uuid(psu_uuid):
         }
         
     data = {'PSU_UUID': psu_uuid}
-    return callSailpoint('PSU_UI_IDENTIFY_UUID', data)
+    return call_iiq('PSU_UI_IDENTIFY_UUID', data)
     
 # This function returns the appropriate password constraints based on an identity.
 def passwordConstraintsFromIdentity(identity):
@@ -109,7 +110,7 @@ def truename_odin_names(identity):
         ]
         return stub
         
-    return callSailpoint('PSU_UI_TRUENAME_GEN_USERNAMES', identity)
+    return call_iiq('PSU_UI_TRUENAME_GEN_USERNAMES', identity)
 
 # This function returns a list of potential email aliases to choose from.
 def truename_email_aliases(identity):
@@ -122,7 +123,7 @@ def truename_email_aliases(identity):
         ]
         return stub
         
-    return callSailpoint('PSU_UI_TRUENAME_GEN_EMAILS', identity)
+    return call_iiq('PSU_UI_TRUENAME_GEN_EMAILS', identity)
     
 # This function calls out to sailpoint to begin a password update event.
 def change_password(identity, new_password, old_password):
@@ -134,7 +135,7 @@ def change_password(identity, new_password, old_password):
             'old_password' : old_password,
     }
     
-    status = callSailpoint('PSU_UI_UPDATE_PASSWORD', data)
+    status = call_iiq('PSU_UI_UPDATE_PASSWORD', data)
     
     if "Success" in status:
         return (True, "Password changed succesfully.")
@@ -163,7 +164,7 @@ def password_reset_email(PSU_UUID, email, token):
         'email': email,
         'token': token,
     }
-    callSailpoint('PSU_UI_RESET_EMAIL', data)
+    call_iiq('PSU_UI_RESET_EMAIL', data)
 
 def password_reset_sms(number, token):
     if settings.DEVELOPMENT == True:
@@ -174,4 +175,4 @@ def password_reset_sms(number, token):
     'sms_number': number,
     'sms_reset_code': token,
     }
-    callSailpoint('PSU_UI_RESET_SMS', data)
+    call_iiq('PSU_UI_RESET_SMS', data)
