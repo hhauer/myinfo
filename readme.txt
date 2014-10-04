@@ -10,6 +10,8 @@
 8) Edit manage.py to point to the correct settings file.
 9) Download oracle instant client and SDK headers.
 10) Unzip oracle parts into /var/www/myinfo
+--  In the instant client folder ln -s libclntsh.so.11.1 to libclntsh.so
+--  /etc/profile.d/oracle.sh for ORACLE_HOME var. (See wash)
 11) Update /etc/sysconfig/httpd to set ORACLE_HOME and LD_LIBRARY_PATH to include oracle.
 12) Activate python virtualenv.
 13) Install requirements file.
