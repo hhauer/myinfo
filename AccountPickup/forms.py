@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 class AccountClaimLoginForm(forms.Form):
     id_number = forms.CharField(min_length=9, max_length=9, label="ID Number")
-    birth_date = forms.DateField(label="Birth Date")
+    birth_date = forms.DateField(label="Birth Date (MM/DD/YYYY)")
     auth_pass = forms.CharField(label="Password", widget=forms.PasswordInput())
     
 class AcceptAUPForm(forms.Form):
