@@ -21,13 +21,13 @@ Using an SMS-capable phone number or external email address the user is able to 
 * In order to support the business needs of PSU this project embeds a custom fork of Django_CAS (originally from https://bitbucket.org/cpcc/django-cas/overview)
 * longerusername is used to support 36-character usernames, a requirement of PSU's implementation.
 
-### Installation
+## Installation
 
-## Requirements
+### Requirements
 
 As MyInfo uses Django 1.7+, Python3 (preferable 3.3+) is required.
 
-## Steps
+### Steps
 
 1. Clone to directory of choice.
 2. 'pip install -r requirements.txt'
@@ -36,11 +36,11 @@ As MyInfo uses Django 1.7+, Python3 (preferable 3.3+) is required.
 5. './manage.py collectstatic'
 6. Launch with WSGI-compatible server of choice.
 
-## Vagrant
+### Vagrant
 
 A vagrantfile and bootstrap.sh are provided as they have been used in the past to aid development of templates / interface elements by non-technical users, but have not been updated or maintained since the switch to Django 1.7 and Python3. They are provided primarily as a reference.
 
-### Roadmap
+## Roadmap
 
 Planned future changes:
 * Genericize the password strength meter and fork into its own project.
