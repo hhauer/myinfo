@@ -36,7 +36,12 @@ As MyInfo uses Django 1.7+, Python3 (preferable 3.3+) is required.
 5. './manage.py collectstatic'
 6. Launch with WSGI-compatible server of choice.
 
-
 ## Vagrant
 
 A vagrantfile and bootstrap.sh are provided as they have been used in the past to aid development of templates / interface elements by non-technical users, but have not been updated or maintained since the switch to Django 1.7 and Python3. They are provided primarily as a reference.
+
+### Roadmap
+
+Planned future changes:
+* Genericize the password strength meter and fork into its own project.
+* Simplify password reset to detect if SMS or email. Make all reset codes shortcodes.
