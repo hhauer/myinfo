@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Password Reset - Verification Code{% endblock %}
+
+{% block body_content %}
+<div class="containerTop grid">
+	<div class="topBody grid center">
+		<h6 class="topBodyHeaderBold">Odin Account Manager</h6><h6 class="topBodyHeaderLight"> is the easy to use tool for managing your PSU computer account.</h6>
+	</div>
+</div>
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+			<div class="col_6">
+				<div class="homeLeft center">
+					<h5>Request a Password Reset</h5>
+					
+					<form action="{% url 'PasswordReset:reset_notoken' %}" method="post">
+						{% csrf_token %}
+						{{ form.non_field_errors }}
+						
+						{% if error %}
+						<ul class="errorlist">
+							<li class="first last">{{ error }}</li>
+						</ul>
+						{% endif %}
+						
+						{% for field in form %}
+						{{ field.errors }}
+						{{ field.label_tag }}
+						{{ field }}<br>
+						{% endfor %}
+
+						<input class="loginButton" type="submit" value="Submit">
+					</form>
+				</div>
+			</div>
+			<div class="col_6">
+				<div class="homeRight center">
+					<h5 class="left">Enter Your Reset Code</h5>
+					<p class="left">
+						Your reset code has been sent to you either by SMS or email. Please enter it here to proceed.
+					</p><br>
+				</div>
+			</div>
+	</div>
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}

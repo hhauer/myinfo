@@ -1,60 +1,49 @@
-{% extends "lib/base.html" %}
+{% extends "base.html" %}
 {% load staticfiles %}
 
 {% block title %}Password Reset{% endblock %}
 
-{% block header %}Password Reset{% endblock %}
-
 {% block body_content %}
-	<div class="col_12">
-		<p>Blah, blah, blah reset your ODIN password.</p>
-		
-		{% if error %}
-		<div class="ui-state-error">{{ error }}</div>
-		{% endif %}
-		
-		<form id="resetForm" action="/PasswordReset/" method="post">
-		{% csrf_token %}
-		{{ form.non_field_errors }}
-		<fieldset>
-			<legend>Reset Password</legend>
-			{% for field in reset_request %}
-			<div class="wide-input">
-				{{ field.label_tag }} {{ field }}
-				{{ field.errors }}
-			</div>
-			{% endfor %}
-				
-			{% if captcha %}
-			<div class="captcha">
-			{{ captcha.captcha }}
-			</div>
-			{% endif %}
-		</fieldset>
-		
-		<input type="submit" value="Send Reset Code" />
-		</form>
-		<br/> <br/>
-		<form id="tokenForm" action="/PasswordReset/reset/" method="post">
-		{% csrf_token %}
-		{{ form.non_field_errors }}
-		<fieldset>
-			<legend>Have a Reset Token?</legend>
-			{% for field in reset_token %}
-			<div class="wide-input">
-				{{ field.label_tag }} {{ field }}
-				{{ field.errors }}
-			</div>
-			{% endfor %}
-				
-			{% if reset_captcha %}
-			<div class="captcha">
-			{{ reset_captcha.captcha }}
-			</div>
-			{% endif %}
-		</fieldset>
-		
-		<input type="submit" value="Reset Your Password" />
-		</form>
+<div class="containerTop grid">
+	<div class="topBody grid center">
+		<h6 class="topBodyHeaderBold">Odin Account Manager</h6><h6 class="topBodyHeaderLight"> is the easy to use tool for managing your PSU computer account.</h6>
 	</div>
+</div>
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+			<div class="col_6">
+				<div class="homeLeft center">
+					<h5>Request a Password Reset</h5>
+					
+					<form action="{% url 'PasswordReset:index' %}" method="post">
+						{% csrf_token %}
+						{{ form.non_field_errors }}
+						
+						{% if error %}
+						<ul class="errorlist">
+							<li class="first last">{{ error }}</li>
+						</ul>
+						{% endif %}
+						
+						{% for field in form %}
+						{{ field.errors }}
+						{{ field.label_tag }}
+						{{ field }}<br>
+						{% endfor %}
+
+						<input class="loginButton" type="submit" value="Request Reset">
+					</form>
+				</div>
+			</div>
+			<div class="col_6">
+				<div class="homeRight center">
+					<h5 class="left">Reset Your Password</h5>
+					<p class="left">
+						Enter the external (non-PSU) email address or cell phone number that you provided when you set up your password recovery information. You will then receive the reset code needed to reset your password.
+					</p><br>
+				</div>
+			</div>
+	</div>
+</div>
 {% endblock %}
+{% block footer %}{% endblock %}

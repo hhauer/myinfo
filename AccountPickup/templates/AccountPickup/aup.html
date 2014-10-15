@@ -1,53 +1,43 @@
-{% extends "lib/base.html" %}
+{% extends "base.html" %}
 {% load staticfiles %}
 
-{% block title %}PSU - AUP{% endblock %}
+{% block title %}Acceptable Use Policy{% endblock %}
 
 {% block head_js %}
-	<script src="{% static "lib/js/jquery.validate.js" %}"></script>
-	
-	<script type="text/javascript">
-	$(function() {
-		$('.killclick').click(function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-		});
-	});
-	</script>
 {% endblock %}
 
-{% block header %}Acceptable Use Policy{% endblock %}
+{% block header %}{% endblock %}
 
 {% block body_content %}
-	<div class="col_12">
-		<ul class="tabs left">
-			<li><a href="#aup" class="killclick">Acceptable Use</a></li>
-			<li><a href="#reset" class="killclick">Password Reset</a></li>
-			<li><a href="#odin" class="killclick">Odin Username</a></li>
-		</ul>
+{% include 'fragments/user_info.html' %}
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody">
+		<div class="col_6 column">
+			<h5>Acceptable Use Policy</h5>
+				<p>Please read and review the following policies regarding the use of computing resources at PSU:
+				</p>
+			<ul class="greenBgLinks">
+				<li><a href="http://go.pdx.edu/aup" target="_blank">PSU Acceptable Use Policy</a></li>
+				<li><a href="http://www.pdx.edu/ogc/sites/www.pdx.edu.ogc/files/Email%20Communication%20Policy%201.29.13%20SIGNED%20FINAL.pdf" target="_blank">PSU Email Communication Policy</a></li>
+				<li><a href="http://www.pdx.edu/sites/www.pdx.edu.financial-services/files/BAO_rcap_web_policy.pdf" target="_blank">PSU Revolving Charge Account Plan Policy</a></li>
+			</ul>
 		
-		<div id="aup" class="tab-content">
-		<p>Please read and review the following policies regarding the use of computing resources at PSU:</p>
-		
-		<ul>
-			<li><a href="http://www.pdx.edu/oit/sites/www.pdx.edu.oit/files/Acceptable Use Policy.pdf" target="_blank">PSU Acceptable Use Policy</a></li>
-			<li><a href="http://www.pdx.edu/ogc/sites/www.pdx.edu.ogc/files/Email Communication Policy 1.29.13 SIGNED FINAL.pdf" target="_blank">PSU Email Communication Policy</a></li>
-			<li><a href="http://www.pdx.edu/sites/www.pdx.edu.financial-services/files/BAO_rcap_web_policy.pdf" target="_blank">PSU Revoling Charge Account Plan Policy</a></li>
-		</ul>
-		
-		<form id="aupForm" action="/AccountPickup/AUP/" method="post">
-		{% csrf_token %}
-		{{ form.non_field_errors }}
-		
-		<fieldset>
-			<div>
-				{{ form.accepted.label_tag }} {{ form.accepted }}
-				{{ form.accepted.errors }}
-			</div>
-		</fieldset>
-		
-		<input type="submit" value="Continue" />
-		</form>
+			<form id="aupForm" action="{% url 'AccountPickup:aup' %}" method="post">
+				{% csrf_token %}
+				{{ form.non_field_errors }}
+				
+				
+					<div>
+						{{ form.accepted.label_tag }} {{ form.accepted }}
+						{{ form.accepted.errors }}
+					</div>
+				<input class="Submit" type="submit" value="Continue"/>
+			</form>
 		</div>
-	</div>
+	</div><div class="col_6"> </div>
+</div>
+{% endblock %}
+
+{% block footer %}
 {% endblock %}

@@ -1,14 +1,14 @@
 """CAS authentication backend"""
-
-from urllib import urlencode, urlopen
-from urlparse import urljoin
-import urllib2
+from urllib.parse import urlencode
+from urllib.request import urlopen
+from urllib.parse import urljoin
+import urllib.request, urllib.error, urllib.parse
 
 from django.conf import settings
 
 from django_cas.models import User
 
-from lib.api_calls import identity_from_cas
+from lib.api_calls import identity_from_psu_uuid
 
 __all__ = ['CASBackend']
 
@@ -92,7 +92,7 @@ def _verify_cas3(ticket, service):
         page.close()
 
 def get_saml_assertion(ticket):
-    return """<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol"  MajorVersion="1" MinorVersion="1" RequestID="_192.168.16.51.1024506224022" IssueInstant="2002-06-19T17:03:44.022Z"><samlp:AssertionArtifact>""" + ticket + """</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>"""
+    return bytes("""<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><SOAP-ENV:Body><samlp:Request xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol"  MajorVersion="1" MinorVersion="1" RequestID="_192.168.16.51.1024506224022" IssueInstant="2002-06-19T17:03:44.022Z"><samlp:AssertionArtifact>""" + ticket + """</samlp:AssertionArtifact></samlp:Request></SOAP-ENV:Body></SOAP-ENV:Envelope>""", 'utf-8')
 
 SAML_1_0_NS = 'urn:oasis:names:tc:SAML:1.0:'
 SAML_1_0_PROTOCOL_NS = '{' + SAML_1_0_NS + 'protocol' + '}'
@@ -120,25 +120,26 @@ def _verify_cas2_saml(ticket, service):
         'connection': 'keep-alive',
         'content-type': 'text/xml'}
     params = {'TARGET': service}
-    url = urllib2.Request(urljoin(settings.CAS_SERVER_URL, 'samlValidate') + '?' + urlencode(params), '', headers)
-    data = get_saml_assertion(ticket)
-    url.add_data(get_saml_assertion(ticket))
+    url = urllib.request.Request(urljoin(settings.CAS_SERVER_URL, 'samlValidate') + '?' + urlencode(params), get_saml_assertion(ticket), headers)
+    # url.data = get_saml_assertion(ticket)
 
-    page = urllib2.urlopen(url)
+    page = urllib.request.urlopen(url)
 
     try:
         user = None
         attributes = {}
         response = page.read()
-        print response
+
+        logger.debug("Received the following CAS2_SAML response: %s", response)
+
         tree = ElementTree.fromstring(response)
         # Find the authentication status
         success = tree.find('.//' + SAML_1_0_PROTOCOL_NS + 'StatusCode')
-        if success is not None and success.attrib['Value'] == 'samlp:Success':
+        if success is not None and success.attrib['Value'] == 'saml1p:Success':
             # User is validated
             attrs = tree.findall('.//' + SAML_1_0_ASSERTION_NS + 'Attribute')
             for at in attrs:
-                if 'UID' in at.attrib.values():
+                if 'UID' in list(at.attrib.values()):
                     user = at.find(SAML_1_0_ASSERTION_NS + 'AttributeValue').text
                     attributes['UID'] = user
                 values = at.findall(SAML_1_0_ASSERTION_NS + 'AttributeValue')
@@ -149,6 +150,11 @@ def _verify_cas2_saml(ticket, service):
                     attributes[at.attrib['AttributeName']] = values_array
                 else:
                     attributes[at.attrib['AttributeName']] = values[0].text
+            logger.debug("Before returning from _verify user: %s", user)
+            logger.debug("Before returning from _verify attributes: %s", attributes)
+        else:
+            logger.debug("CAS2 SAML was not successfully verified, success code is: %s", success.attrib['Value'])
+
         return user, attributes
     finally:
         page.close()
@@ -170,17 +176,22 @@ class CASBackend(object):
         """Verifies CAS ticket and gets or creates User object"""
 
         username, attributes = _verify(ticket, service)
+
+        logger.debug("CAS Backend provided username: %s", username)
+        logger.debug("CAS Backend provided attributes: %s", attributes)
+
         if attributes:
             request.session['attributes'] = attributes
-            request.session['identity'] = identity_from_cas(request.session['attributes']['UDC_IDENTIFIER'])
+            #request.session['identity'] = identity_from_psu_uuid(request.session['attributes']['PSU_UUID'])
+            # Stubbed here as CAS does not currently return PSU_UUID.
+            request.session['identity'] = identity_from_psu_uuid(request.session['attributes']['UID'])
         if not username:
             return None
         try:
             user = User.objects.get(username=request.session['identity']['PSU_UUID'])
         except User.DoesNotExist:
             # user will have an "unusable" password
-            user = User.objects.create_user(request.session['identity']['PSU_UUID'], '')
-            user.save()
+            user = User.objects.create_user(request.session['identity']['PSU_UUID'], password=None)
         return user
 
     def get_user(self, user_id):

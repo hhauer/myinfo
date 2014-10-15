@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Your Accounts Are Being Created{% endblock %}
+
+{% block head_js %}	
+	<script type="text/javascript">
+	$(function() {
+		$('#progressbar').progressbar({
+			value: false
+		});
+		
+		var checkStatus = function() {
+			$.ajax({
+				type: "POST",
+				url: '/ajax/AccountPickup/check_provisioning.json',
+				dataType: 'json',
+				success: function(data) {
+					if (data.data.complete != true) {
+						setTimeout(checkStatus, 3000);
+					} else {
+						// We've finished provisioning, time to move along.
+						window.location.replace('/AccountPickup/next');
+					}
+				}
+			});
+		};
+		
+		checkStatus();
+	});
+	</script>
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body_content %}
+{% include 'fragments/user_info.html' %}
+
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+		<div class="">
+			<div class="middleTabArea">
+				<p>Your accounts are currently being created.  This may take several minutes; please do not close your browser or use the back button.</p>
+				<div id="progressbar"> </div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block footer %}
+{% endblock %}

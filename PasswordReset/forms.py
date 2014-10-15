@@ -1,10 +1,10 @@
 from django import forms
-from django_localflavor_us.forms import USPhoneNumberField
+from localflavor.us.forms import USPhoneNumberField
 
 import logging
 logger = logging.getLogger(__name__)
 
-class request_reset_form(forms.Form):
+class ResetRequestForm(forms.Form):
     email = forms.EmailField(label="Email Address", required=False)
     cell = USPhoneNumberField(label="-OR- Cell #", required=False)
     
@@ -18,7 +18,7 @@ class request_reset_form(forms.Form):
         return email
     
     def clean(self):
-        cleaned_data = super(request_reset_form, self).clean()
+        cleaned_data = super(ResetRequestForm, self).clean()
         
         email = cleaned_data.get("email")
         cell = cleaned_data.get("cell")
@@ -28,5 +28,5 @@ class request_reset_form(forms.Form):
         
         return cleaned_data
     
-class token_form(forms.Form):
-    token = forms.CharField(label="Reset Token")
+class ResetTokenForm(forms.Form):
+    token = forms.CharField(label="Reset Code")

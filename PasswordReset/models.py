@@ -3,9 +3,6 @@ from random import randrange
 from datetime import timedelta
 from django.utils import timezone
 
-# Create your models here.
-# https://docs.djangoproject.com/en/dev/howto/custom-management-commands/
-
 # http://www.crockford.com/wrmg/base32.html
 # Should reduce confusion on characters when typing in from a phone. No I/1 l/I l/1 confusion.
 CHARSET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
@@ -27,7 +24,7 @@ class TextMessageShortCode(models.Model):
         unique = False
         while not unique:
             new_code = ''
-            for i in xrange(LENGTH):
+            for _ in range(LENGTH):
                 new_code += CHARSET[randrange(0, len(CHARSET))]
             if not TextMessageShortCode.objects.filter(code = new_code):
                 self.code = new_code

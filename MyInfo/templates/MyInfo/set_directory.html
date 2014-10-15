@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Directory Information{% endblock %}
+
+{% block body_content %}
+{% include 'fragments/user_info.html' %}
+		
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+		<div class="col_6">
+			<div class="middleTabArea">
+			<h5 style="margin-bottom:15px;">Directory Information</h5>
+				<form id="directoryInformation" action="{% url 'MyInfo:set_directory' %}" method="post">
+					{% csrf_token %}
+					{{ form.non_field_errors }}
+					
+					{% if error %}
+					<ul class="errorlist">
+						<li class="first last">{{ error }}</li>
+					</ul>
+					{% endif %}
+					
+					{% for field in form %}
+					{{ field.errors }}
+					{{ field.label_tag }}
+					{{ field }}<br>
+					{% endfor %}
+					
+					<input class="loginButton" type="submit" value="Continue">
+				</form>
+				{% if allow_cancel %}
+					<a class="forgotPassword center" style="position:relative; left:104px;" href="{% url 'MyInfo:pick_action' %}">Cancel</a>
+				{% endif %}
+				</div>
+			</div>
+		<div class="col_6">
+			<div class="homeRight2 center">
+						<h5 class="left">Change Directory Information</h5>
+				<p class="left" style="position:relative;top:10px;">Use this page to update your PSU employee directory entry. Your entry will appear in the <a href="http://www.pdx.edu/directory" target="_blank">public PSU directory</a>. You can change this information at any time after your account has been created.</p>
+			</div>
+		</div>
+	</div>
+</div>
+	
+{% endblock %}
+{% block footer %}{% if allow_cancel %}<a href="/accounts/logout/">Logout</a>{% endif %}
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Contact Information{% endblock %}
+
+{% block body_content %}
+{% include 'fragments/user_info.html' %}
+
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+		<div class="col_6">
+			<div class="homeLeft center">
+			<h5>Password Reset Information</h5>
+				<form id="directoryInformation" action="{% url 'MyInfo:set_contact' %}" method="post">
+					{% csrf_token %}
+					{{ form.non_field_errors }}
+					
+					{% if error %}
+					<ul class="errorlist">
+						<li class="first last">{{ error }}</li>
+					</ul>
+					{% endif %}
+					
+					{% for field in form %}
+					{{ field.errors }}
+					{{ field.label_tag }}
+					{{ field }}<br>
+					{% endfor %}
+					
+					<input class="loginButton" type="submit" value="Submit">
+					
+
+				</form>
+				{% if allow_cancel %}
+					<a class="forgotPassword center" href="{% url 'MyInfo:pick_action' %}">Cancel</a>
+				{% endif %}
+			</div>
+		</div>
+		
+		<div class="col_6">
+				<div class="homeRight center">
+					<h5 class="left">Password Reset</h5>
+					<p class="left" style="position:relative;top:10px;">
+						Providing your cell phone number and/or external (non-PSU) email address will allow you to use OAM’s self-service password reset features. In the event that you need to reset your password, an automated message will be sent to your email/phone with a reset code. 
+					</p><br>
+				</div>
+			</div>
+		
+	</div>
+</div>
+{% endblock %}
+{% block footer %}{% if allow_cancel %}<a href="/accounts/logout/">Logout</a>{% endif %}
+{% endblock %}

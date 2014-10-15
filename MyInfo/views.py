@@ -1,99 +1,172 @@
-# Create your views here.
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from MyInfo.forms import formPasswordChange, formNewPassword, formExternalContactInformation, formPSUEmployee, expired_password_login_form
-from django.http import HttpResponseServerError, HttpResponseRedirect
-from lib.api_calls import passwordConstraintsFromIdentity, identity_from_psu_uuid
-from lib.util_functions import contact_initial, directory_initial
-from django.contrib import auth
-from django.core.urlresolvers import reverse
-from brake.decorators import ratelimit
+import datetime
 
-from MyInfo.forms import ReCaptchaForm
+from django.shortcuts import render
+from django.http import HttpResponseServerError, HttpResponseRedirect
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse, reverse_lazy
+
+from lib.api_calls import change_password
+
+from MyInfo.forms import formPasswordChange, formNewPassword, LoginForm, DirectoryInformationForm, ContactInformationForm
+from MyInfo.models import DirectoryInformation, ContactInformation, MaintenanceNotice
+
+from AccountPickup.models import OAMStatusTracker
+
+from brake.decorators import ratelimit
 
 import logging
 logger = logging.getLogger(__name__)
 
-@ratelimit(block = False, rate='5/m')
-@ratelimit(block = True, rate='10/h')
+@ratelimit(block = True, rate='10/m')
+@ratelimit(block = True, rate='50/h')
 def index(request):
-    captcha = None
-    form = expired_password_login_form(request.POST or None)
+    login_form = LoginForm(request.POST or None)
     error_message = ""
-    
-    if getattr(request, 'limited', False):
-        captcha = ReCaptchaForm(request.POST or None)
         
-    if form.is_valid() and (captcha is None or captcha.is_valid()):
-        # For some reason they already have a session. Let's get rid of it and start fresh.
+    if login_form.is_valid():
+        # If for some reason they already have a session, let's get rid of it and start fresh.
         if request.session is not None:
             request.session.flush()
             
-        user = auth.authenticate(odin_username=form.cleaned_data['odin_username'],
-                                 password=form.cleaned_data['password'],
+        logger.debug("OAM Login Attempt: {0}".format(login_form.cleaned_data['username']))
+            
+        user = auth.authenticate(username=login_form.cleaned_data['username'],
+                                 password=login_form.cleaned_data['password'],
                                  request=request)
-        logger.info("Expired Password login attempt for Odin Username: {0}".format(form.cleaned_data['odin_username']))
+        
         if user is not None:
             #Identity is valid.
             auth.login(request, user)
+            logger.info("service=myinfo login_username=" + login_form.cleaned_data['username'] + " success=true")
             
-            logger.info("Expired Password login success for Odin Username: {0}".format(form.cleaned_data['odin_username']))
-            
-            return HttpResponseRedirect(reverse("MyInfo:update"))
+            # Head to the oam status router in case they have any unmet oam tasks.
+            return HttpResponseRedirect(reverse("AccountPickup:next_step"))
+        
         #If identity is invalid, prompt re-entry.
         error_message = "That identity was not found."
     
+        #logger.debug("Error during login with username: {0} and password: {1}".format(login_form.cleaned_data["username"], login_form.cleaned_data["password"]))
+
+    # Determine whether or not to render a maintenance notice.
+    notices = MaintenanceNotice.objects.filter(
+        start_display__lte=datetime.datetime.now()
+    ).filter(
+        end_display__gte=datetime.datetime.now()
+    )
+    
     return render(request, 'MyInfo/index.html', {
-        'form' : form,
+        'form' : login_form,
         'error' : error_message,
-        'captcha' : captcha,
+        'notices' : notices,
     })
     
-        
-@login_required(login_url='/accounts/login/')
-def update_information(request):
-    # If the session has not yet opted-out of supernag set opt-out to false.
-    if not "opt-out" in request.session:
-        request.session["opt-out"] = False
-        
-    # Find out which auth backend we used, is this a new user or returning user?
-    if request.session['_auth_user_backend'] == 'django_cas.backends.CASBackend':
-        newStudent = False
-        passwordForm = formPasswordChange(request.POST or None)
-    else:
-        newStudent = True
-        passwordForm = formNewPassword(request.POST or None)
+# Present the user with a list of appropriate actions for them to be able to take.
+# This serves as a navigation menu.
+@login_required(login_url=reverse_lazy('index'))
+def pick_action(request):
     
-    # Sets the default checked-state of the opt-out button.
-    if request.session["opt-out"] is True:
-        checked = 'checked'
-    else:
-        checked = ''
+    return render(request, 'MyInfo/pick_action.html', {
+        'identity': request.session['identity'],
+        'allow_cancel': request.session['ALLOW_CANCEL'],
+    })
     
+@login_required(login_url=reverse_lazy('index'))
+def set_password(request):
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    
+    if oam_status.set_password is True:
+        form = formPasswordChange(request.POST or None)
+    else:
+        form = formNewPassword(request.POST or None)
+        
     if 'identity' not in request.session:
-        logger.critical("No identity for user at MyInfo: {0}".format(request.session))
+        logger.critical("service=myinfo error=\"No identity information available at set password. Aborting.\" session=\"{0}\"".format(request.session))
         return HttpResponseServerError('No identity information was available.')
     
-    # Refresh our identity.
-    request.session['identity'] = identity_from_psu_uuid(request.session['identity']['PSU_UUID'])
+    success = False
+    message = None
+    if form.is_valid():
+        (success, message) = change_password(request.session['identity'], form.cleaned_data['newPassword'], None)
+        
+        if oam_status.set_password is False and success is True:
+            oam_status.set_password = True
+            oam_status.save()
+        
+        if success is True:
+            return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
-    # Build our extended information form.
-    contactForm = formExternalContactInformation(request.POST or None, initial=contact_initial(request))
+    
+    # Consider rendering when the password expires. Eventually.
+    return render(request, 'MyInfo/set_password.html', {
+        'identity' : request.session['identity'],
+        'form': form,
+        'success': success,
+        'error': message,
+        'allow_cancel': request.session['ALLOW_CANCEL'],
+    })
+
+@login_required(login_url=reverse_lazy('index'))
+def set_directory(request):
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
     
     # Are they an employee with information to update?
-    if True: #TODO: Stubbed
-        psuEmployeeForm = formPSUEmployee(request.POST or None, initial=directory_initial(request.session['identity']['PSU_UUID']))
+    if request.session['identity']['PSU_PUBLISH'] == True:
+        (directory_info, _) = DirectoryInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+        directory_info_form = DirectoryInformationForm(request.POST or None, instance=directory_info)
     else:
-        psuEmployeeForm = None
-        
-    password_rules = passwordConstraintsFromIdentity(request.session['identity'])
+        oam_status.set_directory = True
+        oam_status.save()
+        return HttpResponseRedirect(reverse("AccountPickup:next_step")) # Shouldn't be here.
     
-    return render(request, 'MyInfo/update_info.html', {
-    'identity' : request.session['identity'],
-    'password_rules' : password_rules,
-    'passwordForm' : passwordForm,
-    'contactForm' : contactForm,
-    'PSUEmployeeForm' : psuEmployeeForm,
-    'newStudent' : newStudent,
-    'checked' : checked,
+    if directory_info_form.is_valid():
+        directory_info_form.save()
+        if oam_status.set_directory is False:
+            oam_status.set_directory = True
+            oam_status.save()
+        
+        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+        
+    return render(request, 'MyInfo/set_directory.html', {
+        'identity': request.session['identity'],
+        'form': directory_info_form,
+        'allow_cancel': request.session['ALLOW_CANCEL'],
+    })
+    
+    
+
+@login_required(login_url=reverse_lazy('index'))
+def set_contact(request):
+    # We don't check OAMStatusTracker because if they don't have contact info set they will be sent to the AccountPickup
+    # version of this page. This is just for changing existing contact info.
+    
+    # Build our password reset information form.
+    (contact_info, _) = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+    contact_info_form = ContactInformationForm(request.POST or None, instance=contact_info)
+    
+    if contact_info_form.is_valid():
+        # First check to see if they removed all their contact info.
+        if contact_info_form.cleaned_data['cell_phone'] is None and contact_info_form.cleaned_data['alternate_email'] is None:
+            (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+            oam_status.set_contact_info = False
+            oam_status.save()
+        
+        contact_info_form.save()
+        
+        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+        
+    return render(request, 'MyInfo/set_contact.html', {
+        'identity': request.session['identity'],
+        'form': contact_info_form,
+        'allow_cancel': request.session['ALLOW_CANCEL'],
+    })
+    
+@login_required(login_url=reverse_lazy('index'))
+def welcome_landing(request):
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    oam_status.welcome_displayed = True
+    oam_status.save()
+    
+    return render(request, 'MyInfo/welcome_landing.html', {
+        'identity': request.session['identity'],
     })

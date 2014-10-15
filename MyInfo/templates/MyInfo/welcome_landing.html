@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Your Accounts Are Ready{% endblock %}
+
+{% block body_content %}
+{% include 'fragments/user_info.html' %}
+
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+		<div class="col_6">
+			<div class="homeLeft center">
+			<h5 style="text-align:left; padding-left:5px;">Welcome to PSU!</h5>
+
+			<p class="left" style="position:relative;top:10px;">
+				The Office of Information Technology is delighted to be part of your PSU experience. Our mission is to empower students, faculty, and staff through technology.
+				<a href="http://www.pdx.edu/oit/contact" target="_blank">Our Helpdesk</a> is available 24/7 to assist with technical issues on campus, including problems regarding your Odin computer account.
+				We'd love your feedback on the Odin computer account creation process, whether it went smoothly or if you had any problems!
+				Please let us know how we're doing by taking our <a href="https://portlandstate.qualtrics.com//SE/?SID=SV_9LC6LlTpUPfGDfT" target="_blank">account activation survey</a>.
+			</p>
+                <p class="left" style="position:relative;top:10px;">
+                    You have now completed the account claim process. Your new account is ready to use, but you are not
+                    yet logged in. There is no need to log out.
+                </p>
+			<p class="left" style="position:relative;top:10px;">
+				<strong>Note: </strong>Please be aware that Odin accounts do expire; you can find out more on our <a href="http://www.pdx.edu/oit/computer-accounts" target="_blank">Computer Accounts</a> page.
+			</p>
+			</div>
+		</div>
+			
+		<div class="col_6">
+			<div class="homeRight">
+				<h5 class="left">Using Your Odin Account</h5>
+				<p class="left" style="position:relative;top:20px;">
+					Your Odin computer account can be used to login to PSU resources like <a href="https://banweb.pdx.edu" target="_blank">Banweb</a> that you'll use to register for classes, view your paystub, etc. Other services that require an Odin account include:
+				</p>
+                <br />
+				<ul>
+					<li><a href="http://www.pdx.edu/oit/wi-fi" target="_blank">Wi-Fi</a></li>
+					<li><a href="https://d2l.pdx.edu/" target="_blank">Desire2Learn (D2L)</a></li>
+					<li><a href="http://www.pdx.edu/oit/google-apps" target="_blank">PSU Google Apps (Email, Calendar, Etc)</a></li>
+					<li><a href="http://www.pdx.edu/oit/computer-labs-classrooms" target="_blank">Computer Labs</a></li>
+				</ul>
+				<hr>
+				<h5 class="left">Campus Resources</h5>
+				<p class="left">
+					<ul>
+						<li><a href="http://my.pdx.edu/" target="_blank">myPSU</a></li>
+						<li><a href="http://www.pdx.edu/oit/" target="_blank">Office of Information Technology</a></li>
+						<li><a href="http://www.pdx.edu/cpso/" target="_blank">Campus Public Safety Office</a></li>
+						<li><a href="http://www.pdx.edu/transportation/" target="_blank">Transportation &amp; Parking Services</a></li>
+						<li><a href="http://www.pdx.edu/housing/" target="_blank">Housing &amp; Residence Life</a></li>
+					</ul>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+			
+			
+			
+			
+{% endblock %}
+{% block footer %}
+{% endblock %}

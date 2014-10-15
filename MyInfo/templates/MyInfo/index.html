@@ -1,70 +1,68 @@
-{% extends "lib/base.html" %}
+{% extends "base.html" %}
 {% load staticfiles %}
 
-{% block title %}MyInfo Login{% endblock %}
+{% block title %}OAM Login{% endblock %}
 
-{% block head_js %}
-	<script src="{% static "lib/js/jquery.validate.js" %}"></script>
-	
-	<script type="text/javascript">
-	$(function() {
-		{% if not form.errors and not error %}
-		$("#infoForm").hide();
-		{% endif %}
-		
-		$("#loginToggle").click(function(event) {
-			event.preventDefault();
-			$("#infoForm").fadeIn("slow");
-		});
-	});
-	</script>
-{% endblock %}
+{% block head_js %}{% endblock %}
 
-{% block header %}MyInfo - Login{% endblock %}
 
 {% block body_content %}
-	<div class="col_6" style="align">
-		<div class="center">
-			<h5>Users with active accounts</h5>
-			<a href="/MyInfo/update_information/">Click here to log in with single sign-on.</a>
-		</div>
+<div class="containerTop grid">
+	<div class="topBody grid center">
+		<h6 class="topBodyHeaderBold">Odin Account Manager</h6><h6 class="topBodyHeaderLight"> is the easy-to-use tool for managing your PSU computer account</h6>
 	</div>
+</div>
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+        {%  if notices %}
+        <div class="center">
+            <h6>Maintenance Notice</h6>
+            {% for notice in notices %}
+            <p>{{ notice.message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+			<div class="col_6">
+				<div class="homeLeft center">
+					<h5>Log in to Your Odin Account</h5>
+					
+					<form action="{% url 'index' %}" method="post">
+						{% csrf_token %}
+						{{ form.non_field_errors }}
+						
+						{% if error %}
+						<ul class="errorlist">
+							<li class="first last">{{ error }}</li>
+						</ul>
+						{% endif %}
+						
+						{% for field in form %}
+						{{ field.errors }}
+						{{ field.label_tag }}
+						{{ field }}<br>
+						{% endfor %}
 
-	<div class="col_6">
-		<div class="center">
-			<h5>Is your password expired?</h5>
-			<a id="loginToggle" href="#">Click here to update your password.</a><br>
-		</div>
+						<input class="loginButton" type="submit" value="Login">
+					</form>
+					<a class="forgotPassword" href="{% url 'PasswordReset:index' %}">Forgot Your Password?</a>
+					<br>
+					<a class="forgotPassword" href="{% url 'AccountPickup:index' %}">New? Activate Account</a>
+                    <br>
+                    <a class="forgotPassword" href="">Request Additional Access</a>
+				</div>
+			</div>
+			<div class="col_6">
+				<div class="homeRight center">
+					<h5 class="left">Log in or Activate Your Account!</h5>
+					<p class="left" style="position:relative;top:8px;">If you've already activated your Odin account, enter your username and password to log in and manage your account.
+					<br><br>If you still need to activate your Odin account, select the "Activate Account" link to be guided through the account activation process.</p><br>
+				</div>
+			</div>
 	</div>
-
-	<form id="infoForm" action="/MyInfo/" method="post">
-		{% csrf_token %}
-		{{ form.non_field_errors }}
-		
-		{% if error %}
-		<div class="ui-state-error">{{ error }}</div>
-		{% endif %}
-		<fieldset>
-			<div class="wide-input">
-				{{ form.odin_username.label_tag }} {{ form.odin_username }}
-				{{ form.odin_username.errors }}
-			</div>
-			
-			<div class="wide-input">
-				{{ form.password.label_tag }} {{ form.password }}
-				{{ form.password.errors }}
-			</div>
-			
-			{% if captcha %}
-			<div class="captcha">
-				{{ captcha.captcha }}
-			</div>
-			{% endif %}
-		</fieldset>
-		
-		<input type="submit" value="Login to MyInfo" />
-	</form>
+</div>
 {% endblock %}
+{% block footer %}<a class="footerRightText" href="{% url 'CASLogin' %}">Log in with PSU SSO</a>{% endblock %}
+
 
 
 

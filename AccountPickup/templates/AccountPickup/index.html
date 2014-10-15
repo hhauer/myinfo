@@ -1,4 +1,4 @@
-{% extends "lib/base.html" %}
+{% extends "base.html" %}
 {% load staticfiles %}
 
 {% block title %}Account Pickup{% endblock %}
@@ -8,80 +8,55 @@
 	<script src="{% static "lib/js/additional-methods.js" %}"></script>
 	
 	<script type="text/javascript">
-	$(function() {
-		$("#login-form").validate({
-			rules: {
-				id_number: {
-					required: true,
-					minlength: 9,
-					maxlength: 9,
-					number: true
-				},
-				birth_date: {
-					required: true,
-					dateUS: true
-				},
-				auth_pass: "required"
-			},
-			errorPlacement: function(label, invalid) {
-				label.insertAfter(invalid);
-			}
-		});
-	});
-	
 	function tick(el) {
 		$('#id_auth_pass').attr('type', el.checked ? 'text' : 'password');
 	}
 	</script>
 {% endblock %}
 
-{% block header %}Account Pickup - New User{% endblock %}
-
 {% block body_content %}
-	<div class="col_12">
-	<h4>Welcome to Account Pickup</h4>
-	
-	<p>Please enter your PSU ID number, birthday, and the password you received in the mail to get started.
-	You will be guided through the process of setting up you accounts and setting your initial password.
-	Please follow instructions carefully. [[Development note: Use the ID 123456789 to bypass Sailpoint.]]</p>
-	
-	<form id="login-form" action="/AccountPickup/" method="post">
-	{% csrf_token %}
-	{{ form.non_field_errors }}
-	
-	{% if error %}
-	<div class="ui-state-error">{{ error }}</div>
-	{% endif %}
-			<fieldset>
-				<div class="wide-input">
-					{{ form.id_number.label_tag }} {{ form.id_number }}
-					{{ form.id_number.errors }}
-				</div>
-				
-				<div class="wide-input">
-					{{ form.birth_date.label_tag }} {{ form.birth_date }}
-					{{ form.birth_date.errors }}
-				</div>
-				
-				<div class="wide-input">
-					{{ form.auth_pass.label_tag }} {{ form.auth_pass }}
-					{{ form.auth_pass.errors }}
-				</div>
-				
-				<div>
-					<label for="showpass">Show password</label>
-					<input type="checkbox" onchange="tick(this)" id="showpass" style="margin-left: 0px"/>
-				</div>
-				
-				{% if captcha %}
-				<div class="captcha">
-				{{ captcha.captcha }}
-				</div>
-				{% endif %}
-			</fieldset>
-	
-	<input type="submit" value="Login to Account Pickup" />
-	</form>
+<div class="containerTop grid">
+	<div class="topBody grid center">
+		<h6 class="topBodyHeaderBold">Odin Account Manager</h6><h6 class="topBodyHeaderLight"> is the easy-to-use tool for managing your PSU computer account</h6>
 	</div>
-	
+</div>
+<div class="containerMiddle grid flex col_12 column">
+	<div class="middleBody grid">
+			<div class="col_6">
+				<div class="homeLeft center">
+					<h5>Activate Your Odin account</h5>
+					<form id="login-form" action="{% url 'AccountPickup:index' %}" method="post">
+						{% csrf_token %}
+						{{ form.non_field_errors }}
+						
+						{% if error %}
+						<div class="ui-state-error">{{ error }}</div>
+						{% endif %}
+						{% for field in form %}
+						{{ field.errors }}
+						{{ field.label_tag }}
+						{{ field }}<br>
+						{% endfor %}
+						
+						
+						<span>
+						<label for="showpass" style="display: inline-block;">Show Password:</label>
+						<input id="showpass" type="checkbox" onchange="tick(this)"/>
+						</span>
+						
+						
+						<br>
+						<input type="submit" value="Activate Account">
+					</form>
+				</div>
+			</div>
+			<div class="col_6">
+				<div class="homeRight center">
+					<h5 class="left">Getting Started</h5>
+					<p class="left" style="position:relative;top:10px;">Enter your PSU ID number, birth date, and the activation code you received in your admission letter or letter of offer. You will be guided through the process of setting up your accounts and setting your initial password. Please follow instructions carefully.</p><br>
+				</div>
+			</div>
+	</div>
+</div>
 {% endblock %}
+{% block footer %}{% endblock %}
