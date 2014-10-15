@@ -18,10 +18,9 @@ import sys
 import site
 
 
-# Uncomment the following when using with mod_wsgi.
-#site.addsitedir('/var/www/myinfo/lib/python3.3/site-packages')
-#sys.path.append('/var/www/myinfo/psu-myinfo')
-#sys.path.append('/var/www/myinfo/psu-myinfo/PSU_MyInfo')
+site.addsitedir('/var/www/myinfo/lib/python3.3/site-packages')
+sys.path.append('/var/www/myinfo/myinfo')
+sys.path.append('/var/www/myinfo/myinfo/oam_base')
 
 
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks

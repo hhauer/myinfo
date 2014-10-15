@@ -10,13 +10,15 @@
 8) Edit manage.py to point to the correct settings file.
 9) Download oracle instant client and SDK headers.
 10) Unzip oracle parts into /var/www/myinfo
+--) Run 'sudo ldconfig' to rebuild the linker cache once oracle libs are in place.
 11) Update /etc/sysconfig/httpd to set ORACLE_HOME and LD_LIBRARY_PATH to include oracle.
 12) Activate python virtualenv.
 13) Install requirements file.
 14) Manually install cx_oracle with pip.
 15) Reboot httpd.
 
-16) [If necessary] create /var/log/myinfo.log and chown to myinfo:myinfo.
+16) Create /var/log/myinfo.log and chown to myinfo:apache.
+17) chmod ga+w on /var/log/myinfo.log
 
 # Preparing the database
 1) Remove initial_data.json from the myinfo project folder.
