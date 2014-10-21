@@ -182,9 +182,7 @@ class CASBackend(object):
 
         if attributes:
             request.session['attributes'] = attributes
-            #request.session['identity'] = identity_from_psu_uuid(request.session['attributes']['PSU_UUID'])
-            # Stubbed here as CAS does not currently return PSU_UUID.
-            request.session['identity'] = identity_from_psu_uuid(request.session['attributes']['UID'])
+            request.session['identity'] = identity_from_psu_uuid(request.session['attributes']['PSUUUID'])
         if not username:
             return None
         try:
