@@ -16,8 +16,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Building',
             fields=[
-                ('code', models.CharField(max_length=10, unique=True, serialize=False, primary_key=True)),
-                ('name', models.CharField(max_length=50, unique=True)),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('name', models.CharField(max_length=255, unique=True)),
             ],
             options={
             },
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
             name='Department',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('name', models.CharField(max_length=50, unique=True)),
+                ('name', models.CharField(max_length=64, unique=True)),
             ],
             options={
             },
@@ -51,7 +51,8 @@ class Migration(migrations.Migration):
             name='Mailcode',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('code', models.CharField(max_length=255, unique=True)),
+                ('code', models.CharField(max_length=40, unique=True)),
+                ('description', models.CharField(max_length=255)),
             ],
             options={
             },
@@ -72,7 +73,7 @@ class Migration(migrations.Migration):
                 ('state', localflavor.us.models.USStateField(blank=True, max_length=2, null=True, default='OR', choices=[('AL', 'Alabama'), ('AK', 'Alaska'), ('AS', 'American Samoa'), ('AZ', 'Arizona'), ('AR', 'Arkansas'), ('AA', 'Armed Forces Americas'), ('AE', 'Armed Forces Europe'), ('AP', 'Armed Forces Pacific'), ('CA', 'California'), ('CO', 'Colorado'), ('CT', 'Connecticut'), ('DE', 'Delaware'), ('DC', 'District of Columbia'), ('FL', 'Florida'), ('GA', 'Georgia'), ('GU', 'Guam'), ('HI', 'Hawaii'), ('ID', 'Idaho'), ('IL', 'Illinois'), ('IN', 'Indiana'), ('IA', 'Iowa'), ('KS', 'Kansas'), ('KY', 'Kentucky'), ('LA', 'Louisiana'), ('ME', 'Maine'), ('MD', 'Maryland'), ('MA', 'Massachusetts'), ('MI', 'Michigan'), ('MN', 'Minnesota'), ('MS', 'Mississippi'), ('MO', 'Missouri'), ('MT', 'Montana'), ('NE', 'Nebraska'), ('NV', 'Nevada'), ('NH', 'New Hampshire'), ('NJ', 'New Jersey'), ('NM', 'New Mexico'), ('NY', 'New York'), ('NC', 'North Carolina'), ('ND', 'North Dakota'), ('MP', 'Northern Mariana Islands'), ('OH', 'Ohio'), ('OK', 'Oklahoma'), ('OR', 'Oregon'), ('PA', 'Pennsylvania'), ('PR', 'Puerto Rico'), ('RI', 'Rhode Island'), ('SC', 'South Carolina'), ('SD', 'South Dakota'), ('TN', 'Tennessee'), ('TX', 'Texas'), ('UT', 'Utah'), ('VT', 'Vermont'), ('VI', 'Virgin Islands'), ('VA', 'Virginia'), ('WA', 'Washington'), ('WV', 'West Virginia'), ('WI', 'Wisconsin'), ('WY', 'Wyoming')])),
                 ('zip_code', models.CharField(blank=True, max_length=10, default='97201', null=True)),
                 ('department', models.ForeignKey(blank=True, null=True, to='MyInfo.Department')),
-                ('mail_code', models.ForeignKey(blank=True, null=True, to='MyInfo.Building')),
+                ('mail_code', models.ForeignKey(blank=True, null=True, to='MyInfo.Mailcode')),
                 ('office_building', models.ForeignKey(blank=True, null=True, to='MyInfo.Building')),
             ],
             options={
@@ -92,16 +93,4 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-#        migrations.AddField(
-#            model_name='directoryinformation',
-#            name='mail_code',
-#            field=models.ForeignKey(blank=True, null=True, to='MyInfo.Mailcode'),
-#            preserve_default=True,
-#        ),
-#        migrations.AddField(
-#            model_name='directoryinformation',
-#            name='office_building',
-#            field=models.ForeignKey(blank=True, null=True, to='MyInfo.Building'),
-#            preserve_default=True,
-#        ),
     ]

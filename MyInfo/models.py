@@ -8,22 +8,22 @@ logger = logging.getLogger(__name__)
 
 # PSU Mailcode
 class Mailcode(models.Model):
-    code = models.CharField(max_length=255, unique=True)
+    code = models.CharField(max_length=40, unique=True)
+    description = models.CharField(max_length=255)
     
     def __str__(self):
-        return self.code
+        return self.code + " -- " + self.description
 
 # For departmental dropdown choices.
 class Department(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=64, unique=True)
     
     def __str__(self):
         return self.name
 
 # Buildings
 class Building(models.Model):
-    code = models.CharField(max_length=10, unique=True, primary_key=True)
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
