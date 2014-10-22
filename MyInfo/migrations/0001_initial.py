@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('name', models.CharField(max_length=255, unique=True)),
+                ('code', models.CharField(max_length=10, unique=True)),
             ],
             options={
             },
@@ -40,7 +41,7 @@ class Migration(migrations.Migration):
             name='Department',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('name', models.CharField(max_length=64, unique=True)),
+                ('name', models.CharField(max_length=255, unique=True)),
             ],
             options={
             },
@@ -51,7 +52,7 @@ class Migration(migrations.Migration):
             name='Mailcode',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('code', models.CharField(max_length=40, unique=True)),
+                ('code', models.CharField(max_length=40)),
                 ('description', models.CharField(max_length=255)),
             ],
             options={
