@@ -113,7 +113,6 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'longerusername', # This must be first so that it can patch the auth model.         
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
