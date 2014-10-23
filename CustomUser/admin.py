@@ -9,25 +9,42 @@ from CustomUser.models import PSUCustomUser
 class UserChangeForm(forms.ModelForm):
     class Meta:
         model = PSUCustomUser
-        fields = ('psu_uuid', 'is_active', 'is_admin')
+        fields = ('username', 'is_active', 'is_admin')
+
+class UserCreationForm(forms.ModelForm):
+    password1 = forms.CharField(label='Password', widget=forms.HiddenInput, initial='!')
+    password2 = forms.CharField(label='Password confirmation', widget=forms.HiddenInput, initial='!')
+
+    class Meta:
+        model = PSUCustomUser
+        fields = ('username', 'is_active', 'is_admin')
+
+    def save(self, commit=True):
+        user = super(UserCreationForm, self).save(commit=False)
+        user.set_unusable_password()
+
+        if commit:
+            user.save()
+        return user
 
 
 class MyUserAdmin(UserAdmin):
     # The forms to add and change user instances
     form = UserChangeForm
+    add_form = UserCreationForm
 
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('psu_uuid', 'is_active', 'is_admin')
+    list_display = ('username', 'is_active', 'is_admin')
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('psu_uuid', 'is_active')}),
+        (None, {'fields': ('username', 'is_active')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
 
-    search_fields = ('psu_uuid',)
-    ordering = ('psu_uuid',)
+    search_fields = ('username',)
+    ordering = ('username',)
     filter_horizontal = ()
 
 # Now register the new UserAdmin...

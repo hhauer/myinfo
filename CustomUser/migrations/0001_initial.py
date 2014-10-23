@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
                 ('password', models.CharField(verbose_name='password', max_length=128)),
                 ('last_login', models.DateTimeField(verbose_name='last login', default=django.utils.timezone.now)),
-                ('psu_uuid', models.CharField(db_index=True, max_length=36, unique=True)),
+                ('username', models.CharField(db_index=True, max_length=36, unique=True)),
                 ('is_active', models.BooleanField(default=True)),
                 ('is_admin', models.BooleanField(default=False)),
             ],
