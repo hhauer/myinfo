@@ -120,6 +120,7 @@ INSTALLED_APPS = (
     #'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'CustomUser',
     'MyInfo',
     'AccountPickup',
     'PasswordReset',
@@ -206,9 +207,13 @@ LOGGING = {
     }
 }
 
+AUTH_USER_MODEL = 'CustomUser.PSUCustomUser'
+
 # Settings related to CAS authentication.
-CAS_SERVER_URL = ''
-CAS_VERSION = '1'
+#CAS_SERVER_URL = ''
+#CAS_VERSION = '1'
+CAS_SERVER_URL = 'https://ssodevel.oit.pdx.edu/cas/'
+CAS_VERSION = 'CAS_2_SAML_1_0'
 
 # Settings related to sailpoint.
 SAILPOINT_SERVER_URL = ''
