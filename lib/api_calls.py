@@ -66,6 +66,13 @@ def identify_oam_login(username, password):
         'password': password,
     }
     res = call_iiq('PSU_UI_MYINFO_LOGIN_PASSWORD', data)
+
+    # Massage PSU_PUBLISH:
+    if "PSU_PUBLISH" in res:
+        if res["PSU_PUBLISH"].lower() == "yes":
+            res["PSU_PUBLISH"] = True
+        else:
+            res["PSU_PUBLISH"] = False
     
     if "ERROR" in res:
         return None
@@ -85,7 +92,16 @@ def identity_from_psu_uuid(psu_uuid):
         }
         
     data = {'PSU_UUID': psu_uuid}
-    return call_iiq('PSU_UI_MYINFO_LOGIN_UUID', data)
+    results = call_iiq('PSU_UI_MYINFO_LOGIN_UUID', data)
+
+    # Massage PSU_PUBLISH:
+    if "PSU_PUBLISH" in results:
+        if results["PSU_PUBLISH"].lower() == "yes":
+            results["PSU_PUBLISH"] = True
+        else:
+            results["PSU_PUBLISH"] = False
+
+    return results
     
 # This function returns the appropriate password constraints based on an identity.
 def passwordConstraintsFromIdentity(identity):
