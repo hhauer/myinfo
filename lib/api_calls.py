@@ -85,7 +85,7 @@ def identity_from_psu_uuid(psu_uuid):
         }
         
     data = {'PSU_UUID': psu_uuid}
-    return call_iiq('PSU_UI_IDENTIFY_UUID', data)
+    return call_iiq('PSU_UI_MYINFO_LOGIN_UUID', data)
     
 # This function returns the appropriate password constraints based on an identity.
 def passwordConstraintsFromIdentity(identity):
