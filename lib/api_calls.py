@@ -69,7 +69,7 @@ def identify_oam_login(username, password):
 
     # Massage PSU_PUBLISH:
     if "PSU_PUBLISH" in res:
-        if res["PSU_PUBLISH"].lower() == "yes":
+        if res["PSU_PUBLISH"] is not None and res["PSU_PUBLISH"].lower() == "yes":
             res["PSU_PUBLISH"] = True
         else:
             res["PSU_PUBLISH"] = False
