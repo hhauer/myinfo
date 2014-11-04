@@ -2,6 +2,7 @@ $(document).ready(function() {
 	
 	window.lengthValid = false;
 	window.numberValid = false;
+    window.characterValid = false;
 	window.passwordSame = false;
 	
 	$('#id_newPassword').keyup(function() {
@@ -21,6 +22,14 @@ $(document).ready(function() {
 			window.numberValid = false;
 		} else {
 			$('#numbercount').removeClass('invalid').addClass('valid');
+			window.numberValid = true;
+		}
+
+        if( (password.match(/[a-zA-Z]/g) || [] ).length < 1) {
+			$('#charactercount').removeClass('valid').addClass('invalid');
+			window.numberValid = false;
+		} else {
+			$('#charactercount').removeClass('invalid').addClass('valid');
 			window.numberValid = true;
 		}
 		
@@ -62,7 +71,7 @@ $(document).ready(function() {
 	});
 	
 	$('#passwordForm').submit(function() {
-		if (window.lengthValid && window.numberValid && window.passwordSame) {
+		if (window.lengthValid && window.numberValid && window.characterValid && window.passwordSame) {
 			return true;
 		} else {
 			return false;
