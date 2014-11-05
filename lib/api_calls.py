@@ -125,8 +125,9 @@ def truename_odin_names(identity):
             'Odin Name 4 - DEV',
         ]
         return stub
-        
-    return call_iiq('PSU_UI_TRUENAME_GEN_USERNAMES', identity)
+
+    usernames = call_iiq('PSU_UI_TRUENAME_GEN_USERNAMES', identity)
+    return usernames["GENERATED_USERNAMES"]
 
 # This function returns a list of potential email aliases to choose from.
 def truename_email_aliases(identity):
@@ -138,8 +139,9 @@ def truename_email_aliases(identity):
             'Email Alias 4 - DEV',
         ]
         return stub
-        
-    return call_iiq('PSU_UI_TRUENAME_GEN_EMAILS', identity)
+
+    emails = call_iiq('PSU_UI_TRUENAME_GEN_EMAILS', identity)
+    return emails["GENERATED_EMAILS"]
     
 # This function calls out to sailpoint to begin a password update event.
 def change_password(identity, new_password, old_password):
