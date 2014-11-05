@@ -463,11 +463,12 @@ input[type="button"]{*padding:7px 15px;}/*IE 7 ONLY*/
 	input[type="submit"]:hover,
 	input[type="reset"]:hover,
 	input[type="button"]:hover{
-	border:0px solid #bbb;
- background:#ccd62f;
+	    border:0px solid #bbb;
+        background:#ccd62f;
 		color: #404040;
 		border: none;
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+        //No longer works in the intended way. Remove from Kickstart Buttons as well.
+        //filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
 	}
 
 input.loginButton {
@@ -493,13 +494,14 @@ input.loginButton {
 	margin-top: 15px;
 }
 
-
+/*
 a.input.loginButton:hover {
         background-color:#ccd62f;
 		color: #404040;
 		border: none;
 }
-    
+*/
+
 a.loginButton:active {
         position:relative;
         top:1px;
@@ -523,9 +525,7 @@ a.loginButton {
         font-weight:600;
         padding:10px 20px;
         text-decoration:none;
-        
         text-shadow:0px 1px 0px #a8a8a8;
-        
 }
    
 a.loginButton:hover {
