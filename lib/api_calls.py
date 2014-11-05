@@ -96,7 +96,7 @@ def identity_from_psu_uuid(psu_uuid):
 
     # Massage PSU_PUBLISH:
     if "PSU_PUBLISH" in results:
-        if results["PSU_PUBLISH"].lower() == "yes":
+        if results["PSU_PUBLISH"] is not None and results["PSU_PUBLISH"].lower() == "yes":
             results["PSU_PUBLISH"] = True
         else:
             results["PSU_PUBLISH"] = False
