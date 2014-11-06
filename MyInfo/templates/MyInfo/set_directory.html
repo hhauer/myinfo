@@ -23,9 +23,9 @@
 					{% endif %}
 					
 					{% for field in form %}
-					{{ field.errors }}
 					{{ field.label_tag }}
 					{{ field }}<br>
+                    {{ field.errors }}
 					{% endfor %}
 					
 					<input class="loginButton" type="submit" value="Continue">
