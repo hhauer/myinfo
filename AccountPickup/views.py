@@ -156,11 +156,13 @@ def email_alias(request):
     if mailForm.is_valid():
         # Send the information to sailpoint to begin provisioning.
         email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
-        set_email_alias(request.session['identity'], email_alias)
 
-        request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
+        if email_alias is not None:
+            set_email_alias(request.session['identity'], email_alias)
 
-        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + email_alias)
+            request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
+
+            logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + email_alias)
 
         oam_status.select_email_alias = True
         oam_status.save()

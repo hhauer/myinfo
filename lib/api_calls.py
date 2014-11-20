@@ -163,13 +163,22 @@ def change_password(identity, new_password, old_password):
         return (False, status["PasswordError"])
 
 def set_odin_username(identity, odin_name):
-    # TODO: Stubbed
-    return
+    data = {
+        'psu_uuid': identity["PSU_UUID"],
+        'name': odin_name,
+    }
+
+    res = call_iiq('PSU_UI_SET_ODIN_USERNAME', data)
+    return res
 
 def set_email_alias(identity, email_alias):
-    # email_alias can be 'None' (string) and should be converted to None (value) if so.
-    # TODO: Stubbed
-    return
+    data = {
+        'psu_uuid': identity["PSU_UUID"],
+        'alias': email_alias,
+    }
+
+    res = call_iiq('PSU_UI_SET_EMAIL_ALIAS', data)
+    return res
 
 # Send a password reset email.
 def password_reset_email(PSU_UUID, email, token):
@@ -194,3 +203,11 @@ def password_reset_sms(number, token):
     'sms_reset_code': token,
     }
     call_iiq('PSU_UI_RESET_SMS', data)
+
+# Query IIQ for OamStatus information.
+def get_provisioning_status(psu_uuid):
+    data = {
+        'psu_uuid': psu_uuid,
+    }
+
+    return call_iiq('PSU_UI_GET_PROVISIONING_STATUS', data)
