@@ -226,4 +226,5 @@ MAX_USERNAME_LENGTH = 36
 # Downtime exempt paths.
 DOWNTIME_EXEMPT_PATHS = (
 	'/admin',
+    '/accounts/login',
 )
