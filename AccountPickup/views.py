@@ -111,7 +111,8 @@ def odinName(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     # Get possible odin names
-    request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
+    if 'TRUENAME_USERNAMES' not in request.session:
+        request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
     
     # Build our forms with choices from truename.
     odinForm = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
@@ -144,14 +145,15 @@ def email_alias(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     # Get possible email aliases
-    request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
+    if 'TRUENAME_EMAILS' not in request.session:
+        request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
 
-    # Prepend a "None" option at the start of the emails.
-    request.session['TRUENAME_EMAILS'].insert(0, 'None')
+        # Prepend a "None" option at the start of the emails.
+        request.session['TRUENAME_EMAILS'].insert(0, 'None')
+
 
     # Build our forms with choices from truename.
     mailForm = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
-
 
     if mailForm.is_valid():
         # Send the information to sailpoint to begin provisioning.
