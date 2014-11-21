@@ -27,10 +27,10 @@ $(document).ready(function() {
 
         if( (password.match(/[a-zA-Z]/g) || [] ).length < 1) {
 			$('#charactercount').removeClass('valid').addClass('invalid');
-			window.numberValid = false;
+			window.characterValid = false;
 		} else {
 			$('#charactercount').removeClass('invalid').addClass('valid');
-			window.numberValid = true;
+			window.characterValid = true;
 		}
 		
 		var result = zxcvbn(password, []);
@@ -63,7 +63,7 @@ $(document).ready(function() {
 			window.passwordSame = true;
 		}
 		
-		if (window.lengthValid && window.numberValid && window.passwordSame) {
+		if (window.lengthValid && window.numberValid && window.characterValid && window.passwordSame) {
 			$("#password-button").removeAttr("disabled");
 		} else {
 			$("#password-button").attr("disabled", "disabled");

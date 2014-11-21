@@ -12,7 +12,8 @@ from MyInfo.forms import ContactInformationForm
 from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm
 from AccountPickup.models import OAMStatusTracker
 
-from lib.api_calls import truename_odin_names, truename_email_aliases, set_odin_username, identity_from_psu_uuid, set_email_alias
+from lib.api_calls import truename_odin_names, truename_email_aliases, set_odin_username, identity_from_psu_uuid, set_email_alias, \
+    get_provisioning_status
 
 from brake.decorators import ratelimit
 
@@ -158,11 +159,13 @@ def email_alias(request):
     if mailForm.is_valid():
         # Send the information to sailpoint to begin provisioning.
         email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
-        set_email_alias(request.session['identity'], email_alias)
 
-        request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
+        if email_alias is not None:
+            set_email_alias(request.session['identity'], email_alias)
 
-        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + email_alias)
+            request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
+
+            logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + email_alias)
 
         oam_status.select_email_alias = True
         oam_status.save()
@@ -205,6 +208,18 @@ def provisioning_complete(request):
 def oam_status_router(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
     request.session['ALLOW_CANCEL']= False
+
+    if 'CHECKED_IIQ' not in request.session:
+        provision_status = get_provisioning_status(request.session['identity']['PSU_UUID'])
+
+        oam_status.select_odin_username = provision_status["ODIN_SELECTED"]
+        oam_status.select_email_alias = provision_status["ALIAS_SELECTED"]
+        oam_status.provisioned = provision_status["PROVISIONED"]
+        oam_status.welcome_displayed = provision_status["WELCOMED"]
+        oam_status.set_password = provision_status["PASSWORD_SET"]
+
+        oam_status.save()
+        request.session['CHECKED_IIQ'] = True
     
     if oam_status.agree_aup is None:
         return HttpResponseRedirect(reverse('AccountPickup:aup'))
