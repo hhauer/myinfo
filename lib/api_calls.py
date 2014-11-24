@@ -206,6 +206,15 @@ def password_reset_sms(number, token):
 
 # Query IIQ for OamStatus information.
 def get_provisioning_status(psu_uuid):
+    if settings.DEVELOPMENT == True:
+        return {
+            "ODIN_SELECTED": False,
+            "ALIAS_SELECTED": False,
+            "PROVISIONED": False,
+            "WELCOMED": False,
+            "PASSWORD_SET": False,
+        }
+
     data = {
         'psu_uuid': psu_uuid,
     }
