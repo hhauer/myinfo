@@ -182,15 +182,14 @@ def set_odin_username(identity, odin_name):
 
     url = "https://{}/identityiq/rest/custom/setOdin/{}".format(
         settings.SAILPOINT_SERVER_URL,
-        settings.RELEASE_LEVEL,
         identity['PSU_UUID'],
     )
 
     payload = {
-        'odin_name': odin_name, # TODO: Verify
+        'odin_name': odin_name,
     }
 
-    r = requests.get(url,
+    r = requests.post(url,
                      data = payload,
                      auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD),
                      verify=False)
