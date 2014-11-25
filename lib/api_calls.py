@@ -7,6 +7,8 @@ import json
 from django.conf import settings
 
 import logging
+import requests
+
 logger = logging.getLogger(__name__)
 
 
@@ -126,8 +128,14 @@ def truename_odin_names(identity):
         ]
         return stub
 
-    usernames = call_iiq('PSU_UI_TRUENAME_GEN_USERNAMES', identity)
-    return usernames["GENERATED_USERNAMES"]
+    url = "https://{}/identityiq/rest/custom/odinNames/{}/{}".format(
+        settings.SAILPOINT_SERVER_URL,
+        settings.RELEASE_LEVEL,
+        identity['PSU_UUID'],
+    )
+
+    r = requests.get(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False)
+    return r.json()
 
 # This function returns a list of potential email aliases to choose from.
 def truename_email_aliases(identity):
@@ -140,8 +148,14 @@ def truename_email_aliases(identity):
         ]
         return stub
 
-    emails = call_iiq('PSU_UI_TRUENAME_GEN_EMAILS', identity)
-    return emails["GENERATED_EMAILS"]
+    url = "https://{}/identityiq/rest/custom/emailAliases/{}/{}".format(
+        settings.SAILPOINT_SERVER_URL,
+        settings.RELEASE_LEVEL,
+        identity['PSU_UUID'],
+    )
+
+    r = requests.get(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False)
+    return r.json()
     
 # This function calls out to sailpoint to begin a password update event.
 def change_password(identity, new_password, old_password):
@@ -163,15 +177,29 @@ def change_password(identity, new_password, old_password):
         return (False, status["PasswordError"])
 
 def set_odin_username(identity, odin_name):
-    data = {
-        'psu_uuid': identity["PSU_UUID"],
-        'name': odin_name,
+    if settings.DEVELOPMENT == True:
+        return "SUCCESS"
+
+    url = "https://{}/identityiq/rest/custom/setOdin/{}".format(
+        settings.SAILPOINT_SERVER_URL,
+        settings.RELEASE_LEVEL,
+        identity['PSU_UUID'],
+    )
+
+    payload = {
+        'odin_name': odin_name, # TODO: Verify
     }
 
-    res = call_iiq('PSU_UI_SET_ODIN_USERNAME', data)
-    return res
+    r = requests.get(url,
+                     data = payload,
+                     auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD),
+                     verify=False)
+    return r.json()
 
 def set_email_alias(identity, email_alias):
+    if settings.DEVELOPMENT == True:
+        return "SUCCESS"
+
     data = {
         'psu_uuid': identity["PSU_UUID"],
         'alias': email_alias,
