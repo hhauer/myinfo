@@ -128,9 +128,8 @@ def truename_odin_names(identity):
         ]
         return stub
 
-    url = "https://{}/identityiq/rest/custom/odinNames/{}/{}".format(
+    url = "https://{}/identityiq/rest/custom/odinNames/{}".format(
         settings.SAILPOINT_SERVER_URL,
-        settings.RELEASE_LEVEL,
         identity['PSU_UUID'],
     )
 
@@ -148,9 +147,8 @@ def truename_email_aliases(identity):
         ]
         return stub
 
-    url = "https://{}/identityiq/rest/custom/emailAliases/{}/{}".format(
+    url = "https://{}/identityiq/rest/custom/emailAliases/{}".format(
         settings.SAILPOINT_SERVER_URL,
-        settings.RELEASE_LEVEL,
         identity['PSU_UUID'],
     )
 
