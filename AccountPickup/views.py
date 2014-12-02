@@ -119,6 +119,10 @@ def odinName(request):
     odinForm = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
         
     if odinForm.is_valid():
+        # Must save OAMStatus before API call, or it'll set provisioned back to false.
+        oam_status.select_odin_username = True
+        oam_status.save()
+
         # Send the information to sailpoint to begin provisioning.
         odin_name = request.session['TRUENAME_USERNAMES'][int(odinForm.cleaned_data['name'])]
         set_odin_username(request.session['identity'], odin_name)
@@ -127,9 +131,7 @@ def odinName(request):
         request.session['identity']['EMAIL_ADDRESS'] = odin_name + "@pdx.edu"
         
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odin_name)
-        
-        oam_status.select_odin_username = True
-        oam_status.save()
+
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/odin_name.html', {
