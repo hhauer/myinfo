@@ -139,7 +139,7 @@ def odinName(request):
         'odin_form' : odinForm,
     })
 
-# Select ODIN name
+# Select Preferred email.
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def email_alias(request):
     # If someone has already completed this step, move them along:
@@ -162,7 +162,7 @@ def email_alias(request):
         # Send the information to sailpoint to begin provisioning.
         email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
 
-        if email_alias is not None:
+        if email_alias is not None and not 'None':
             set_email_alias(request.session['identity'], email_alias)
 
             request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
