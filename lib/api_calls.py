@@ -164,15 +164,22 @@ def change_password(identity, new_password, old_password):
             'password' : new_password,
             'old_password' : old_password,
     }
+
+    url = "https://{}/identityiq/rest/custom/changePassword".format(
+        settings.SAILPOINT_SERVER_URL,
+    )
+
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), data=data, verify=False)
+    result = r.json()
+
+    status = result["Status"]
     
-    status = call_iiq('PSU_UI_UPDATE_PASSWORD', data)
-    
-    if "Success" in status:
+    if status == "Success":
         return (True, "Password changed succesfully.")
-    elif "Error" in status:
-        return (False, status["Error"])
+    elif "PasswordErrors" in result:
+        return (False, result["PasswordErrors"])
     else:
-        return (False, status["PasswordError"])
+        return (False, [result["Error"]]) # Make it a list of one item, for the display logic.
 
 def set_odin_username(identity, odin_name):
     if settings.DEVELOPMENT == True:
