@@ -8,4 +8,6 @@ urlpatterns = patterns('',
     url(r'set_directory/$', views.set_directory, name='set_directory'),
     url(r'set_contact/$', views.set_contact, name='set_contact'),
     url(r'welcome/$', views.welcome_landing, name='welcome_landing'),
+
+    url(r'ping/$', views.ping),
 )
