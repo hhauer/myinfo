@@ -1,7 +1,7 @@
 import datetime
 
 from django.shortcuts import render
-from django.http import HttpResponseServerError, HttpResponseRedirect
+from django.http import HttpResponseServerError, HttpResponseRedirect, HttpResponse
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -10,7 +10,7 @@ from lib.api_calls import change_password
 
 from MyInfo.forms import formPasswordChange, formNewPassword, LoginForm, DirectoryInformationForm, \
     ContactInformationForm
-from MyInfo.models import DirectoryInformation, ContactInformation, MaintenanceNotice
+from MyInfo.models import DirectoryInformation, ContactInformation, MaintenanceNotice, Department
 
 from AccountPickup.models import OAMStatusTracker
 
@@ -177,3 +177,12 @@ def welcome_landing(request):
     return render(request, 'MyInfo/welcome_landing.html', {
         'identity': request.session['identity'],
     })
+
+# Handle an F5 ping.
+def ping(request):
+    # Can we get something from the database?
+    try:
+        department = Department.objects.all()[0]
+        return HttpResponse("Success")
+    except:
+        return HttpResponse("Database not available!")
