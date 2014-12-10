@@ -203,8 +203,7 @@ header.header.col_12.column.grid.flex {
 	font-size: 18px;
 	font-weight: 600;
 	margin: 0px;
-	padding: 0px;
-	padding-top: 70px;
+	padding: 70px 0px 0px;
 }
 
 .topBodyHeaderBold2 {
@@ -212,9 +211,7 @@ header.header.col_12.column.grid.flex {
 	font-size: 18px;
 	font-weight: 600;
 	margin: 0px;
-	padding: 0px;
-	padding-top: 80px;
-	padding-bottom: 20px;
+	padding: 80px 0px 20px;
 }
 
 
@@ -223,8 +220,7 @@ header.header.col_12.column.grid.flex {
 	font-size: 16px;
 	font-weight: 300;
 	margin: 0px;
-	padding: 0px;
-	padding-bottom: 10px;
+	padding: 0px 0px 10px;
 }
 
 .middleBody {
@@ -239,8 +235,7 @@ header.header.col_12.column.grid.flex {
 	 min-height: 100%;
     height: auto !important;
     height: 100%;
-    margin: 0 auto -40x;
-	 margin-bottom: -64px;
+	margin: 0 auto -64px;
 }
 
 
@@ -390,7 +385,7 @@ label.checkbox1 {
 input#showpass.checkbox {
 	position: relative;
 	top: -24px;
-	left: 4px;
+	left: 32px;
 }
 
 button,
@@ -401,8 +396,7 @@ a.button:visited,
 input[type="submit"],
 input[type="reset"],
 input[type="button"]{
-background-color:#b7c128;
-position:relative;
+	position:relative;
 top:0;
 left:0;
 vertical-align: middle;
@@ -429,8 +423,8 @@ display:inline-block;
 *display:inline;/*IE ONLY*/
 zoom:1;
 border:0px solid #ccc;
-background:#b7c128;
- -moz-box-shadow: 0px 10px 14px -7px #adadab;
+	background: #b7c128;
+	-moz-box-shadow: 0px 10px 14px -7px #adadab;
         -webkit-box-shadow: 0px 10px 14px -7px #adadab;
         box-shadow: 0px 10px 14px -7px #adadab;
 }
@@ -604,13 +598,8 @@ div.footer.grid {
 }
 
 fieldset {
-	margin-bottom: .5em;
-	margin-right: 0px;
-	margin-left: 0px;
-	margin-top: .5em;
-	border-color: #6A7F10;
-	border-width: 1px;
-	border-style: solid;
+	margin: .5em 0px;
+	border: 1px solid #6A7F10;
 }
 
 legend {
@@ -659,9 +648,7 @@ div.captcha {
 }
 
 #user-information {
-	border-style: solid;
-	border-width: 1px;
-	border-color: #6A7F10;
+	border: 1px solid #6A7F10;
 	display: inline-block;
 	width: 100%;
 }
@@ -687,7 +674,7 @@ div.center {
 }
 
 .optional {
-	background-color: 
+	/* background-color: */
 }
 
 .pickAction p{
@@ -993,10 +980,8 @@ label.checkbox1 {
 @media all and (min-width: 480px) and (max-width: 768px) {
 
 .homeLeft {
-	padding: 0px;
 	margin: 0px;
-	padding-top: 30px;
-	padding-bottom: 10px;
+	padding: 30px 0px 10px;
 	width: 240px;
 }	
 

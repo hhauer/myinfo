@@ -118,7 +118,8 @@ def set_directory(request):
 
     # Are they an employee with information to update?
     if request.session['identity']['PSU_PUBLISH'] is True:
-        (directory_info, _) = DirectoryInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+        (directory_info, _) = DirectoryInformation.objects.get_or_create(
+            psu_uuid=request.session['identity']['PSU_UUID'])
         directory_info_form = DirectoryInformationForm(request.POST or None, instance=directory_info)
     else:
         oam_status.set_directory = True
