@@ -162,8 +162,9 @@ def email_alias(request):
     if mailForm.is_valid():
         # Send the information to sailpoint to begin provisioning.
         email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
+        logger.debug("Email alias value: " + email_alias)
 
-        if email_alias is not None and not 'None':
+        if email_alias is not None and email_alias != 'None':
             set_email_alias(request.session['identity'], email_alias)
 
             request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
