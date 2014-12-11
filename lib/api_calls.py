@@ -12,42 +12,9 @@ import requests
 logger = logging.getLogger(__name__)
 
 
-# This function authenticates sailPoint and makes a call to the REST api pointed to by the link
-# param. If there is postData, it is JSON encoded and posted to the link. This function returns
-# a file-like object from which the response can be read.
-def call_iiq(link, data=None):
-    password_manager = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-    password_manager.add_password(None, settings.SAILPOINT_SERVER_URL, settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD)
-    auth_handler = urllib.request.HTTPBasicAuthHandler(password_manager)
-    opener = urllib.request.build_opener(auth_handler)
-    
-    url = 'https://' + settings.SAILPOINT_SERVER_URL + '/identityiq/rest/custom/runRule/' + link
-    if data:
-        url += '?json=' + urllib.parse.quote_plus(json.dumps(data))
-    
-    try:
-        logger.debug("Making sailpoint call: {0}".format(url))
-        response = opener.open(url)
-        response_body = response.read()
-        final_response = json.loads(response_body.decode('UTF-8'))
-        logger.debug("Sailpoint response: {0}".format(final_response))
-    except urllib.error.HTTPError as e:
-        if hasattr(e, 'reason'):
-            logger.critical("An HTTPError occurred attempting to reach sailpoint with the following reason: {0}".format(e.reason))
-        if hasattr(e, 'code'):
-            logger.critical("An HTTPError occurred attempting to reach sailpoint with the following code: {0}".format(e.code))
-        return None
-    except urllib.error.URLError as e:
-        if hasattr(e, 'reason'):
-            logger.critical("An URLError occurred attempting to reach sailpoint with the following reason: {0}".format(e.reason))
-        if hasattr(e, 'code'):
-            logger.critical("An URLError occurred attempting to reach sailpoint with the following code: {0}".format(e.code))
-        return None
-    except ValueError:
-        logger.critical("Sailpoint returned invalid JSON: {0}".format(response))
-        return None
+def iiq_auth():
+    return settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD
 
-    return final_response or None
 
 # Identify a user with an expired password.
 def identify_oam_login(username, password):
@@ -67,7 +34,15 @@ def identify_oam_login(username, password):
         'username': username,
         'password': password,
     }
-    res = call_iiq('PSU_UI_MYINFO_LOGIN_PASSWORD', data)
+
+    url = "https://{}/identityiq/rest/custom/login/password".format(
+        settings.SAILPOINT_SERVER_URL,
+    )
+
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False,
+                     data=data)
+
+    res = r.json()
 
     # Massage PSU_PUBLISH:
     if "PSU_PUBLISH" in res:
@@ -94,7 +69,15 @@ def identity_from_psu_uuid(psu_uuid):
         }
         
     data = {'PSU_UUID': psu_uuid}
-    results = call_iiq('PSU_UI_MYINFO_LOGIN_UUID', data)
+
+    url = "https://{}/identityiq/rest/custom/login/uuid".format(
+        settings.SAILPOINT_SERVER_URL,
+    )
+
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False,
+                     data=data)
+
+    results = r.json()
 
     # Massage PSU_PUBLISH:
     if "PSU_PUBLISH" in results:
@@ -115,7 +98,6 @@ def passwordConstraintsFromIdentity(identity):
         'minimum_count': 8,
         'maximum_count': 30,
     }
-    return
 
 # This function returns a list of potential odin names to choose from.
 def truename_odin_names(identity):
@@ -133,7 +115,7 @@ def truename_odin_names(identity):
         identity['PSU_UUID'],
     )
 
-    r = requests.get(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False)
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False)
     return r.json()
 
 # This function returns a list of potential email aliases to choose from.
@@ -152,7 +134,7 @@ def truename_email_aliases(identity):
         identity['PSU_UUID'],
     )
 
-    r = requests.get(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False)
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False)
     return r.json()
     
 # This function calls out to sailpoint to begin a password update event.
@@ -206,10 +188,18 @@ def set_email_alias(identity, email_alias):
 
     data = {
         'psu_uuid': identity["PSU_UUID"],
-        'alias': email_alias,
+        'email': email_alias,
     }
 
-    res = call_iiq('PSU_UI_SET_EMAIL_ALIAS', data)
+    url = "https://{}/identityiq/rest/custom/setPreferredEmail/{}".format(
+        settings.SAILPOINT_SERVER_URL,
+        identity["PSU_UUID"],
+    )
+
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False,
+                     data=data)
+
+    res = r.json()
     return res
 
 # Send a password reset email.
@@ -221,9 +211,17 @@ def password_reset_email(PSU_UUID, email, token):
     data = {
         'PSU_UUID': PSU_UUID,
         'email': email,
-        'token': token,
+        'reset_code': token,
     }
-    call_iiq('PSU_UI_RESET_EMAIL', data)
+
+    url = "https://{}/identityiq/rest/custom/passwordReset/email".format(
+        settings.SAILPOINT_SERVER_URL,
+    )
+
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False,
+                     data=data)
+
+    return r.json()
 
 def password_reset_sms(number, token):
     if settings.DEVELOPMENT == True:
@@ -232,9 +230,18 @@ def password_reset_sms(number, token):
     
     data = {
     'sms_number': number,
-    'sms_reset_code': token,
+    'reset_code': token,
     }
-    call_iiq('PSU_UI_RESET_SMS', data)
+
+    url = "https://{}/identityiq/rest/custom/passwordReset/sms".format(
+        settings.SAILPOINT_SERVER_URL,
+    )
+
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False,
+                     data=data)
+
+    return r.json()
+
 
 # Query IIQ for OamStatus information.
 def get_provisioning_status(psu_uuid):
@@ -247,8 +254,11 @@ def get_provisioning_status(psu_uuid):
             "PASSWORD_SET": False,
         }
 
-    data = {
-        'psu_uuid': psu_uuid,
-    }
+    url = "https://{}/identityiq/rest/custom/provisioningStatus/{}".format(
+        settings.SAILPOINT_SERVER_URL,
+        psu_uuid,
+    )
 
-    return call_iiq('PSU_UI_GET_PROVISIONING_STATUS', data)
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False)
+
+    return r.json()
