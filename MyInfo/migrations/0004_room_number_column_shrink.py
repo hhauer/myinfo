@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('MyInfo', '0002_initial_data'),
+        ('MyInfo', '0003_room_number_data_concat'),
     ]
 
     operations = [

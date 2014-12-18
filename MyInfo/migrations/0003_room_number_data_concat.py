@@ -13,7 +13,7 @@ def truncate_office_room(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('MyInfo', '0003_auto_20141208_1428'),
+        ('MyInfo', '0002_initial_data'),
     ]
 
     operations = [
