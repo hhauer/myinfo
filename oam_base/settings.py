@@ -228,3 +228,13 @@ DOWNTIME_EXEMPT_PATHS = (
 	'/admin',
     '/accounts/login',
 )
+
+# Settings for password reset import management command.
+ORACLE_USER = ''
+ORACLE_PASS = ''
+
+ORACLE_HOST = ''
+ORACLE_PORT = ''
+ORACLE_SID = ''
+
+ORACLE_SQL = ''
