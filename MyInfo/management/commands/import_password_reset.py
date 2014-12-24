@@ -1,10 +1,10 @@
 __author__ = 'hhauer'
 
 import requests
-import cx_Oracle
-
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
+
+import cx_Oracle
 from MyInfo.models import ContactInformation
 
 
@@ -42,6 +42,8 @@ class Command(BaseCommand):
 
                 obj.save()
 
+                update_or_create = "Updated"
+                if created:
+                    update_or_create = "Created"
 
-
-
+                self.stdout.write(update_or_create + " record for: " + psu_uuid)
