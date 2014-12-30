@@ -175,8 +175,13 @@ def welcome_landing(request):
     oam_status.welcome_displayed = True
     oam_status.save()
 
+    identity = request.session['identity']
+
+    # Kill the session. They are now done.
+    request.session.flush()
+
     return render(request, 'MyInfo/welcome_landing.html', {
-        'identity': request.session['identity'],
+        'identity': identity,
     })
 
 # Handle an F5 ping.
