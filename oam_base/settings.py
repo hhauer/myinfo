@@ -9,8 +9,9 @@ TEMPLATE_DEBUG = DEBUG = True
 # If development is set to true, all calls to Sailpoint are bypassed with stubbed returns.
 DEVELOPMENT = True
 
-ADMINS = ()
-MANAGERS = ADMINS
+# default as of 1.6
+# ADMINS = ()
+# MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
@@ -70,18 +71,19 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'developmentkey'
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
+# This is default as of 1.6, no longer needed in settings file
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
-)
+# )
 
 MIDDLEWARE_CLASSES = (
     'downtime.middleware.DowntimeMiddleware',
@@ -109,15 +111,15 @@ ROOT_URLCONF = 'oam_base.urls'
 WSGI_APPLICATION = 'oam_base.wsgi.application'
 
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates').replace('\\', '/'),
 )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    #'django.contrib.sites',
-    #'django.contrib.messages',
+    # 'django.contrib.sites',
+    # 'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'CustomUser',
@@ -162,8 +164,8 @@ LOGGING = {
         },
         'RotatingFileHandler': {
             'filename': 'myinfo.log',
-            'maxBytes' : 262144,
-            'backupCount' : 5,
+            'maxBytes': 262144,
+            'backupCount': 5,
             'formatter': 'verbose',
             'class': 'logging.handlers.RotatingFileHandler'
         }
@@ -210,8 +212,8 @@ LOGGING = {
 AUTH_USER_MODEL = 'CustomUser.PSUCustomUser'
 
 # Settings related to CAS authentication.
-#CAS_SERVER_URL = ''
-#CAS_VERSION = '1'
+# CAS_SERVER_URL = ''
+# CAS_VERSION = '1'
 CAS_SERVER_URL = 'https://ssodevel.oit.pdx.edu/cas/'
 CAS_VERSION = 'CAS_2_SAML_1_0'
 
@@ -225,7 +227,7 @@ MAX_USERNAME_LENGTH = 36
 
 # Downtime exempt paths.
 DOWNTIME_EXEMPT_PATHS = (
-	'/admin',
+    '/admin',
     '/accounts/login',
 )
 
