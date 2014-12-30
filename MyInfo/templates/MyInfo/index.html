@@ -47,15 +47,14 @@
 					<a class="forgotPassword" href="{% url 'PasswordReset:index' %}">Forgot Your Password?</a>
 					<br>
 					<a class="forgotPassword" href="{% url 'AccountPickup:index' %}">New? Activate Account</a>
-                    <br>
-                    <a class="forgotPassword" href="">Request Additional Access</a>
 				</div>
 			</div>
 			<div class="col_6">
 				<div class="homeRight center">
 					<h5 class="left">Log in or Activate Your Account!</h5>
 					<p class="left" style="position:relative;top:8px;">If you've already activated your Odin account, enter your username and password to log in and manage your account.
-					<br><br>If you still need to activate your Odin account, select the "Activate Account" link to be guided through the account activation process.</p><br>
+					<br><br>If you still need to activate your Odin account, select the <a href="{% url 'AccountPickup:index' %}" style="color: #898A86;">activate account</a>
+                        link to be guided through the account activation process.</p><br>
 				</div>
 			</div>
 	</div>
