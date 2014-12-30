@@ -12,7 +12,8 @@ from MyInfo.forms import ContactInformationForm
 from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm
 from AccountPickup.models import OAMStatusTracker
 
-from lib.api_calls import truename_odin_names, truename_email_aliases, set_odin_username, identity_from_psu_uuid, set_email_alias
+from lib.api_calls import truename_odin_names, truename_email_aliases, set_odin_username, identity_from_psu_uuid, set_email_alias, \
+    get_provisioning_status
 
 from brake.decorators import ratelimit
 
@@ -111,23 +112,27 @@ def odinName(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     # Get possible odin names
-    request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
+    if 'TRUENAME_USERNAMES' not in request.session:
+        request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
     
     # Build our forms with choices from truename.
     odinForm = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
         
     if odinForm.is_valid():
+        # Must save OAMStatus before API call, or it'll set provisioned back to false.
+        oam_status.select_odin_username = True
+        oam_status.save()
+
         # Send the information to sailpoint to begin provisioning.
         odin_name = request.session['TRUENAME_USERNAMES'][int(odinForm.cleaned_data['name'])]
         set_odin_username(request.session['identity'], odin_name)
         
         request.session['identity']['ODIN_NAME'] = odin_name
         request.session['identity']['EMAIL_ADDRESS'] = odin_name + "@pdx.edu"
+        request.session.modified = True # Manually notify Django we modified a sub-object of the session.
         
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odin_name)
-        
-        oam_status.select_odin_username = True
-        oam_status.save()
+
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/odin_name.html', {
@@ -135,7 +140,7 @@ def odinName(request):
         'odin_form' : odinForm,
     })
 
-# Select ODIN name
+# Select Preferred email.
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def email_alias(request):
     # If someone has already completed this step, move them along:
@@ -144,23 +149,28 @@ def email_alias(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     # Get possible email aliases
-    request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
+    if 'TRUENAME_EMAILS' not in request.session:
+        request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
 
-    # Prepend a "None" option at the start of the emails.
-    request.session['TRUENAME_EMAILS'].insert(0, 'None')
+        # Prepend a "None" option at the start of the emails.
+        request.session['TRUENAME_EMAILS'].insert(0, 'None')
+
 
     # Build our forms with choices from truename.
     mailForm = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
 
-
     if mailForm.is_valid():
         # Send the information to sailpoint to begin provisioning.
         email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
-        set_email_alias(request.session['identity'], email_alias)
+        logger.debug("Email alias value: " + email_alias)
 
-        request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
+        if email_alias is not None and email_alias != 'None':
+            set_email_alias(request.session['identity'], email_alias)
 
-        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + email_alias)
+            request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
+            request.session.modified = True # Manually notify Django we modified a sub-object of the session.
+
+            logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + email_alias)
 
         oam_status.select_email_alias = True
         oam_status.save()
@@ -203,6 +213,18 @@ def provisioning_complete(request):
 def oam_status_router(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
     request.session['ALLOW_CANCEL']= False
+
+    if 'CHECKED_IIQ' not in request.session:
+        provision_status = get_provisioning_status(request.session['identity']['PSU_UUID'])
+
+        oam_status.select_odin_username = provision_status["ODIN_SELECTED"]
+        oam_status.select_email_alias = provision_status["ALIAS_SELECTED"]
+        oam_status.provisioned = provision_status["PROVISIONED"]
+        oam_status.welcome_displayed = provision_status["WELCOMED"]
+        oam_status.set_password = provision_status["PASSWORD_SET"]
+
+        oam_status.save()
+        request.session['CHECKED_IIQ'] = True
     
     if oam_status.agree_aup is None:
         return HttpResponseRedirect(reverse('AccountPickup:aup'))

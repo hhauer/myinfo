@@ -53,8 +53,8 @@ clear:both;
 .col_12 { width: 98.333333333333%; }
 
 *[class*="col_"]{
-margin-left: 0.83333333333333%;
-margin-right: 0.83333333333333%;
+//margin-left: 0.83333333333333%;
+//margin-right: 0.83333333333333%;
 margin-top:0.5em;
 margin-bottom:0.5em;
 float: left;

@@ -42,7 +42,7 @@ USE_I18N = False
 USE_L10N = False
 
 # If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
+USE_TZ = False
 
 # MyInfo / OAM does not use user-uploaded media at any point.
 MEDIA_ROOT = ''
@@ -113,7 +113,6 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'longerusername', # This must be first so that it can patch the auth model.         
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -121,6 +120,7 @@ INSTALLED_APPS = (
     #'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'CustomUser',
     'MyInfo',
     'AccountPickup',
     'PasswordReset',
@@ -207,9 +207,13 @@ LOGGING = {
     }
 }
 
+AUTH_USER_MODEL = 'CustomUser.PSUCustomUser'
+
 # Settings related to CAS authentication.
-CAS_SERVER_URL = ''
-CAS_VERSION = '1'
+#CAS_SERVER_URL = ''
+#CAS_VERSION = '1'
+CAS_SERVER_URL = 'https://ssodevel.oit.pdx.edu/cas/'
+CAS_VERSION = 'CAS_2_SAML_1_0'
 
 # Settings related to sailpoint.
 SAILPOINT_SERVER_URL = ''
@@ -222,4 +226,15 @@ MAX_USERNAME_LENGTH = 36
 # Downtime exempt paths.
 DOWNTIME_EXEMPT_PATHS = (
 	'/admin',
+    '/accounts/login',
 )
+
+# Settings for password reset import management command.
+ORACLE_USER = ''
+ORACLE_PASS = ''
+
+ORACLE_HOST = ''
+ORACLE_PORT = ''
+ORACLE_SID = ''
+
+ORACLE_SQL = ''

@@ -3,7 +3,7 @@ Created on Mar 25, 2013
 
 @author: hhauer
 '''
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from lib.api_calls import identify_oam_login, identity_from_psu_uuid
 
 import logging
@@ -13,6 +13,8 @@ logger = logging.getLogger(__name__)
 # account claim.
 class AccountPickupBackend(object):
     def authenticate(self, request, id_number=None, birth_date=None, password=None):
+        User = get_user_model()
+
         if not id_number or not birth_date or not password:
             return None
 
@@ -33,6 +35,8 @@ class AccountPickupBackend(object):
 
 
     def get_user(self, userId):
+        User = get_user_model()
+
         try:
             return User.objects.get(pk=userId)
         except User.DoesNotExist:
@@ -41,6 +45,8 @@ class AccountPickupBackend(object):
 # Generic front-page login handler for OAM. Passes the buck to Sailpoint.
 class OAMLoginBackend(object):
     def authenticate(self, request, username=None, password=None):
+        User = get_user_model()
+
         if not username or not password:
             return None
         
@@ -58,6 +64,8 @@ class OAMLoginBackend(object):
         return user
 
     def get_user(self, userId):
+        User = get_user_model()
+
         try:
             return User.objects.get(pk=userId)
         except User.DoesNotExist:
@@ -66,6 +74,8 @@ class OAMLoginBackend(object):
 # This class manages the login if the user forgot their password.
 class ForgotPasswordBackend(object):
     def authenticate(self, request, psu_uuid=None):
+        User = get_user_model()
+
         if not psu_uuid:
             return None
         
@@ -83,6 +93,8 @@ class ForgotPasswordBackend(object):
         return user
     
     def get_user(self, userId):
+        User = get_user_model()
+
         try:
             return User.objects.get(pk=userId)
         except User.DoesNotExist:
