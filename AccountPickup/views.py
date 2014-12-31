@@ -167,7 +167,7 @@ def email_alias(request):
         if email_alias is not None and email_alias != 'None':
             set_email_alias(request.session['identity'], email_alias)
 
-            request.session['identity']['EMAIL_ALIAS'] = email_alias + "@pdx.edu"
+            request.session['identity']['EMAIL_ALIAS'] = email_alias
             request.session.modified = True # Manually notify Django we modified a sub-object of the session.
 
             logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + email_alias)
