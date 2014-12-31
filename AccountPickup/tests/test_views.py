@@ -222,7 +222,8 @@ class APNextTestCase(AccountPickupViewsTestCase):
         self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data = {'id_number': '888888888', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
         r = self.client.post(self.INDEX, data=data, follow=True)
-        self.assertIn('_auth_user_id', self.client.session)
+        # Welcome page should kill session
+        self.assertNotIn('_auth_user_id', self.client.session)
         self.assertRedirects(r, reverse('MyInfo:welcome_landing'), host=self.HOST)
 
     def test_next_complete(self):
