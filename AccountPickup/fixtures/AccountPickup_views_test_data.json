@@ -1,0 +1,170 @@
+[
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": null,
+        "set_contact_info": true,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "111111111",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": true,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": false
+    },
+    "pk": "222222222",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": true,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": false,
+        "select_odin_username": true
+    },
+    "pk": "333333333",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": true,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": false,
+        "select_odin_username": true
+    },
+    "pk": "333333334",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": false,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "444444444",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": false,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "444444445",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": false,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "444444446",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": false,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": true,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "555555555",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": true,
+        "set_password": true,
+        "set_directory": false,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "666666666",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": true,
+        "set_password": false,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "777777777",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": true,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": false,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "888888888",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
+        "agree_aup": "2014-12-15",
+        "set_contact_info": true,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "999999999",
+    "model": "AccountPickup.oamstatustracker"
+}
+]

@@ -194,6 +194,7 @@ def wait_for_provisioning(request):
         'identity': request.session['identity'],
     })
 
+# Deprecated view? oam_status doesn't seem to have a 'select_names'
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def provisioning_complete(request):
     # If someone has already completed this step, move them along:
