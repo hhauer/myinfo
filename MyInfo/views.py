@@ -93,7 +93,14 @@ def set_password(request):
     success = False
     message = None
     if form.is_valid():
-        (success, message) = change_password(request.session['identity'], form.cleaned_data['newPassword'], None)
+        if oam_status.set_password is True:
+            current_password = form.cleaned_data['currentPassword']
+        else:
+            current_password = None
+
+        (success, message) = change_password(request.session['identity'],
+                                             form.cleaned_data['newPassword'],
+                                             current_password)
 
         if oam_status.set_password is False and success is True:
             oam_status.set_password = True
@@ -143,8 +150,8 @@ def set_directory(request):
 
 @login_required(login_url=reverse_lazy('index'))
 def set_contact(request):
-    # We don't check OAMStatusTracker because if they don't have contact info set they will be sent to the AccountPickup
-    # version of this page. This is just for changing existing contact info.
+    # We don't check OAMStatusTracker because if they don't have contact info set they will be sent to the
+    # AccountPickup version of this page. This is just for changing existing contact info.
 
     # Build our password reset information form.
     (contact_info, _) = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
@@ -184,11 +191,12 @@ def welcome_landing(request):
         'identity': identity,
     })
 
+
 # Handle an F5 ping.
 def ping(request):
     # Can we get something from the database?
     try:
-        department = Department.objects.all()[0]
+        _ = Department.objects.all()[0]
         return HttpResponse("Success")
     except:
         return HttpResponse("Database not available!")
