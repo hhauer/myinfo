@@ -145,6 +145,10 @@ def truename_email_aliases(identity):
 # This function calls out to sailpoint to begin a password update event.
 def change_password(identity, new_password, old_password):
     if settings.DEVELOPMENT is True:
+        if new_password == "BadPass1":
+            return False, ["Development rejecting new password."]
+        elif old_password == "BadPass1":
+            return False, ["Development rejecting old password."]
         return True, "Development password change."
 
     data = {'PSU_UUID': identity["PSU_UUID"],
