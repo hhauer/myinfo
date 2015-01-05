@@ -1,11 +1,11 @@
+from collections import OrderedDict
 from django import forms
-
-from localflavor.us.forms import USZipCodeField
 
 from MyInfo.models import DirectoryInformation, ContactInformation
 
 import logging
 logger = logging.getLogger(__name__)
+
 
 class formNewPassword(forms.Form):
     newPassword = forms.CharField(max_length=32, widget=forms.PasswordInput, label="New Password")
@@ -25,9 +25,12 @@ class formPasswordChange(formNewPassword):
     currentPassword = forms.CharField(max_length=32, widget=forms.PasswordInput, label="Current Password")
     
     # Manually set the order of fields so that "Current Password" comes first
+    # https://github.com/pennersr/django-allauth/issues/356#issuecomment-24758824
     def __init__(self, *args, **kwargs):
         super(formPasswordChange, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = ['currentPassword', 'newPassword', 'confirmPassword']
+        
+        fields_key_order = ['currentPassword', 'newPassword', 'confirmPassword']
+        self.fields = OrderedDict((k, self.fields[k]) for k in fields_key_order)
 
 # Contact information used for resetting passwords.   
 class ContactInformationForm(forms.ModelForm):
