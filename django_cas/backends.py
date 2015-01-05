@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 import urllib.request, urllib.error, urllib.parse
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from django_cas.models import User
 
@@ -174,26 +175,35 @@ class CASBackend(object):
 
     def authenticate(self, ticket, service, request):
         """Verifies CAS ticket and gets or creates User object"""
+        User = get_user_model()  # Custom user model.
 
         username, attributes = _verify(ticket, service)
 
         logger.debug("CAS Backend provided username: %s", username)
         logger.debug("CAS Backend provided attributes: %s", attributes)
 
-        if attributes:
-            request.session['attributes'] = attributes
-            request.session['identity'] = identity_from_psu_uuid(request.session['attributes']['PSUUUID'])
-        if not username:
+        if not attributes or not username:
             return None
+
+        if "PSUUUID" not in attributes:
+            logger.error("Attributes were returned from CAS but did not include PSUUUID for username: " + username)
+            return None
+
+        psu_uuid = attributes['PSUUUID']
+
+        request.session['attributes'] = attributes
+        request.session['identity'] = identity_from_psu_uuid(psu_uuid)
+
         try:
-            user = User.objects.get(username=request.session['identity']['PSU_UUID'])
+            user = User.objects.get(username=psu_uuid)
         except User.DoesNotExist:
             # user will have an "unusable" password
-            user = User.objects.create_user(request.session['identity']['PSU_UUID'], password=None)
+            user = User.objects.create_user(psu_uuid, password=None)
         return user
 
     def get_user(self, user_id):
         """Retrieve the user's entry in the User model if it exists"""
+        User = get_user_model()
 
         try:
             return User.objects.get(pk=user_id)
