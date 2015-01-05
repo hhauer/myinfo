@@ -61,7 +61,7 @@ def identify_oam_login(username, password):
 # This function turns a PSU_UUID into the user's identity information like name.
 def identity_from_psu_uuid(psu_uuid):
     if settings.DEVELOPMENT is True:
-        return {
+        stub = {
             "PSU_UUID": psu_uuid,
             "DISPLAY_NAME": "Development User - UUID",
             "SPRIDEN_ID": '123456789',
@@ -69,6 +69,9 @@ def identity_from_psu_uuid(psu_uuid):
             "EMAIL_ADDRESS": "john.smith@pdx.edu",
             "PSU_PUBLISH": True,
         }
+        if psu_uuid == "000000001":  # Unpublished stub
+            stub['PSU_PUBLISH'] = False
+        return stub
 
     data = {'PSU_UUID': psu_uuid}
 
