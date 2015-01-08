@@ -218,10 +218,14 @@ def oam_status_router(request):
     if 'CHECKED_IIQ' not in request.session:
         provision_status = get_provisioning_status(request.session['identity']['PSU_UUID'])
 
-        oam_status.select_odin_username = provision_status["ODIN_SELECTED"]
-        oam_status.select_email_alias = provision_status["ALIAS_SELECTED"]
+        # If they've already been through MyInfo, provisioned will be true and we don't want to pester them
+        # a second time to pick an alias if previously they selected "none."
+        if oam_status.provisioned is False:
+            oam_status.select_email_alias = provision_status["ALIAS_SELECTED"]
+
         oam_status.provisioned = provision_status["PROVISIONED"]
         oam_status.welcome_displayed = provision_status["WELCOMED"]
+        oam_status.select_odin_username = provision_status["ODIN_SELECTED"]
 
         oam_status.save()
         request.session['CHECKED_IIQ'] = True
