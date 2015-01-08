@@ -222,7 +222,6 @@ def oam_status_router(request):
         oam_status.select_email_alias = provision_status["ALIAS_SELECTED"]
         oam_status.provisioned = provision_status["PROVISIONED"]
         oam_status.welcome_displayed = provision_status["WELCOMED"]
-        oam_status.set_password = provision_status["PASSWORD_SET"]
 
         oam_status.save()
         request.session['CHECKED_IIQ'] = True

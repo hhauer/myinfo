@@ -261,7 +261,6 @@ def get_provisioning_status(psu_uuid):
             "ALIAS_SELECTED": oam_status.select_email_alias,
             "PROVISIONED": oam_status.provisioned,
             "WELCOMED": oam_status.welcome_displayed,
-            "PASSWORD_SET": oam_status.set_password,
         }
 
     url = "https://{}/identityiq/rest/custom/provisioningStatus/{}".format(
