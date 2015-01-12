@@ -271,3 +271,7 @@ def get_provisioning_status(psu_uuid):
     r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False)
 
     return r.json()
+
+
+class APIException(Exception):
+    pass

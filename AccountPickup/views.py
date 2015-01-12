@@ -20,9 +20,10 @@ from brake.decorators import ratelimit
 import logging
 logger = logging.getLogger(__name__)
 
+
 # The index of this module performs a non-CAS login to the AccountPickup system.
-@ratelimit(block = True, rate='10/m')
-@ratelimit(block = True, rate='50/h')
+@ratelimit(block=True, rate='10/m')
+@ratelimit(block=True, rate='50/h')
 def index(request):
     error_message = ""
     form = AccountClaimLoginForm(request.POST or None)
@@ -38,24 +39,25 @@ def index(request):
                                  request=request)
         logger.info("Account claim login attempt with ID: {0}".format(form.cleaned_data['id_number']))
         if user is not None:
-            #Identity is valid.
+            # Identity is valid.
             auth.login(request, user)
             logger.info("Account claim login success with ID: {0}".format(form.cleaned_data['id_number']))
             
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-        #If identity is invalid, prompt re-entry.
+        # If identity is invalid, prompt re-entry.
         error_message = "That identity was not found."
     
     return render(request, 'AccountPickup/index.html', {
-        'form' : form,
-        'error' : error_message,
+        'form': form,
+        'error': error_message,
     })
- 
+
+
 # Acceptable use policy.
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def AUP(request):
     # If someone has already completed this step, move them along:
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.agree_aup is not None:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
@@ -65,25 +67,26 @@ def AUP(request):
         oam_status.agree_aup = date.today()
         oam_status.save()
         
-        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " aup=true")
+        logger.info("service=MyInfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " aup=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/aup.html', {
         'identity': request.session['identity'],
-        'form' : form,
+        'form': form,
     })
-    
+
+
 # Password reset information.
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def contact_info(request):
     # If someone has already completed this step, move them along:
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.set_contact_info is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     # Build our password reset information form.
-    (contact_info, _) = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-    contact_form = ContactInformationForm(request.POST or None, instance=contact_info)
+    (_contact_info, _) = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+    contact_form = ContactInformationForm(request.POST or None, instance=_contact_info)
     
     # Did they provide valid contact information, if so we send them along.
     if contact_form.is_valid():
@@ -92,59 +95,69 @@ def contact_info(request):
         oam_status.set_contact_info = True
         oam_status.save()
         
-        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " password_reset=true")
+        logger.info("service=MyInfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " password_reset=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     elif request.method == 'POST':
-        logger.debug(contact_info)
+        logger.debug(_contact_info)
         logger.debug(request.POST)
     
     return render(request, 'AccountPickup/contact_info.html', {
         'identity': request.session['identity'],
         'form': contact_form,
     })
-    
+
+
 # Select ODIN name
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def odinName(request):
     # If someone has already completed this step, move them along:
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.select_odin_username is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     # Get possible odin names
     if 'TRUENAME_USERNAMES' not in request.session:
         request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
-    
+        # If truename server is not responding, don't give user empty list
+        if len(request.session['TRUENAME_USERNAMES']) == 0:
+            raise Exception("Truename API call failed")
+
     # Build our forms with choices from truename.
-    odinForm = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
+    odin_form = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
         
-    if odinForm.is_valid():
+    if odin_form.is_valid():
         # Must save OAMStatus before API call, or it'll set provisioned back to false.
         oam_status.select_odin_username = True
         oam_status.save()
 
         # Send the information to sailpoint to begin provisioning.
-        odin_name = request.session['TRUENAME_USERNAMES'][int(odinForm.cleaned_data['name'])]
-        set_odin_username(request.session['identity'], odin_name)
-        
+        odin_name = request.session['TRUENAME_USERNAMES'][int(odin_form.cleaned_data['name'])]
+        r = set_odin_username(request.session['identity'], odin_name)
+        if r != "SUCCESS":
+            # API call to IIQ failed
+            oam_status.select_odin_username = False
+            oam_status.save()
+            raise Exception("IIQ API call failed")
+
         request.session['identity']['ODIN_NAME'] = odin_name
         request.session['identity']['EMAIL_ADDRESS'] = odin_name + "@pdx.edu"
-        request.session.modified = True # Manually notify Django we modified a sub-object of the session.
+        request.session.modified = True  # Manually notify Django we modified a sub-object of the session.
         
-        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odin_name)
+        logger.info("service=MyInfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odin_name)
 
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/odin_name.html', {
         'identity': request.session['identity'],
-        'odin_form' : odinForm,
+        'odin_form': odin_form,
     })
+
 
 # Select Preferred email.
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def email_alias(request):
     # If someone has already completed this step, move them along:
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.select_email_alias is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
@@ -152,25 +165,32 @@ def email_alias(request):
     if 'TRUENAME_EMAILS' not in request.session:
         request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
 
+        if len(request.session['TRUENAME_EMAILS']) == 0:
+            # Truename down, don't offer empty list
+            raise Exception("Truename API call failed")
+
         # Prepend a "None" option at the start of the emails.
         request.session['TRUENAME_EMAILS'].insert(0, 'None')
 
-
     # Build our forms with choices from truename.
-    mailForm = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
+    mail_form = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
 
-    if mailForm.is_valid():
+    if mail_form.is_valid():
         # Send the information to sailpoint to begin provisioning.
-        email_alias = request.session['TRUENAME_EMAILS'][int(mailForm.cleaned_data['alias'])]
-        logger.debug("Email alias value: " + email_alias)
+        _email_alias = request.session['TRUENAME_EMAILS'][int(mail_form.cleaned_data['alias'])]
+        logger.debug("Email alias value: " + _email_alias)
 
-        if email_alias is not None and email_alias != 'None':
-            set_email_alias(request.session['identity'], email_alias)
+        if _email_alias is not None and _email_alias != 'None':
+            r = set_email_alias(request.session['identity'], _email_alias)
+            if r != "SUCCESS":
+                # API call failed
+                raise Exception("IIQ API call failed")
 
-            request.session['identity']['EMAIL_ALIAS'] = email_alias
-            request.session.modified = True # Manually notify Django we modified a sub-object of the session.
+            request.session['identity']['EMAIL_ALIAS'] = _email_alias
+            request.session.modified = True  # Manually notify Django we modified a sub-object of the session.
 
-            logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + email_alias)
+            logger.info(
+                "service=MyInfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + _email_alias)
 
         oam_status.select_email_alias = True
         oam_status.save()
@@ -178,15 +198,16 @@ def email_alias(request):
 
     return render(request, 'AccountPickup/email_alias.html', {
         'identity': request.session['identity'],
-        'mail_form' : mailForm,
+        'mail_form': mail_form,
     })
-    
+
+
 # Pause and wait for provisioning to finish if necessary. This page uses AJAX calls to determine
 # when it's safe to move on to setting a password.
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def wait_for_provisioning(request):
     # If someone has already completed this step, move them along:
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.provisioned is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
@@ -194,29 +215,34 @@ def wait_for_provisioning(request):
         'identity': request.session['identity'],
     })
 
+
 # Deprecated view? oam_status doesn't seem to have a 'select_names'
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def provisioning_complete(request):
     # If someone has already completed this step, move them along:
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.select_names is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-    
+
     oam_status.provisioned = True
     oam_status.save()
-    
+
     # Because identity values may have changed due to SP Provisioning, update our identity.
     request.session['identity'] = identity_from_psu_uuid(request.session['identity']['PSU_UUID'])
-    
+
     return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+
 
 @login_required(login_url=reverse_lazy('AccountPickup:index'))   
 def oam_status_router(request):
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid = request.session['identity']['PSU_UUID'])
-    request.session['ALLOW_CANCEL']= False
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+    request.session['ALLOW_CANCEL']=False
 
     if 'CHECKED_IIQ' not in request.session:
         provision_status = get_provisioning_status(request.session['identity']['PSU_UUID'])
+
+        if len(provision_status) == 0:
+            raise Exception("IIQ API call failed")
 
         # If they've already been through MyInfo, provisioned will be true and we don't want to pester them
         # a second time to pick an alias if previously they selected "none."
