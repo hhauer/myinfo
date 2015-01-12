@@ -18,7 +18,6 @@ class AccountPickupViewsTestCase(TestCase):
         self.CONTACT = reverse('AccountPickup:contact_info')
         self.NEXT = reverse('AccountPickup:next_step')
         self.WAIT = reverse('AccountPickup:wait_for_provisioning')
-        self.PROVISIONED = reverse('AccountPickup:provisioning_complete')
         self.RAND_IP = ["127.0.0." + str(i) for i in range(1, 256)]
 
 

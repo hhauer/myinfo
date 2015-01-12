@@ -216,24 +216,7 @@ def wait_for_provisioning(request):
     })
 
 
-# Deprecated view? oam_status doesn't seem to have a 'select_names'
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
-def provisioning_complete(request):
-    # If someone has already completed this step, move them along:
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-    if oam_status.select_names is True:
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-
-    oam_status.provisioned = True
-    oam_status.save()
-
-    # Because identity values may have changed due to SP Provisioning, update our identity.
-    request.session['identity'] = identity_from_psu_uuid(request.session['identity']['PSU_UUID'])
-
-    return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-
-
-@login_required(login_url=reverse_lazy('AccountPickup:index'))   
 def oam_status_router(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     request.session['ALLOW_CANCEL']=False
