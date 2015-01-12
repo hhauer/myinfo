@@ -1,0 +1,3900 @@
+[
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 1,
+        "fields": {
+            "model": "permission",
+            "name": "permission",
+            "app_label": "auth"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 2,
+        "fields": {
+            "model": "group",
+            "name": "group",
+            "app_label": "auth"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 3,
+        "fields": {
+            "model": "contenttype",
+            "name": "content type",
+            "app_label": "contenttypes"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 4,
+        "fields": {
+            "model": "session",
+            "name": "session",
+            "app_label": "sessions"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 5,
+        "fields": {
+            "model": "logentry",
+            "name": "log entry",
+            "app_label": "admin"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 6,
+        "fields": {
+            "model": "psucustomuser",
+            "name": "PSU User",
+            "app_label": "CustomUser"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 7,
+        "fields": {
+            "model": "mailcode",
+            "name": "mailcode",
+            "app_label": "MyInfo"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 8,
+        "fields": {
+            "model": "department",
+            "name": "department",
+            "app_label": "MyInfo"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 9,
+        "fields": {
+            "model": "building",
+            "name": "building",
+            "app_label": "MyInfo"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 10,
+        "fields": {
+            "model": "directoryinformation",
+            "name": "directory information",
+            "app_label": "MyInfo"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 11,
+        "fields": {
+            "model": "contactinformation",
+            "name": "contact information",
+            "app_label": "MyInfo"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 12,
+        "fields": {
+            "model": "maintenancenotice",
+            "name": "maintenance notice",
+            "app_label": "MyInfo"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 13,
+        "fields": {
+            "model": "oamstatustracker",
+            "name": "oam status tracker",
+            "app_label": "AccountPickup"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 14,
+        "fields": {
+            "model": "textmessageshortcode",
+            "name": "text message short code",
+            "app_label": "PasswordReset"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 15,
+        "fields": {
+            "model": "period",
+            "name": "period",
+            "app_label": "downtime"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 1,
+        "fields": {
+            "code": "AAUP",
+            "description": "American Association of University Professors, 232 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 2,
+        "fields": {
+            "code": "ACS",
+            "description": "Advising & Career Services, 402 USB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 3,
+        "fields": {
+            "code": "ADM",
+            "description": "Admissions Office, 104 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 4,
+        "fields": {
+            "code": "AITP",
+            "description": "American Indian Urban Teacher Program, 239 XSB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 5,
+        "fields": {
+            "code": "ALUM",
+            "description": "Alumni Relations, 1 SBH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 6,
+        "fields": {
+            "code": "ANTH",
+            "description": "Anthropology Department, 141 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 7,
+        "fields": {
+            "code": "ARA",
+            "description": "Aramark, 114 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 8,
+        "fields": {
+            "code": "ARCH",
+            "description": "Architecture, School of, 235 SH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 9,
+        "fields": {
+            "code": "ART",
+            "description": "Art + Design, School of, 310 AB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 10,
+        "fields": {
+            "code": "ASIA",
+            "description": "Institute for Asian Studies, 308 EH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 11,
+        "fields": {
+            "code": "ASPSU",
+            "description": "Associated Students, PSU, 117 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 12,
+        "fields": {
+            "code": "ATH",
+            "description": "Athletics, 415 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 13,
+        "fields": {
+            "code": "AUXS",
+            "description": "Auxiliary Services, 207 OND"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 14,
+        "fields": {
+            "code": "AV",
+            "description": "Audio Visual Services, 18 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 15,
+        "fields": {
+            "code": "BIO",
+            "description": "Biology Department, 246 SRTC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 16,
+        "fields": {
+            "code": "BOOK",
+            "description": "Portland State Bookstore, 1715 SW 5th"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 17,
+        "fields": {
+            "code": "BOX",
+            "description": "Box Office, 120 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 18,
+        "fields": {
+            "code": "BST",
+            "description": "Black Studies Department, 150 XS"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 19,
+        "fields": {
+            "code": "BUD",
+            "description": "Budget Office, 515 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 20,
+        "fields": {
+            "code": "CAPS",
+            "description": "Counseling & Psychological Services, 200 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 21,
+        "fields": {
+            "code": "CAPS-TESTING",
+            "description": "Testing Service, 310 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 22,
+        "fields": {
+            "code": "CCC",
+            "description": "Child Care Center, ASPSU, 126 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 23,
+        "fields": {
+            "code": "CDC",
+            "description": "Helen Gordon Child Development Center, 1 Helen Gordon"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 24,
+        "fields": {
+            "code": "CEE",
+            "description": "Civil and Environmental Engineering Department, 200 EB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 25,
+        "fields": {
+            "code": "CEED",
+            "description": "Continuing Education, School of Education, 204 ED"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 26,
+        "fields": {
+            "code": "CENS",
+            "description": "Oregon State Data Center, 233 UPA"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 27,
+        "fields": {
+            "code": "CFS",
+            "description": "Child and Family Services, 200 Helen Gordon"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 28,
+        "fields": {
+            "code": "CHAN",
+            "description": "Chancellors Office, 530 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 29,
+        "fields": {
+            "code": "CHEM",
+            "description": "Chemistry Department, 262 SRTC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 30,
+        "fields": {
+            "code": "CHNW",
+            "description": "College Housing Northwest, 111 Montgomery"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 31,
+        "fields": {
+            "code": "CLAS",
+            "description": "Liberal Arts & Sciences, College of, 341 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 32,
+        "fields": {
+            "code": "CLS",
+            "description": "Chicano-Latino Studies, 150 XS"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 33,
+        "fields": {
+            "code": "CMPS",
+            "description": "Computer Science, 120 FAB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 34,
+        "fields": {
+            "code": "COR",
+            "description": "Corbett Building"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 35,
+        "fields": {
+            "code": "COTA",
+            "description": "College of the Arts, 349 LH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 36,
+        "fields": {
+            "code": "CPC",
+            "description": "Capital Projects & Construction, 302 USB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 37,
+        "fields": {
+            "code": "CPO",
+            "description": "Campus Planning Office, 340 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 38,
+        "fields": {
+            "code": "CPSO",
+            "description": "Campus Public Safety, 100 CPSO"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 39,
+        "fields": {
+            "code": "CR",
+            "description": "Conflict Resolution, 239 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 40,
+        "fields": {
+            "code": "CREC",
+            "description": "Campus Recreation, 210 ASRC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 41,
+        "fields": {
+            "code": "CSE",
+            "description": "Center for Science Education, 101 SEH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 42,
+        "fields": {
+            "code": "CSO",
+            "description": "Campus Sustainability Office, 128 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 43,
+        "fields": {
+            "code": "CTS",
+            "description": "Center for Transportation Studies, 350 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 44,
+        "fields": {
+            "code": "CUS",
+            "description": "Center for Urban Studies, 350 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 45,
+        "fields": {
+            "code": "CWP",
+            "description": "Child Welfare Partnership, 400 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 46,
+        "fields": {
+            "code": "DEV",
+            "description": "Development, Office of, 730 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 47,
+        "fields": {
+            "code": "DMSS",
+            "description": "Diversity and Multicultural Student Services, 425 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 48,
+        "fields": {
+            "code": "DOS",
+            "description": "Dean of Students, Office of, 433 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 49,
+        "fields": {
+            "code": "DRC",
+            "description": "Disability Resource Center, 116 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 50,
+        "fields": {
+            "code": "DRSS",
+            "description": "Departmental Research Support Services, 27-41 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 51,
+        "fields": {
+            "code": "ECE",
+            "description": "Electrical and Computer Engineering Department, 160 FAB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 52,
+        "fields": {
+            "code": "ECON",
+            "description": "Economics Department, 241 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 53,
+        "fields": {
+            "code": "ECTC",
+            "description": "Early Childhood Training Center, 204 ED"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 54,
+        "fields": {
+            "code": "ED",
+            "description": "Education, School of, 602 ED"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 55,
+        "fields": {
+            "code": "ED-MEDIA LAB",
+            "description": "Educational Media Laboratory, 310 ED"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 56,
+        "fields": {
+            "code": "EHS",
+            "description": "Environmental Health & Safety, 202 USB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 57,
+        "fields": {
+            "code": "EMSA",
+            "description": "Enrollment Management & Student Affairs, 345 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 58,
+        "fields": {
+            "code": "EMSAIT",
+            "description": "EMSA IT, 351 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 59,
+        "fields": {
+            "code": "ENG",
+            "description": "English Department, 405 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 60,
+        "fields": {
+            "code": "EOP",
+            "description": "Educational Opportunity Program, 458 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 61,
+        "fields": {
+            "code": "ESM",
+            "description": "School of the Environment, 118 SRTC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 62,
+        "fields": {
+            "code": "ESM",
+            "description": "Environmental Sciences & Management Doctoral Program, 218 SRTC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 63,
+        "fields": {
+            "code": "ETM",
+            "description": "Engineering and Technology Management Program, LL50 FAB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 64,
+        "fields": {
+            "code": "ETS",
+            "description": "Educational Talent Search, 100 KHSE"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 65,
+        "fields": {
+            "code": "FA",
+            "description": "Financial Aid, Student, 176 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 66,
+        "fields": {
+            "code": "FADM",
+            "description": "Finance & Administration Office, 515 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 67,
+        "fields": {
+            "code": "FAST",
+            "description": "University Financial Services Directors Office, 260 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 68,
+        "fields": {
+            "code": "FAST-BAS",
+            "description": "Business Accounting Services, 260 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 69,
+        "fields": {
+            "code": "FAST-BSC",
+            "description": "Management Office, BSC, 260 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 70,
+        "fields": {
+            "code": "FAST-CAPS",
+            "description": "Contracting and Procurement Services, 260 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 71,
+        "fields": {
+            "code": "FAST-CAS",
+            "description": "Campus Accounting Services, 260 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 72,
+        "fields": {
+            "code": "FAST-DBS",
+            "description": "Department Budget Services, 260 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 73,
+        "fields": {
+            "code": "FAST-STORES",
+            "description": "Materials Management - Stores, 1 USB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 74,
+        "fields": {
+            "code": "FAST-TSRS",
+            "description": "Technology Support and Reporting Services, 260 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 75,
+        "fields": {
+            "code": "FAST-UM",
+            "description": "Utilities Management, 260 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 76,
+        "fields": {
+            "code": "FOUND",
+            "description": "Foundation Office, S510 UTS"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 77,
+        "fields": {
+            "code": "FPM",
+            "description": "Facilities & Property Management, 202 USB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 78,
+        "fields": {
+            "code": "GDI",
+            "description": "Global Diversity & Inclusion, 830 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 79,
+        "fields": {
+            "code": "GEOG",
+            "description": "Geography Department, 424 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 80,
+        "fields": {
+            "code": "GEOL",
+            "description": "Geology Department, 17 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 81,
+        "fields": {
+            "code": "GOLD",
+            "description": "Reserve Officers Training Corps, 204 UTS"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 82,
+        "fields": {
+            "code": "HON",
+            "description": "Honors Program, University, 103 UHP"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 83,
+        "fields": {
+            "code": "HRC",
+            "description": "Human Resources, 518 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 84,
+        "fields": {
+            "code": "HST",
+            "description": "History Department, 441 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 85,
+        "fields": {
+            "code": "IELP",
+            "description": "Intensive English Language Program, 400 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 86,
+        "fields": {
+            "code": "IES",
+            "description": "Fulbright Adviser, 101 EH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 87,
+        "fields": {
+            "code": "IES-ISFS",
+            "description": "International Student & Faculty Services, 212 EH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 88,
+        "fields": {
+            "code": "INR",
+            "description": "Institute for Natural Resources, 140 SEC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 89,
+        "fields": {
+            "code": "INTL",
+            "description": "International Studies Program, 101 EH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 90,
+        "fields": {
+            "code": "IOA",
+            "description": "Institute on Aging, 470 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 91,
+        "fields": {
+            "code": "IPMS",
+            "description": "Institute of Portland Metropolitan Studies, 780 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 92,
+        "fields": {
+            "code": "JST",
+            "description": "Judaic Studies, 465 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 93,
+        "fields": {
+            "code": "JUST",
+            "description": "Criminology and Criminal Justice, Division of, 550 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 94,
+        "fields": {
+            "code": "LIBW",
+            "description": "Library, Millar, 110 ML"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 95,
+        "fields": {
+            "code": "LING",
+            "description": "Applied Linguistics Department, UCB 335"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 96,
+        "fields": {
+            "code": "LLTR",
+            "description": "Literacy, Language & Technology Research Group, V300 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 97,
+        "fields": {
+            "code": "LS",
+            "description": "Student Legal Services, M340 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 98,
+        "fields": {
+            "code": "MAIL",
+            "description": "Mail Services, 114 USB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 99,
+        "fields": {
+            "code": "MCC",
+            "description": "Multicultural Center, 230 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 100,
+        "fields": {
+            "code": "MCECS",
+            "description": "Maseeh College of Engineering and Computer Science, 500 EB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 101,
+        "fields": {
+            "code": "MESA",
+            "description": "Mathematics, Engineering & Science Achievement, 104 EB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 102,
+        "fields": {
+            "code": "MESC",
+            "description": "Middle East Studies Center, 322 EH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 103,
+        "fields": {
+            "code": "MME",
+            "description": "Mechanical and Materials Engineering Department, 400 EB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 104,
+        "fields": {
+            "code": "MMS",
+            "description": "Materials Management Services, 114 USB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 105,
+        "fields": {
+            "code": "MMS-STORE",
+            "description": "Material Management Services, Facilities, 114 USB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 106,
+        "fields": {
+            "code": "MTH",
+            "description": "Fariborz Maseeh Mathematics and Statistics Department, 334 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 107,
+        "fields": {
+            "code": "MUS",
+            "description": "Music, School of, 231 LH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 108,
+        "fields": {
+            "code": "NAC",
+            "description": "Native American Center, 100 NACSC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 109,
+        "fields": {
+            "code": "NBS",
+            "description": "Norris, Beggs, and Simpson, 308 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 110,
+        "fields": {
+            "code": "NPCC",
+            "description": "National Policy Consensus Center, 720 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 111,
+        "fields": {
+            "code": "OAA",
+            "description": "Academic Affairs, Office of, 650 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 112,
+        "fields": {
+            "code": "OAI",
+            "description": "Office of Academic Innovation, 209M, SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 113,
+        "fields": {
+            "code": "OCCD",
+            "description": "Oregon Center for Career Development in Childhood Care and Education, 101 SAB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 114,
+        "fields": {
+            "code": "OCSC",
+            "description": "Oregon Community Service Commission, 210 KHSE"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 115,
+        "fields": {
+            "code": "OGS",
+            "description": "Graduate Studies, Office of, 184 XSB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 116,
+        "fields": {
+            "code": "OIA",
+            "description": "International Affairs, 101 EH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 117,
+        "fields": {
+            "code": "OIRP",
+            "description": "Institutional Research & Planning, M343 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 118,
+        "fields": {
+            "code": "OIT-COMP",
+            "description": "EITS, 600 UTS"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 119,
+        "fields": {
+            "code": "OIT-DO",
+            "description": "Directors Office, 634 UTS"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 120,
+        "fields": {
+            "code": "OIT-USS",
+            "description": "User Support Services, 18 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 121,
+        "fields": {
+            "code": "ORCC",
+            "description": "Oregon Campus Compact, 210 KHSE"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 122,
+        "fields": {
+            "code": "ORN",
+            "description": "New Student Orientation, 131 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 123,
+        "fields": {
+            "code": "OTREC",
+            "description": "Oregon Transportation Research and Education Consortium, 301V EB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 124,
+        "fields": {
+            "code": "OVA",
+            "description": "Veterans Services, 425 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 125,
+        "fields": {
+            "code": "PA",
+            "description": "Public Administration, Division of, 650 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 126,
+        "fields": {
+            "code": "PERSIA",
+            "description": "Persia House, M312 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 127,
+        "fields": {
+            "code": "PHE",
+            "description": "Athletic Training Program, 143 PSC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 128,
+        "fields": {
+            "code": "PHIL",
+            "description": "Philosophy Department, 471 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 129,
+        "fields": {
+            "code": "PHR",
+            "description": "Pacific Historical Review, 487 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 130,
+        "fields": {
+            "code": "PHY",
+            "description": "Physics Department, 134 SRTC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 131,
+        "fields": {
+            "code": "PO",
+            "description": "Presidents Office, 850 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 132,
+        "fields": {
+            "code": "PRC",
+            "description": "Population Research Center, 570 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 133,
+        "fields": {
+            "code": "PRM",
+            "description": "Property and Risk Management Department, FPM"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 134,
+        "fields": {
+            "code": "PS",
+            "description": "Political Science, Division of, 650 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 135,
+        "fields": {
+            "code": "PSC",
+            "description": "Peter Stott Center, 212 PSC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 136,
+        "fields": {
+            "code": "PSY",
+            "description": "Psychology Department, 317 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 137,
+        "fields": {
+            "code": "RAPS",
+            "description": "Retired-Emeriti Professors of Portland State, 201 SBH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 138,
+        "fields": {
+            "code": "RES",
+            "description": "Residence Life, 230 BHB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 139,
+        "fields": {
+            "code": "RO",
+            "description": "Registration & Records, 104 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 140,
+        "fields": {
+            "code": "RRI",
+            "description": "Regional Research Institute for Human Services, 900 ATT"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 141,
+        "fields": {
+            "code": "RSP",
+            "description": "Research & Strategic Partnerships, 620 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 142,
+        "fields": {
+            "code": "SALP",
+            "description": "Student Development, 119 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 143,
+        "fields": {
+            "code": "SATT",
+            "description": "Student Affairs Technical Team, C3 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 144,
+        "fields": {
+            "code": "SBA",
+            "description": "Business Administration, School of, 560 SBA"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 145,
+        "fields": {
+            "code": "SBA-MIM",
+            "description": "Master of International Management, 540 SBA"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 146,
+        "fields": {
+            "code": "SBA-STUDENT SERVICES",
+            "description": "Business Administration, School of, Student Services, 240 SBA"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 147,
+        "fields": {
+            "code": "SCH",
+            "description": "School of Community Health, 450 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 148,
+        "fields": {
+            "code": "SCS",
+            "description": "School Computing Support CAT, 82 FAB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 149,
+        "fields": {
+            "code": "SEC",
+            "description": "Science and Education Center, 335 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 150,
+        "fields": {
+            "code": "SFS-AR",
+            "description": "Non-Credit Solutions, 153 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 151,
+        "fields": {
+            "code": "SFS-AR",
+            "description": "Student Financial Services - Accounts Receivable, 154 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 152,
+        "fields": {
+            "code": "SFS-CA",
+            "description": "Student Financial Services - Cashiers, 178 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 153,
+        "fields": {
+            "code": "SHAC",
+            "description": "Student Health and Counseling, Student Affairs, 200 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 154,
+        "fields": {
+            "code": "SMCO",
+            "description": "Smith Center Operations Office, 116 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 155,
+        "fields": {
+            "code": "SMCO-STORE",
+            "description": "University Market, 105 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 156,
+        "fields": {
+            "code": "SMSU",
+            "description": "Conferences & Events"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 157,
+        "fields": {
+            "code": "SOC",
+            "description": "Sociology Department, 217 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 158,
+        "fields": {
+            "code": "SP",
+            "description": "Communication Department, 440 UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 159,
+        "fields": {
+            "code": "SPA",
+            "description": "Sponsored Projects Administration, 210 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 160,
+        "fields": {
+            "code": "SPED",
+            "description": "Special Education & Counselor Education, 204 ED"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 161,
+        "fields": {
+            "code": "SPHR",
+            "description": "Speech & Hearing Sciences, 85 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 162,
+        "fields": {
+            "code": "SPS",
+            "description": "Student Parent Services, 124 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 163,
+        "fields": {
+            "code": "SRL",
+            "description": "Survey Research Lab, 400 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 164,
+        "fields": {
+            "code": "SSS",
+            "description": "Science Support Services, B1 SB1"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 165,
+        "fields": {
+            "code": "SSW",
+            "description": "Social Work, School of, 670 ASRC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 166,
+        "fields": {
+            "code": "SUST",
+            "description": "Center for Sustainable Processes and Practices, MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 167,
+        "fields": {
+            "code": "SVS",
+            "description": "Student Veteran Services, 401 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 168,
+        "fields": {
+            "code": "SYSC",
+            "description": "Systems Science, 104 HH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 169,
+        "fields": {
+            "code": "TA",
+            "description": "Theatre & Film, School of, 127 LH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 170,
+        "fields": {
+            "code": "TAPS",
+            "description": "Parking, 145 ASRC"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 171,
+        "fields": {
+            "code": "TELE",
+            "description": "Telecommunications, 400 UTS"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 172,
+        "fields": {
+            "code": "TELEFUND",
+            "description": "Telefund, 360 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 173,
+        "fields": {
+            "code": "TLC",
+            "description": "The Learning Center,439 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 174,
+        "fields": {
+            "code": "UB",
+            "description": "Upward Bound, 110 KHSE"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 175,
+        "fields": {
+            "code": "UCOMM",
+            "description": "University Communications, 810 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 176,
+        "fields": {
+            "code": "UGenCou",
+            "description": "Univeristy General Counsel, 731 MCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 177,
+        "fields": {
+            "code": "UHO",
+            "description": "University Housing Office, 210 BHB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 178,
+        "fields": {
+            "code": "UNST",
+            "description": "University Studies, 117 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 179,
+        "fields": {
+            "code": "UPA",
+            "description": "Urban & Public Affairs, College of, 750 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 180,
+        "fields": {
+            "code": "UPL",
+            "description": "University Place"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 181,
+        "fields": {
+            "code": "USP",
+            "description": "Urban Studies & Planning, School of, 350 URBN"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 182,
+        "fields": {
+            "code": "USS",
+            "description": "User Support Services, 18 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 183,
+        "fields": {
+            "code": "VC",
+            "description": "Viking Club, 165 ML"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 184,
+        "fields": {
+            "code": "VG",
+            "description": "Vanguard, S26 SMSU"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 185,
+        "fields": {
+            "code": "VP-EM-SA",
+            "description": "Vice President for Enrollment Management and Student Affairs, 345 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 186,
+        "fields": {
+            "code": "VP-EM-SA",
+            "description": "Student Affairs, Office of, 345 CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 187,
+        "fields": {
+            "code": "WASA",
+            "description": "WASADA, 220 EH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 188,
+        "fields": {
+            "code": "WCTR",
+            "description": "Writing Center, 188F CH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 189,
+        "fields": {
+            "code": "WHSE",
+            "description": "Shipping & Delivery, 114 USB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 190,
+        "fields": {
+            "code": "WLL",
+            "description": "Department of World Languages and Literatures, 491 NH"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 191,
+        "fields": {
+            "code": "WPC",
+            "description": "World Peace Center, 308T UCB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 192,
+        "fields": {
+            "code": "WRC",
+            "description": "Womens Resource Center, Montogmery Basement"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 193,
+        "fields": {
+            "code": "WSC",
+            "description": "Women, Gender, and Sexuality Studies, 150 XSB"
+        }
+    },
+    {
+        "model": "MyInfo.mailcode",
+        "pk": 194,
+        "fields": {
+            "code": "XS",
+            "description": "Extended Studies, 1050 MSQ"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 1,
+        "fields": {
+            "name": "ASPSU - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 2,
+        "fields": {
+            "name": "Academic & Research Computing - Office of Information Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 3,
+        "fields": {
+            "name": "Academic Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 4,
+        "fields": {
+            "name": "Advising & Career Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 5,
+        "fields": {
+            "name": "Alumni Relations - University Advancement"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 6,
+        "fields": {
+            "name": "Anthropology - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 7,
+        "fields": {
+            "name": "Applied Linguistics - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 8,
+        "fields": {
+            "name": "Architecture, College of the Arts"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 9,
+        "fields": {
+            "name": "Art + Design, College of the Arts"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 10,
+        "fields": {
+            "name": "Athletics"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 11,
+        "fields": {
+            "name": "Auxiliary Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 12,
+        "fields": {
+            "name": "Biology - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 13,
+        "fields": {
+            "name": "Black Studies - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 14,
+        "fields": {
+            "name": "Box Office - Auxiliary Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 15,
+        "fields": {
+            "name": "Budget"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 16,
+        "fields": {
+            "name": "Business Accelerator"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 17,
+        "fields": {
+            "name": "Business Accounting Services - Finance and Accounting Services Team"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 18,
+        "fields": {
+            "name": "Business Administration, School of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 19,
+        "fields": {
+            "name": "Business Intelligence - Office of Information Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 20,
+        "fields": {
+            "name": "CIO Office - Office of Information Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 21,
+        "fields": {
+            "name": "Campus Accounting Services - University Financial Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 22,
+        "fields": {
+            "name": "Campus Planning Office"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 23,
+        "fields": {
+            "name": "Campus Rec - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 24,
+        "fields": {
+            "name": "Campus Sustainability Office"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 25,
+        "fields": {
+            "name": "Capital Projects & Construction"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 26,
+        "fields": {
+            "name": "Center for Academic Excellence - Academic Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 27,
+        "fields": {
+            "name": "Center for Executive and Professional Education, Crown Plaza"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 28,
+        "fields": {
+            "name": "Center for Public Health Studies - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 29,
+        "fields": {
+            "name": "Center for Public Service - School of Government"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 30,
+        "fields": {
+            "name": "Challenge - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 31,
+        "fields": {
+            "name": "Chemistry - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 32,
+        "fields": {
+            "name": "Chicano/Latino Studies - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 33,
+        "fields": {
+            "name": "Child Welfare Partnership - Graduate School of Social Work, Salem Center"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 34,
+        "fields": {
+            "name": "Child and Family Studies - Graduate School of Social Work"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 35,
+        "fields": {
+            "name": "Children's Center - Education"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 36,
+        "fields": {
+            "name": "Civil & Environmental Engineering - Engineering & Computer Science, Maseeh College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 37,
+        "fields": {
+            "name": "College of Urban & Public Affairs - Deans Office"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 38,
+        "fields": {
+            "name": "College of Urban and Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 39,
+        "fields": {
+            "name": "College of the Arts"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 40,
+        "fields": {
+            "name": "Communication - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 41,
+        "fields": {
+            "name": "Community Health - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 42,
+        "fields": {
+            "name": "Computer Action Team - Engineering & Computer Science, Maseeh College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 43,
+        "fields": {
+            "name": "Computer Science - Engineering & Computer Science, Maseeh College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 44,
+        "fields": {
+            "name": "Computing Infrastructure Services - Office of Information Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 45,
+        "fields": {
+            "name": "Conferences & Events - Auxiliary Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 46,
+        "fields": {
+            "name": "Conflict Resolution - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 47,
+        "fields": {
+            "name": "Contracting and Procurement Services - University Financial Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 48,
+        "fields": {
+            "name": "Counseling & Psychological Services - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 49,
+        "fields": {
+            "name": "Counselor Eduction - Graduate School of Education"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 50,
+        "fields": {
+            "name": "Criminology and Criminal Justice - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 51,
+        "fields": {
+            "name": "Curriculum & Instruction - Graduate School of Education"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 52,
+        "fields": {
+            "name": "Dean of Student Life - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 53,
+        "fields": {
+            "name": "Departmental Research Support Services - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 54,
+        "fields": {
+            "name": "Disability Resource Center - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 55,
+        "fields": {
+            "name": "Diversity and Multicultural Student Services - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 56,
+        "fields": {
+            "name": "Diversity and Multicultural Student Services - Student Support Services - TRIO"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 57,
+        "fields": {
+            "name": "Early Childhood Training Center - Graduate School of Education"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 58,
+        "fields": {
+            "name": "Economics - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 59,
+        "fields": {
+            "name": "Education Abroad - International Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 60,
+        "fields": {
+            "name": "Education, Graduate School of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 61,
+        "fields": {
+            "name": "Educational Leadership and Policy - Graduate School of Education"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 62,
+        "fields": {
+            "name": "Electrical & Computer Engineering - Engineering & Computer Science, Maseeh College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 63,
+        "fields": {
+            "name": "Engineering & Computer Science, Maseeh College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 64,
+        "fields": {
+            "name": "Engineering & Technology Management - Engineering & Computer Science, Maseeh College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 65,
+        "fields": {
+            "name": "English - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 66,
+        "fields": {
+            "name": "Enrollment Management and Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 67,
+        "fields": {
+            "name": "Enrollment Management and Student Affairs IT - Enrollment Management and Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 68,
+        "fields": {
+            "name": "Enterprise Solutions - Office of Information Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 69,
+        "fields": {
+            "name": "Environmental Biology - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 70,
+        "fields": {
+            "name": "Environmental Health & Safety"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 71,
+        "fields": {
+            "name": "Environmental Sciences and Management - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 72,
+        "fields": {
+            "name": "Executive Leadership Institute - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 73,
+        "fields": {
+            "name": "Facilities & Property Management"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 74,
+        "fields": {
+            "name": "Fariborz Maseeh Mathematics and Statistics - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 75,
+        "fields": {
+            "name": "Finance & Administration"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 76,
+        "fields": {
+            "name": "First Stop Portland"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 77,
+        "fields": {
+            "name": "Food Market Business Development Institute - Business Administration"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 78,
+        "fields": {
+            "name": "Foundation"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 79,
+        "fields": {
+            "name": "Geography - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 80,
+        "fields": {
+            "name": "Geology - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 81,
+        "fields": {
+            "name": "Global Diversity & Inclusion - Presidents Office"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 82,
+        "fields": {
+            "name": "Government Relations"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 83,
+        "fields": {
+            "name": "Graduate Studies, Office of - Academic Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 84,
+        "fields": {
+            "name": "Helen Gordon Child Development Center - Education"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 85,
+        "fields": {
+            "name": "History - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 86,
+        "fields": {
+            "name": "Human Resources"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 87,
+        "fields": {
+            "name": "Institute for Natural Resources - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 88,
+        "fields": {
+            "name": "Institute for Sustainable Solutions"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 89,
+        "fields": {
+            "name": "Institute of Portland Metropolitan Studies - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 90,
+        "fields": {
+            "name": "Institute on Aging - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 91,
+        "fields": {
+            "name": "Institutional Research & Planning - Presidents Office"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 92,
+        "fields": {
+            "name": "Instructional Technology Services - Office of Information Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 93,
+        "fields": {
+            "name": "Intensive English Language Program"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 94,
+        "fields": {
+            "name": "International Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 95,
+        "fields": {
+            "name": "International Studies - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 96,
+        "fields": {
+            "name": "Judaic Studies - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 97,
+        "fields": {
+            "name": "Liberal Arts & Sciences, College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 98,
+        "fields": {
+            "name": "Library"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 99,
+        "fields": {
+            "name": "MESA - Engineering & Computer Science, Maseeh College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 100,
+        "fields": {
+            "name": "Material Management Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 101,
+        "fields": {
+            "name": "Mechanical & Materials Engineering - Engineering & Computer Science, Maseeh College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 102,
+        "fields": {
+            "name": "Military Science - Academic Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 103,
+        "fields": {
+            "name": "Multicultural Center - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 104,
+        "fields": {
+            "name": "Music, College of the Arts"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 105,
+        "fields": {
+            "name": "National Policy Consensus Center - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 106,
+        "fields": {
+            "name": "Native American Studies - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 107,
+        "fields": {
+            "name": "Non-Credit Solutions - University Financial Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 108,
+        "fields": {
+            "name": "Office of Academic Innovation"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 109,
+        "fields": {
+            "name": "Office of Admissions & New Student Programs - Enrollment Management & Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 110,
+        "fields": {
+            "name": "Office of Alumni Relations"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 111,
+        "fields": {
+            "name": "Office of Information Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 112,
+        "fields": {
+            "name": "Office of International Admissions & Ed Partnerships - Enrollment Management & Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 113,
+        "fields": {
+            "name": "Office of the Registrar - Enrollment Management & Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 114,
+        "fields": {
+            "name": "Oregon Center for Advanced Technology - Engineering & Computer Science, Maseeh College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 115,
+        "fields": {
+            "name": "Oregon Center for Career Development in Childhood Care & Education - Graduate School of Education"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 116,
+        "fields": {
+            "name": "Oregon Institute of Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 117,
+        "fields": {
+            "name": "Oregon Transportation Research and Education Consortium"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 118,
+        "fields": {
+            "name": "Philosophy - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 119,
+        "fields": {
+            "name": "Physics - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 120,
+        "fields": {
+            "name": "Political Science - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 121,
+        "fields": {
+            "name": "Population Research - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 122,
+        "fields": {
+            "name": "Presidents Office"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 123,
+        "fields": {
+            "name": "Property and Risk Management Department"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 124,
+        "fields": {
+            "name": "Psychology - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 125,
+        "fields": {
+            "name": "Public Access Services - Library"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 126,
+        "fields": {
+            "name": "Public Administration - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 127,
+        "fields": {
+            "name": "Public Safety"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 128,
+        "fields": {
+            "name": "Publications - University Relations"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 129,
+        "fields": {
+            "name": "Queer Resource Center - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 130,
+        "fields": {
+            "name": "Regional Research Institute - Social Work"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 131,
+        "fields": {
+            "name": "Religious Studies - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 132,
+        "fields": {
+            "name": "Research & Strategic Partnerships (RSP)"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 133,
+        "fields": {
+            "name": "Resource Services - Library"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 134,
+        "fields": {
+            "name": "School of Government - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 135,
+        "fields": {
+            "name": "School of the Environment - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 136,
+        "fields": {
+            "name": "Science Ed Center - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 137,
+        "fields": {
+            "name": "Smith Memorial Student Union - Auxiliary Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 138,
+        "fields": {
+            "name": "Social Work, School of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 139,
+        "fields": {
+            "name": "Sociology - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 140,
+        "fields": {
+            "name": "Special Education - Graduate School of Education"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 141,
+        "fields": {
+            "name": "Speech and Hearing Sciences - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 142,
+        "fields": {
+            "name": "Sponsored Projects Administration - Research & Strategic Partnerships"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 143,
+        "fields": {
+            "name": "Stott Center, Peter W - Athletics"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 144,
+        "fields": {
+            "name": "Student Activities and Leadership - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 145,
+        "fields": {
+            "name": "Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 146,
+        "fields": {
+            "name": "Student Financial Aid and Scholarships"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 147,
+        "fields": {
+            "name": "Student Financial Services, A/R - University Financial Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 148,
+        "fields": {
+            "name": "Student Financial Services, E-Commerce - University Financial Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 149,
+        "fields": {
+            "name": "Student Health and Counseling - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 150,
+        "fields": {
+            "name": "Student Legal Services - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 151,
+        "fields": {
+            "name": "Student Services - Business Administration"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 152,
+        "fields": {
+            "name": "Summer Housing and Conferencing - Auxiliary Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 153,
+        "fields": {
+            "name": "Survey Research Lab - Research & Strategic Partnerships (RSP)"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 154,
+        "fields": {
+            "name": "Systems Science - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 155,
+        "fields": {
+            "name": "Technology Support & Reporting Services - University Financial Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 156,
+        "fields": {
+            "name": "Telecomm Systems  - Office of Information Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 157,
+        "fields": {
+            "name": "Testing Services - Student Health and Counseling - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 158,
+        "fields": {
+            "name": "The Learning Center"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 159,
+        "fields": {
+            "name": "Theatre & Film, College of the Arts"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 160,
+        "fields": {
+            "name": "Transportation and Parking Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 161,
+        "fields": {
+            "name": "University Advancement"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 162,
+        "fields": {
+            "name": "University Communications - Presidents Office"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 163,
+        "fields": {
+            "name": "University Financial Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 164,
+        "fields": {
+            "name": "University General Counsel"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 165,
+        "fields": {
+            "name": "University Honors"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 166,
+        "fields": {
+            "name": "University Housing and Residence Life"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 167,
+        "fields": {
+            "name": "University Market - Auxiliary Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 168,
+        "fields": {
+            "name": "University Place - Auxiliary Services"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 169,
+        "fields": {
+            "name": "University Relations"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 170,
+        "fields": {
+            "name": "University Studies - Academic Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 171,
+        "fields": {
+            "name": "Urban & Public Affairs, College of"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 172,
+        "fields": {
+            "name": "Urban Studies & Planning - Urban & Public Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 173,
+        "fields": {
+            "name": "User Support Services - Office of Information Technology"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 174,
+        "fields": {
+            "name": "Vanguard"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 175,
+        "fields": {
+            "name": "Vice President for Enrollment and Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 176,
+        "fields": {
+            "name": "Women, Gender, and Sexuality Studies - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 177,
+        "fields": {
+            "name": "Womens Resource Center - Student Affairs"
+        }
+    },
+    {
+        "model": "MyInfo.department",
+        "pk": 178,
+        "fields": {
+            "name": "World Languages and Literatures - Liberal Arts & Sciences"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 1,
+        "fields": {
+            "code": "AB",
+            "name": "Art Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 2,
+        "fields": {
+            "code": "ASRC",
+            "name": "Academic and Student Recreation Center"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 3,
+        "fields": {
+            "code": "BA",
+            "name": "School of Business Administration"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 4,
+        "fields": {
+            "code": "BBG",
+            "name": "Blumel Bike Garage"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 5,
+        "fields": {
+            "code": "BHB",
+            "name": "Broadway Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 6,
+        "fields": {
+            "code": "BLKS",
+            "name": "Blackstone Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 7,
+        "fields": {
+            "code": "JCB",
+            "name": "Joseph C. Blumel Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 8,
+        "fields": {
+            "code": "COR",
+            "name": "Corbett Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 9,
+        "fields": {
+            "code": "CLKCC",
+            "name": "Clackamas Community College"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 10,
+        "fields": {
+            "code": "CAP",
+            "name": "Capital Center High School"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 11,
+        "fields": {
+            "code": "GORGE",
+            "name": "Columbia Gorge CC"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 12,
+        "fields": {
+            "code": "CGT",
+            "name": "Campus and Grounds Trailer"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 13,
+        "fields": {
+            "code": "CH",
+            "name": "Cramer Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 14,
+        "fields": {
+            "code": "CLSB",
+            "name": "Collaborative Life Sciences Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 15,
+        "fields": {
+            "code": "CPB",
+            "name": "Crown Plaza Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 16,
+        "fields": {
+            "code": "EB",
+            "name": "Engineering Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 17,
+        "fields": {
+            "code": "ED",
+            "name": "School of Education"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 18,
+        "fields": {
+            "code": "EH",
+            "name": "East Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 19,
+        "fields": {
+            "code": "SEH",
+            "name": "Stephen E. Epler Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 20,
+        "fields": {
+            "code": "FAB",
+            "name": "Fourth Avenue Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 21,
+        "fields": {
+            "code": "CIN",
+            "name": "Fifth Avenue Cinema"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 22,
+        "fields": {
+            "code": "FAL",
+            "name": "Fifth Avenue Lot"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 23,
+        "fields": {
+            "code": "HOFF",
+            "name": "George C. Hoffmann Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 24,
+        "fields": {
+            "code": "HGCDC",
+            "name": "Helen Gordon Child Development Center"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 25,
+        "fields": {
+            "code": "HH",
+            "name": "Harder House"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 26,
+        "fields": {
+            "code": "HSB",
+            "name": "Harrison Street Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 27,
+        "fields": {
+            "code": "KNGA",
+            "name": "King Albert Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 28,
+        "fields": {
+            "code": "KHSE",
+            "name": "Koinonia House"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 29,
+        "fields": {
+            "code": "LH",
+            "name": "Lincoln Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 30,
+        "fields": {
+            "code": "NASCC",
+            "name": "Native American Student and Community Center"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 31,
+        "fields": {
+            "code": "METRO",
+            "name": "Metro Center"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 32,
+        "fields": {
+            "code": "MCB",
+            "name": "Market Center Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 33,
+        "fields": {
+            "code": "MONT",
+            "name": "Montgomery Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 34,
+        "fields": {
+            "code": "MHCC",
+            "name": "Mount Hood Community College"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 35,
+        "fields": {
+            "code": "ML",
+            "name": "Branford Price Millar Library "
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 36,
+        "fields": {
+            "code": "MSQ",
+            "name": "Market Square Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 37,
+        "fields": {
+            "code": "NGH",
+            "name": "North Greenhouse"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 38,
+        "fields": {
+            "code": "NH",
+            "name": "Neuberger Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 39,
+        "fields": {
+            "code": "OCATE",
+            "name": "Oregon Center for Advanced Technology Education"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 40,
+        "fields": {
+            "code": "OGI",
+            "name": "Oregon Grad Institute Science & Engineering "
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 41,
+        "fields": {
+            "code": "OND",
+            "name": "Ondine Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 42,
+        "fields": {
+            "code": "PKWY",
+            "name": "Parkway Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 43,
+        "fields": {
+            "code": "PCC-CA",
+            "name": "PCC Cascade Campus"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 44,
+        "fields": {
+            "code": "PCC-RC",
+            "name": "PCC Rock Creek Campus"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 45,
+        "fields": {
+            "code": "PS1",
+            "name": "Parking Structure One"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 46,
+        "fields": {
+            "code": "PS2",
+            "name": "Parking Structure Two"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 47,
+        "fields": {
+            "code": "PS3",
+            "name": "Parking Structure Three"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 48,
+        "fields": {
+            "code": "RGH",
+            "name": "Research Greenhouse"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 49,
+        "fields": {
+            "code": "SB1",
+            "name": "Science Building One"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 50,
+        "fields": {
+            "code": "SBH",
+            "name": "Simon Benson House"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 51,
+        "fields": {
+            "code": "STFR",
+            "name": "Stratford Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 52,
+        "fields": {
+            "code": "PSC",
+            "name": "Peter W. Stott Center"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 53,
+        "fields": {
+            "code": "SEC",
+            "name": "Science and Education Center"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 54,
+        "fields": {
+            "code": "PSCF",
+            "name": "Peter W. Stott Community Field"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 55,
+        "fields": {
+            "code": "SGH",
+            "name": "South Greenhouse"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 56,
+        "fields": {
+            "code": "STHL",
+            "name": "Saint Helens Residence Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 57,
+        "fields": {
+            "code": "SH",
+            "name": "Shattuck Hall"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 58,
+        "fields": {
+            "code": "SMSU",
+            "name": "Smith Memorial Student Union"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 59,
+        "fields": {
+            "code": "SRTC",
+            "name": "Science Research and Teaching Center"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 60,
+        "fields": {
+            "code": "URBN",
+            "name": "Urban Center Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 61,
+        "fields": {
+            "code": "UCB",
+            "name": "University Center Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 62,
+        "fields": {
+            "code": "UHP",
+            "name": "University Honors Program"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 63,
+        "fields": {
+            "code": "UOP",
+            "name": "University of Portland"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 64,
+        "fields": {
+            "code": "UP",
+            "name": "University Place"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 65,
+        "fields": {
+            "code": "PNT",
+            "name": "University Pointe at College Station"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 66,
+        "fields": {
+            "code": "USB",
+            "name": "University Services Building"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 67,
+        "fields": {
+            "code": "UTS",
+            "name": "University Technology Services"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 68,
+        "fields": {
+            "code": "WCC",
+            "name": "Willow Creek Center"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 69,
+        "fields": {
+            "code": "WHP",
+            "name": "West Heating Plant"
+        }
+    },
+    {
+        "model": "MyInfo.building",
+        "pk": 70,
+        "fields": {
+            "code": "XSB",
+            "name": "Extended Studies Building"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 1,
+        "fields": {
+            "codename": "add_permission",
+            "name": "Can add permission",
+            "content_type": 1
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 2,
+        "fields": {
+            "codename": "change_permission",
+            "name": "Can change permission",
+            "content_type": 1
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 3,
+        "fields": {
+            "codename": "delete_permission",
+            "name": "Can delete permission",
+            "content_type": 1
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 4,
+        "fields": {
+            "codename": "add_group",
+            "name": "Can add group",
+            "content_type": 2
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 5,
+        "fields": {
+            "codename": "change_group",
+            "name": "Can change group",
+            "content_type": 2
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 6,
+        "fields": {
+            "codename": "delete_group",
+            "name": "Can delete group",
+            "content_type": 2
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 7,
+        "fields": {
+            "codename": "add_contenttype",
+            "name": "Can add content type",
+            "content_type": 3
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 8,
+        "fields": {
+            "codename": "change_contenttype",
+            "name": "Can change content type",
+            "content_type": 3
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 9,
+        "fields": {
+            "codename": "delete_contenttype",
+            "name": "Can delete content type",
+            "content_type": 3
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 10,
+        "fields": {
+            "codename": "add_session",
+            "name": "Can add session",
+            "content_type": 4
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 11,
+        "fields": {
+            "codename": "change_session",
+            "name": "Can change session",
+            "content_type": 4
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 12,
+        "fields": {
+            "codename": "delete_session",
+            "name": "Can delete session",
+            "content_type": 4
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 13,
+        "fields": {
+            "codename": "add_logentry",
+            "name": "Can add log entry",
+            "content_type": 5
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 14,
+        "fields": {
+            "codename": "change_logentry",
+            "name": "Can change log entry",
+            "content_type": 5
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 15,
+        "fields": {
+            "codename": "delete_logentry",
+            "name": "Can delete log entry",
+            "content_type": 5
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 16,
+        "fields": {
+            "codename": "add_psucustomuser",
+            "name": "Can add PSU User",
+            "content_type": 6
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 17,
+        "fields": {
+            "codename": "change_psucustomuser",
+            "name": "Can change PSU User",
+            "content_type": 6
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 18,
+        "fields": {
+            "codename": "delete_psucustomuser",
+            "name": "Can delete PSU User",
+            "content_type": 6
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 19,
+        "fields": {
+            "codename": "add_mailcode",
+            "name": "Can add mailcode",
+            "content_type": 7
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 20,
+        "fields": {
+            "codename": "change_mailcode",
+            "name": "Can change mailcode",
+            "content_type": 7
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 21,
+        "fields": {
+            "codename": "delete_mailcode",
+            "name": "Can delete mailcode",
+            "content_type": 7
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 22,
+        "fields": {
+            "codename": "add_department",
+            "name": "Can add department",
+            "content_type": 8
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 23,
+        "fields": {
+            "codename": "change_department",
+            "name": "Can change department",
+            "content_type": 8
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 24,
+        "fields": {
+            "codename": "delete_department",
+            "name": "Can delete department",
+            "content_type": 8
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 25,
+        "fields": {
+            "codename": "add_building",
+            "name": "Can add building",
+            "content_type": 9
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 26,
+        "fields": {
+            "codename": "change_building",
+            "name": "Can change building",
+            "content_type": 9
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 27,
+        "fields": {
+            "codename": "delete_building",
+            "name": "Can delete building",
+            "content_type": 9
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 28,
+        "fields": {
+            "codename": "add_directoryinformation",
+            "name": "Can add directory information",
+            "content_type": 10
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 29,
+        "fields": {
+            "codename": "change_directoryinformation",
+            "name": "Can change directory information",
+            "content_type": 10
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 30,
+        "fields": {
+            "codename": "delete_directoryinformation",
+            "name": "Can delete directory information",
+            "content_type": 10
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 31,
+        "fields": {
+            "codename": "add_contactinformation",
+            "name": "Can add contact information",
+            "content_type": 11
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 32,
+        "fields": {
+            "codename": "change_contactinformation",
+            "name": "Can change contact information",
+            "content_type": 11
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 33,
+        "fields": {
+            "codename": "delete_contactinformation",
+            "name": "Can delete contact information",
+            "content_type": 11
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 34,
+        "fields": {
+            "codename": "add_maintenancenotice",
+            "name": "Can add maintenance notice",
+            "content_type": 12
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 35,
+        "fields": {
+            "codename": "change_maintenancenotice",
+            "name": "Can change maintenance notice",
+            "content_type": 12
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 36,
+        "fields": {
+            "codename": "delete_maintenancenotice",
+            "name": "Can delete maintenance notice",
+            "content_type": 12
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 37,
+        "fields": {
+            "codename": "add_oamstatustracker",
+            "name": "Can add oam status tracker",
+            "content_type": 13
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 38,
+        "fields": {
+            "codename": "change_oamstatustracker",
+            "name": "Can change oam status tracker",
+            "content_type": 13
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 39,
+        "fields": {
+            "codename": "delete_oamstatustracker",
+            "name": "Can delete oam status tracker",
+            "content_type": 13
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 40,
+        "fields": {
+            "codename": "add_textmessageshortcode",
+            "name": "Can add text message short code",
+            "content_type": 14
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 41,
+        "fields": {
+            "codename": "change_textmessageshortcode",
+            "name": "Can change text message short code",
+            "content_type": 14
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 42,
+        "fields": {
+            "codename": "delete_textmessageshortcode",
+            "name": "Can delete text message short code",
+            "content_type": 14
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 43,
+        "fields": {
+            "codename": "add_period",
+            "name": "Can add period",
+            "content_type": 15
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 44,
+        "fields": {
+            "codename": "change_period",
+            "name": "Can change period",
+            "content_type": 15
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 45,
+        "fields": {
+            "codename": "delete_period",
+            "name": "Can delete period",
+            "content_type": 15
+        }
+    }
+]
