@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -58,7 +58,7 @@ def index(request):
 def AUP(request):
     # If someone has already completed this step, move them along:
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-    if oam_status.agree_aup is not None:
+    if oam_status.agree_aup is not None or oam_status.agree_aup + timedelta(weeks=26) < date.today():
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     form = AcceptAUPForm(request.POST or None)
@@ -255,8 +255,9 @@ def oam_status_router(request):
 
         oam_status.save()
         request.session['CHECKED_IIQ'] = True
-    
-    if oam_status.agree_aup is None:
+
+    # They should be asked to agree every 6mo.
+    if oam_status.agree_aup is None or oam_status.agree_aup + timedelta(weeks=26) < date.today():
         return HttpResponseRedirect(reverse('AccountPickup:aup'))
     
     elif oam_status.select_odin_username is False:
