@@ -14,12 +14,14 @@ class Command(BaseCommand):
         return url
 
     def handle(self, *args, **options):
-        oracle_dsn = cx_Oracle.makedsn(settings.ORACLE_HOST, settings.ORACLE_PORT, settings.ORACLE_SID)
+        # Get banner connection settings.
+        banner = settings.ORACLE_MANAGEMENT['banner']
 
-        oracle_connection = cx_Oracle.Connection(settings.ORACLE_USER, settings.ORACLE_PASS, oracle_dsn)
+        oracle_dsn = cx_Oracle.makedsn(banner['HOST'], banner['PORT'], banner['SID'])
+        oracle_connection = cx_Oracle.Connection(banner['USER'], banner['PASS'], oracle_dsn)
         oracle_cursor = oracle_connection.cursor()
 
-        oracle_cursor.execute(settings.ORACLE_SQL)
+        oracle_cursor.execute(settings.ORACLE_MANAGEMENT['password_reset']['sql'])
 
         for record in oracle_cursor:
             # UDC_ID, Phone, Email. Phone or email can be None.
