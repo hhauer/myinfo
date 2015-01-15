@@ -58,7 +58,7 @@ def index(request):
 def AUP(request):
     # If someone has already completed this step, move them along:
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-    if oam_status.agree_aup is not None or oam_status.agree_aup + timedelta(weeks=26) < date.today():
+    if oam_status.agree_aup is not None and date.today() < oam_status.agree_aup + timedelta(weeks=26):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     form = AcceptAUPForm(request.POST or None)
