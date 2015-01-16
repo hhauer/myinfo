@@ -30,7 +30,7 @@ def index(request):
         
     if form.is_valid():
         # For some reason they already have a session. Let's get rid of it and start fresh.
-        if request.session is not None:
+        if request.session is not None:  # pragma: no cover
             request.session.flush()
             
         user = auth.authenticate(id_number=form.cleaned_data['id_number'],
