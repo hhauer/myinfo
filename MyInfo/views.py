@@ -85,7 +85,7 @@ def set_password(request):
     else:
         form = formNewPassword(request.POST or None)
 
-    if 'identity' not in request.session:
+    if 'identity' not in request.session:  # Shouldn't happen, the above get_or_create would error out first.
         logger.critical("service=myinfo error=\"No identity information available at set password. Aborting. \
                 \" session=\"{0}\"".format(request.session))
         return HttpResponseServerError('No identity information was available.')
@@ -159,8 +159,9 @@ def set_contact(request):
 
     if contact_info_form.is_valid():
         # First check to see if they removed all their contact info.
+        # Currently this shouldn't happen, since the underlying form rejects that state in validation.
         if contact_info_form.cleaned_data['cell_phone'] is None and contact_info_form.cleaned_data[
-                'alternate_email'] is None:
+                'alternate_email'] is None:  # pragma: no cover
             (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
             oam_status.set_contact_info = False
             oam_status.save()

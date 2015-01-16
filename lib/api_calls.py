@@ -19,17 +19,7 @@ def iiq_auth():
 # Identify a user with an expired password.
 def identify_oam_login(username, password):
     if settings.DEVELOPMENT is True:
-        if username == "000000000":
-            return None  # Provide 'known bad' stub for testing
-        stub = {
-            "PSU_UUID": username,
-            "DISPLAY_NAME": "Development User",
-            "SPRIDEN_ID": '123456789',
-            "ODIN_NAME": 'jsmith5',
-            "EMAIL_ADDRESS": "john.smith@pdx.edu",
-            "PSU_PUBLISH": True,
-        }
-
+        stub = _stub_identity(username)
         return stub
 
     data = {
@@ -61,14 +51,8 @@ def identify_oam_login(username, password):
 # This function turns a PSU_UUID into the user's identity information like name.
 def identity_from_psu_uuid(psu_uuid):
     if settings.DEVELOPMENT is True:
-        return {
-            "PSU_UUID": psu_uuid,
-            "DISPLAY_NAME": "Development User - UUID",
-            "SPRIDEN_ID": '123456789',
-            "ODIN_NAME": 'jsmith5',
-            "EMAIL_ADDRESS": "john.smith@pdx.edu",
-            "PSU_PUBLISH": True,
-        }
+        stub = _stub_identity(psu_uuid)
+        return stub
 
     data = {'PSU_UUID': psu_uuid}
 
@@ -145,6 +129,10 @@ def truename_email_aliases(identity):
 # This function calls out to sailpoint to begin a password update event.
 def change_password(identity, new_password, old_password):
     if settings.DEVELOPMENT is True:
+        if new_password == "BadPass1":
+            return False, ["Development rejecting new password."]
+        elif old_password == "BadPass1":
+            return False, ["Development rejecting old password."]
         return True, "Development password change."
 
     data = {'PSU_UUID': identity["PSU_UUID"],
@@ -275,3 +263,23 @@ def get_provisioning_status(psu_uuid):
 
 class APIException(Exception):
     pass
+
+
+def _stub_identity(psu_uuid):
+    # Should only be called in dev mode
+    assert settings.DEVELOPMENT is True, "Dev stub called under non-Dev conditions!"
+    if psu_uuid == "000000000":
+        return None  # 'Known bad user' stub
+    stub = {
+        "PSU_UUID": psu_uuid,
+        "DISPLAY_NAME": "Development User - UUID",
+        "SPRIDEN_ID": '123456789',
+        "ODIN_NAME": 'jsmith5',
+        "EMAIL_ADDRESS": "john.smith@pdx.edu",
+        "PSU_PUBLISH": True,
+    }
+
+    if psu_uuid == "000000001":  # 'Unpublished user' stub
+        stub['PSU_PUBLISH'] = False
+
+    return stub
