@@ -12,8 +12,8 @@ from MyInfo.forms import ContactInformationForm
 from AccountPickup.forms import AccountClaimLoginForm, AcceptAUPForm, OdinNameForm, EmailAliasForm
 from AccountPickup.models import OAMStatusTracker
 
-from lib.api_calls import truename_odin_names, truename_email_aliases, set_odin_username, identity_from_psu_uuid, set_email_alias, \
-    get_provisioning_status
+from lib.api_calls import truename_odin_names, truename_email_aliases, set_odin_username, set_email_alias, \
+    get_provisioning_status, APIException
 
 from brake.decorators import ratelimit
 
@@ -120,7 +120,7 @@ def odinName(request):
         request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
         # If truename server is not responding, don't give user empty list
         if len(request.session['TRUENAME_USERNAMES']) == 0:
-            raise Exception("Truename API call failed")
+            raise APIException("Truename API call failed")
 
     # Build our forms with choices from truename.
     odin_form = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
@@ -137,7 +137,7 @@ def odinName(request):
             # API call to IIQ failed
             oam_status.select_odin_username = False
             oam_status.save()
-            raise Exception("IIQ API call failed")
+            raise APIException("IIQ API call failed")
 
         request.session['identity']['ODIN_NAME'] = odin_name
         request.session['identity']['EMAIL_ADDRESS'] = odin_name + "@pdx.edu"
@@ -167,7 +167,7 @@ def email_alias(request):
 
         if len(request.session['TRUENAME_EMAILS']) == 0:
             # Truename down, don't offer empty list
-            raise Exception("Truename API call failed")
+            raise APIException("Truename API call failed")
 
         # Prepend a "None" option at the start of the emails.
         request.session['TRUENAME_EMAILS'].insert(0, 'None')
@@ -184,7 +184,7 @@ def email_alias(request):
             r = set_email_alias(request.session['identity'], _email_alias)
             if r != "SUCCESS":
                 # API call failed
-                raise Exception("IIQ API call failed")
+                raise APIException("IIQ API call failed")
 
             request.session['identity']['EMAIL_ALIAS'] = _email_alias
             request.session.modified = True  # Manually notify Django we modified a sub-object of the session.
@@ -219,13 +219,13 @@ def wait_for_provisioning(request):
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def oam_status_router(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-    request.session['ALLOW_CANCEL']=False
+    request.session['ALLOW_CANCEL'] = False
 
     if 'CHECKED_IIQ' not in request.session:
         provision_status = get_provisioning_status(request.session['identity']['PSU_UUID'])
 
         if len(provision_status) == 0:
-            raise Exception("IIQ API call failed")
+            raise APIException("IIQ API call failed")
 
         # If they've already been through MyInfo, provisioned will be true and we don't want to pester them
         # a second time to pick an alias if previously they selected "none."
@@ -267,6 +267,6 @@ def oam_status_router(request):
         return HttpResponseRedirect(reverse('MyInfo:welcome_landing'))
     
     else:
-        request.session['ALLOW_CANCEL']= True
+        request.session['ALLOW_CANCEL'] = True
         # OAM has been completed. Dump them to MyInfo main page.
         return HttpResponseRedirect(reverse('MyInfo:pick_action'))
