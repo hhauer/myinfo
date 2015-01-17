@@ -89,6 +89,8 @@ def passwordConstraintsFromIdentity(identity):  # is this function used? PEP8 sa
 # This function returns a list of potential odin names to choose from.
 def truename_odin_names(identity):
     if settings.DEVELOPMENT is True:
+        if identity['PSU_UUID'] == '000000001':
+            return []
         stub = [
             'Odin Name 1 - DEV',
             'Odin Name 2 - DEV',
@@ -109,6 +111,8 @@ def truename_odin_names(identity):
 # This function returns a list of potential email aliases to choose from.
 def truename_email_aliases(identity):
     if settings.DEVELOPMENT is True:
+        if identity['PSU_UUID'] == '000000001':
+            return []
         stub = [
             'Email Alias 1 - DEV',
             'Email Alias 2 - DEV',
@@ -159,6 +163,8 @@ def change_password(identity, new_password, old_password):
 
 def set_odin_username(identity, odin_name):
     if settings.DEVELOPMENT is True:
+        if identity['PSU_UUID'] == '000000002':
+            return "FAIL STUB"
         return "SUCCESS"
 
     url = "https://{}/identityiq/rest/custom/setOdin/{}".format(
@@ -179,6 +185,8 @@ def set_odin_username(identity, odin_name):
 
 def set_email_alias(identity, email_alias):
     if settings.DEVELOPMENT is True:
+        if identity['PSU_UUID'] == '000000002':
+            return "FAIL STUB"
         return "SUCCESS"
 
     data = {
@@ -243,6 +251,8 @@ def password_reset_sms(number, token):
 # Query IIQ for OamStatus information.
 def get_provisioning_status(psu_uuid):
     if settings.DEVELOPMENT is True:
+        if psu_uuid == '000000003':
+            return {}
         (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=psu_uuid)
         return {
             "ODIN_SELECTED": oam_status.select_odin_username,

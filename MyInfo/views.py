@@ -5,6 +5,7 @@ from django.http import HttpResponseServerError, HttpResponseRedirect, HttpRespo
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.db import Error
 
 from lib.api_calls import change_password
 
@@ -85,7 +86,8 @@ def set_password(request):
     else:
         form = formNewPassword(request.POST or None)
 
-    if 'identity' not in request.session:  # Shouldn't happen, the above get_or_create would error out first.
+    if 'identity' not in request.session:  # pragma: no cover
+        # Shouldn't happen, the above get_or_create would error out first.
         logger.critical("service=myinfo error=\"No identity information available at set password. Aborting. \
                 \" session=\"{0}\"".format(request.session))
         return HttpResponseServerError('No identity information was available.')
@@ -135,7 +137,7 @@ def set_directory(request):
 
     if directory_info_form.is_valid():
         directory_info_form.save()
-        if oam_status.set_directory is False:
+        if oam_status.set_directory is False:  # pragma: no branch
             oam_status.set_directory = True
             oam_status.save()
 
@@ -199,5 +201,5 @@ def ping(request):
     try:
         _ = Department.objects.all()[0]
         return HttpResponse("Success")
-    except:
+    except (Error, IndexError):
         return HttpResponse("Database not available!")

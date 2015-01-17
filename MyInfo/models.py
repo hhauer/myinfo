@@ -60,7 +60,7 @@ class DirectoryInformation(models.Model):
     state = USStateField(blank=True, null=True, default="OR")
     zip_code = models.CharField(max_length=10, null=True, blank=True, default="97201")
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return self.psu_uuid
 
 
@@ -82,5 +82,5 @@ class MaintenanceNotice(models.Model):
 
     message = models.TextField()
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "Maintenance starting: " + str(self.start_display)

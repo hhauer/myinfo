@@ -3,6 +3,7 @@ __author__ = 'Justin McClure'
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 from random import choice
+from lib.api_calls import APIException
 
 
 class AccountPickupViewsTestCase(TestCase):
@@ -60,6 +61,11 @@ class APIndexTestCase(AccountPickupViewsTestCase):
         r = self.client.post(self.INDEX, data=form)
         self.assertIn('_auth_user_id', self.client.session)
         self.assertRedirects(r, self.NEXT, target_status_code=302, host=self.HOST)
+
+        # Test session flushing
+        s = self.client.session.session_key
+        _ = self.client.post(self.INDEX, data=form)
+        self.assertNotEqual(self.client.session.session_key, s)
 
 
 class APAupTestCase(AccountPickupViewsTestCase):
@@ -126,6 +132,20 @@ class APOdinTestCase(AccountPickupViewsTestCase):
         r = self.client.get(self.ODIN)
         self.assertRedirects(r, self.NEXT, target_status_code=302, host=self.HOST)
 
+    def test_odin_api_fail(self):
+        # Truename down
+        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        data = {'id_number': '000000001', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+        _ = self.client.post(self.INDEX, data=data, follow=True)
+        self.assertRaisesMessage(APIException, "Truename API call failed", self.client.get, self.ODIN)
+
+        # IIQ down
+        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        data['id_number'] = '000000002'
+        _ = self.client.post(self.INDEX, data=data, follow=True)
+        data = {'name': '0'}
+        self.assertRaisesMessage(APIException, "IIQ API call failed", self.client.post, self.ODIN, data=data)
+
 
 class APAliasTestCase(AccountPickupViewsTestCase):
 
@@ -172,6 +192,20 @@ class APAliasTestCase(AccountPickupViewsTestCase):
         # Test forwarding if step complete
         r = self.client.get(self.ALIAS)
         self.assertRedirects(r, self.NEXT, target_status_code=302, host=self.HOST)
+
+    def test_alias_api_fail(self):
+        # Truename down
+        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        data = {'id_number': '000000001', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+        _ = self.client.post(self.INDEX, data=data, follow=True)
+        self.assertRaisesMessage(APIException, "Truename API call failed", self.client.get, self.ALIAS)
+
+        # IIQ down
+        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        data['id_number'] = '000000002'
+        _ = self.client.post(self.INDEX, data=data, follow=True)
+        data = {'alias': '1'}
+        self.assertRaisesMessage(APIException, "IIQ API call failed", self.client.post, self.ALIAS, data=data)
 
 
 class APContactTestCase(AccountPickupViewsTestCase):
@@ -278,3 +312,9 @@ class APNextTestCase(AccountPickupViewsTestCase):
         data = {'id_number': '999999999', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
         r = self.client.post(self.INDEX, data=data, follow=True)
         self.assertRedirects(r, reverse('MyInfo:pick_action'), host=self.HOST)
+
+    def test_next_api_fail(self):
+        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        data = {'id_number': '000000003', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+        self.assertRaisesMessage(APIException, "IIQ API call failed",
+                                 self.client.post, self.INDEX, data=data, follow=True)
