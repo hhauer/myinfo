@@ -22,9 +22,13 @@ logger = logging.getLogger(__name__)
 
 
 # The index of this module performs a non-CAS login to the AccountPickup system.
-@ratelimit(block=True, rate='10/m')
-@ratelimit(block=True, rate='50/h')
+@ratelimit(method='POST', rate='30/m')
+@ratelimit(method='POST', rate='250/h')
 def index(request):
+    limited = getattr(request, 'limited', False)
+    if limited:
+        return HttpResponseRedirect(reverse('rate_limited'))
+
     error_message = ""
     form = AccountClaimLoginForm(request.POST or None)
         

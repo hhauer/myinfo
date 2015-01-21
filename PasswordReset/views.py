@@ -19,9 +19,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-@ratelimit(block=True, rate='10/m')
-@ratelimit(block=True, rate='50/h')
+@ratelimit(method='POST', rate='30/m')
+@ratelimit(method='POST', rate='250/h')
 def index(request):
+    limited = getattr(request, 'limited', False)
+    if limited:
+        return HttpResponseRedirect(reverse('rate_limited'))
+
     error_message = None
     reset_request = ResetRequestForm(request.POST or None)
     email_response = False
@@ -65,9 +69,13 @@ def index(request):
     return render(request, 'PasswordReset/index.html', {'form': reset_request, 'error': error_message, })
 
 
-@ratelimit(block=False, rate='5/m')
-@ratelimit(block=True, rate='10/h')
+@ratelimit(rate='30/m')
+@ratelimit(rate='250/h')
 def reset(request, token=None):
+    limited = getattr(request, 'limited', False)
+    if limited:
+        return HttpResponseRedirect(reverse('rate_limited'))
+
     error_message = None
     signer = TimestampSigner()
         
