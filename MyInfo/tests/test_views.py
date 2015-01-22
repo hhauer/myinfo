@@ -248,7 +248,7 @@ class SetDirectoryTestCase(MyInfoViewsTestCase):
 
     def test_set_directory_unpublished(self):
         c = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        data = {'username': '000000001', 'password': 'Password1'}
+        data = {'username': '000000004', 'password': 'Password1'}
         _ = c.post(self.INDEX, data=data, follow=True)
         r = c.get(self.DIRECTORY)
         self.assertRedirects(r, self.NEXT, target_status_code=302, host=self.HOST)
