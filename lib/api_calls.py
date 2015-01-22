@@ -289,7 +289,7 @@ def _stub_identity(psu_uuid):
         "PSU_PUBLISH": True,
     }
 
-    if psu_uuid == "000000001":  # 'Unpublished user' stub
+    if psu_uuid == "000000004":  # 'Unpublished user' stub
         stub['PSU_PUBLISH'] = False
 
     return stub
