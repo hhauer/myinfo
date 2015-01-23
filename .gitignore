@@ -5,6 +5,6 @@ myinfo.log
 nohup.out
 .idea
 .coverage
-
+htmlcov/
 # We don't want custom settings to end up in a public repo.
 oam_base/settings_*
