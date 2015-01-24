@@ -318,3 +318,21 @@ class APNextTestCase(AccountPickupViewsTestCase):
         data = {'id_number': '000000003', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
         self.assertRaisesMessage(APIException, "IIQ API call failed",
                                  self.client.post, self.INDEX, data=data, follow=True)
+
+
+class APRateLimitTestCase(AccountPickupViewsTestCase):
+
+    def test_rate_limit(self):
+        self.client = Client(REMOTE_ADDR="127.0.1.1")
+        for _ in range(30):
+            self.client.get(self.INDEX)
+        r = self.client.get(self.INDEX, follow=True)
+        self.assertListEqual(r.redirect_chain, [])
+
+        data = {'id_number': '123456789', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+        for _ in range(30):
+            self.client.post(self.INDEX, data)
+        r = self.client.get(self.INDEX, follow=True)
+        self.assertListEqual(r.redirect_chain, [])
+        r = self.client.post(self.INDEX, data, follow=True)
+        self.assertRedirects(r, reverse('rate_limited'), host=self.HOST)
