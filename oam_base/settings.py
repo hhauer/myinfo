@@ -240,3 +240,6 @@ ORACLE_PORT = ''
 ORACLE_SID = ''
 
 ORACLE_SQL = ''
+
+# Cache backend for ratelimiting when behind a load balancer.
+RATELIMIT_CACHE_BACKEND = 'lib.brake_cache.LoadBalancerCache'
