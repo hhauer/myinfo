@@ -21,7 +21,7 @@ class Command(BaseCommand):
         oracle_connection = cx_Oracle.Connection(banner['USER'], banner['PASS'], oracle_dsn)
         oracle_cursor = oracle_connection.cursor()
 
-        oracle_cursor.execute(settings.ORACLE_MANAGEMENT['password_reset']['sql'])
+        oracle_cursor.execute(settings.ORACLE_MANAGEMENT['password_reset']['SQL'])
 
         for record in oracle_cursor:
             # UDC_ID, Phone, Email. Phone or email can be None.
@@ -33,19 +33,24 @@ class Command(BaseCommand):
 
             psu_uuid = r.json()
 
-            if psu_uuid is None:
-                self.stdout.write("No PSU_UUID was available for UDC_ID: " + record[0])
-            else:
-                obj, created = ContactInformation.objects.update_or_create(
-                    psu_uuid = psu_uuid,
-                    cell_phone = record[1],
-                    alternate_email = record[2],
-                )
+            try:
+                if psu_uuid is None:
+                    self.stdout.write("No PSU_UUID was available for UDC_ID: " + record[0])
+                else:
+                    obj, created = ContactInformation.objects.update_or_create(
+                        psu_uuid = psu_uuid,
+                        cell_phone = record[1],
+                        alternate_email = record[2],
+                    )
 
-                obj.save()
+                    obj.save()
 
-                update_or_create = "Updated"
-                if created:
-                    update_or_create = "Created"
+                    update_or_create = "Updated"
+                    if created:
+                        update_or_create = "Created"
 
-                self.stdout.write(update_or_create + " record for: " + psu_uuid)
+                    self.stdout.write(update_or_create + " record for: " + psu_uuid)
+            except:
+                self.stdout.write("There was an exception for: " + psu_uuid)
+                self.stdout.write("Cell Phone was: " + record[1] + " Email was: " + record[2])
+
