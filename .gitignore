@@ -4,6 +4,8 @@ myinfo.log
 .vagrant
 nohup.out
 .idea
-
+.coverage
+htmlcov/
+.coveragerc
 # We don't want custom settings to end up in a public repo.
 oam_base/settings_*

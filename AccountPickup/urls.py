@@ -10,5 +10,4 @@ urlpatterns = patterns('',
     url(r'contact/$', views.contact_info, name='contact_info'),
     url(r'next/$', views.oam_status_router, name='next_step'),
     url(r'wait/$', views.wait_for_provisioning, name='wait_for_provisioning'),
-    url(r'complete/$', views.provisioning_complete, name='provisioning_complete'),
 )

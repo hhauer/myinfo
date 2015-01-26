@@ -5,6 +5,7 @@ from django.http import HttpResponseServerError, HttpResponseRedirect, HttpRespo
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.db import Error
 
 from lib.api_calls import change_password
 
@@ -21,9 +22,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-@ratelimit(block=True, rate='10/m')
-@ratelimit(block=True, rate='50/h')
+@ratelimit(method='POST', rate='30/m')
+@ratelimit(method='POST', rate='250/h')
 def index(request):
+    limited = getattr(request, 'limited', False)
+    if limited:
+        return HttpResponseRedirect(reverse('rate_limited'))
+
     login_form = LoginForm(request.POST or None)
     error_message = ""
 
@@ -85,7 +90,8 @@ def set_password(request):
     else:
         form = formNewPassword(request.POST or None)
 
-    if 'identity' not in request.session:
+    if 'identity' not in request.session:  # pragma: no cover
+        # Shouldn't happen, the above get_or_create would error out first.
         logger.critical("service=myinfo error=\"No identity information available at set password. Aborting. \
                 \" session=\"{0}\"".format(request.session))
         return HttpResponseServerError('No identity information was available.')
@@ -93,7 +99,14 @@ def set_password(request):
     success = False
     message = None
     if form.is_valid():
-        (success, message) = change_password(request.session['identity'], form.cleaned_data['newPassword'], None)
+        if oam_status.set_password is True:
+            current_password = form.cleaned_data['currentPassword']
+        else:
+            current_password = None
+
+        (success, message) = change_password(request.session['identity'],
+                                             form.cleaned_data['newPassword'],
+                                             current_password)
 
         if oam_status.set_password is False and success is True:
             oam_status.set_password = True
@@ -128,7 +141,7 @@ def set_directory(request):
 
     if directory_info_form.is_valid():
         directory_info_form.save()
-        if oam_status.set_directory is False:
+        if oam_status.set_directory is False:  # pragma: no branch
             oam_status.set_directory = True
             oam_status.save()
 
@@ -143,8 +156,8 @@ def set_directory(request):
 
 @login_required(login_url=reverse_lazy('index'))
 def set_contact(request):
-    # We don't check OAMStatusTracker because if they don't have contact info set they will be sent to the AccountPickup
-    # version of this page. This is just for changing existing contact info.
+    # We don't check OAMStatusTracker because if they don't have contact info set they will be sent to the
+    # AccountPickup version of this page. This is just for changing existing contact info.
 
     # Build our password reset information form.
     (contact_info, _) = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
@@ -152,8 +165,9 @@ def set_contact(request):
 
     if contact_info_form.is_valid():
         # First check to see if they removed all their contact info.
+        # Currently this shouldn't happen, since the underlying form rejects that state in validation.
         if contact_info_form.cleaned_data['cell_phone'] is None and contact_info_form.cleaned_data[
-                'alternate_email'] is None:
+                'alternate_email'] is None:  # pragma: no cover
             (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
             oam_status.set_contact_info = False
             oam_status.save()
@@ -175,15 +189,21 @@ def welcome_landing(request):
     oam_status.welcome_displayed = True
     oam_status.save()
 
+    identity = request.session['identity']
+
+    # Kill the session. They are now done.
+    request.session.flush()
+
     return render(request, 'MyInfo/welcome_landing.html', {
-        'identity': request.session['identity'],
+        'identity': identity,
     })
+
 
 # Handle an F5 ping.
 def ping(request):
     # Can we get something from the database?
     try:
-        department = Department.objects.all()[0]
+        _ = Department.objects.all()[0]
         return HttpResponse("Success")
-    except:
+    except (Error, IndexError):
         return HttpResponse("Database not available!")

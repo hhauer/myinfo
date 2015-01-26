@@ -14,7 +14,7 @@
 	<div class="middleBody grid">
 		<div class="col_6 column">
 			<div class="homeLeft center">
-				<h5 style="text-align:left; padding-left:5px;">Change Contact Information</h5>
+				<h5 style="text-align:left; padding-left:5px;">Set Your Contact Information</h5>
 				<form id="passwordResetForm" action="{% url 'AccountPickup:contact_info' %}" method="post" style="text-align:left">
 					{% csrf_token %}
 					{{ form.non_field_errors }}
@@ -38,9 +38,9 @@
 
 		<div class="col_6">
 			<div class="homeRight center">
-				<h5 class="left">Log In or Activate Your Account!</h5>
 				<p class="left" style="position:relative;top:10px;">In order to allow us to reset your password, in the event that it is ever forgotten or expired, you must provide either a valid US mobile phone number that is capable of receiving text messages or an alternate (non-PSU) email address to which we can send a password reset code.
 				</p>
+                <p class="left" style="position:relative;top:10px;">If you cannot enter either of these fields, <a href="http://www.pdx.edu/oit/contact">contact us.</a></p>
 			</div>
 		</div>
 	</div>

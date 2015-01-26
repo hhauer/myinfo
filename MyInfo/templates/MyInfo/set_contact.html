@@ -11,7 +11,7 @@
 	<div class="middleBody grid">
 		<div class="col_6">
 			<div class="homeLeft center">
-			<h5>Password Reset Information</h5>
+			<h5>Change or Set Your Contact Information</h5>
 				<form id="directoryInformation" action="{% url 'MyInfo:set_contact' %}" method="post">
 					{% csrf_token %}
 					{{ form.non_field_errors }}
@@ -40,7 +40,6 @@
 		
 		<div class="col_6">
 				<div class="homeRight center">
-					<h5 class="left">Password Reset</h5>
 					<p class="left" style="position:relative;top:10px;">
 						Providing your cell phone number and/or external (non-PSU) email address will allow you to use OAM’s self-service password reset features. In the event that you need to reset your password, an automated message will be sent to your email/phone with a reset code. 
 					</p><br>

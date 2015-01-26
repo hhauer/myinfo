@@ -14,12 +14,14 @@ class Command(BaseCommand):
         return url
 
     def handle(self, *args, **options):
-        oracle_dsn = cx_Oracle.makedsn(settings.ORACLE_HOST, settings.ORACLE_PORT, settings.ORACLE_SID)
+        # Get banner connection settings.
+        banner = settings.ORACLE_MANAGEMENT['banner']
 
-        oracle_connection = cx_Oracle.Connection(settings.ORACLE_USER, settings.ORACLE_PASS, oracle_dsn)
+        oracle_dsn = cx_Oracle.makedsn(banner['HOST'], banner['PORT'], banner['SID'])
+        oracle_connection = cx_Oracle.Connection(banner['USER'], banner['PASS'], oracle_dsn)
         oracle_cursor = oracle_connection.cursor()
 
-        oracle_cursor.execute(settings.ORACLE_SQL)
+        oracle_cursor.execute(settings.ORACLE_MANAGEMENT['password_reset']['SQL'])
 
         for record in oracle_cursor:
             # UDC_ID, Phone, Email. Phone or email can be None.
@@ -31,19 +33,27 @@ class Command(BaseCommand):
 
             psu_uuid = r.json()
 
-            if psu_uuid is None:
-                self.stdout.write("No PSU_UUID was available for UDC_ID: " + record[0])
-            else:
-                obj, created = ContactInformation.objects.update_or_create(
-                    psu_uuid = psu_uuid,
-                    cell_phone = record[1],
-                    alternate_email = record[2],
-                )
+            try:
+                if psu_uuid is None or psu_uuid == "None":
+                    self.stdout.write("No PSU_UUID was available for UDC_ID: " + record[0])
+                else:
+                    obj, created = ContactInformation.objects.update_or_create(
+                        psu_uuid=psu_uuid,
+                        cell_phone=record[1],
+                        alternate_email=record[2],
+                    )
 
-                obj.save()
+                    obj.save()
 
-                update_or_create = "Updated"
-                if created:
-                    update_or_create = "Created"
+                    update_or_create = "Updated"
+                    if created:
+                        update_or_create = "Created"
 
-                self.stdout.write(update_or_create + " record for: " + psu_uuid)
+                    self.stdout.write(update_or_create + " record for: " + psu_uuid)
+            except:
+                self.stdout.write("There was an exception for: " + psu_uuid)
+                if record[1] is not None:
+                    self.stdout.write("Cell Phone was: " + record[1])
+                if record[2] is not None:
+                    self.stdout.write("Email was: " + record[2])
+
