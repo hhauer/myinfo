@@ -17,6 +17,9 @@ class Command(BaseCommand):
         return url
 
     def handle(self, *args, **options):
+        # For making the logs easier to interpret later, log out when we started.
+        self.stdout.write("Nightly Export AUP started at: " + datetime.now())
+
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
 
         # Come up with a reasonable filename.
@@ -38,3 +41,7 @@ class Command(BaseCommand):
                 spriden_id = r.json()
                 row = [spriden_id, 'AUP Accepted', yesterday.strftime("%Y%m%d")]
                 csv_file.writerow(row)
+
+
+        # Finally, print out when we finished.
+        self.stdout.write("Nightly Force Aggregation finished at: " + datetime.now())

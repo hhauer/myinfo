@@ -1,5 +1,7 @@
 __author__ = 'hhauer'
 
+from datetime import datetime
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -8,6 +10,9 @@ import cx_Oracle
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        # For making the logs easier to interpret later, log out when we started.
+        self.stdout.write("Nightly Force Aggregation started at: " + datetime.now())
+
         # Get banner connection settings.
         banner = settings.ORACLE_MANAGEMENT['banner']
 
@@ -28,3 +33,6 @@ class Command(BaseCommand):
             write_cursor.execute(None, {'udc_id': udc_id})
 
         oracle_connection.commit()
+
+        # Finally, print out when we finished.
+        self.stdout.write("Nightly Force Aggregation finished at: " + datetime.now())
