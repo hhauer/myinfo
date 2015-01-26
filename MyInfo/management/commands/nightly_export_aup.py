@@ -18,7 +18,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # For making the logs easier to interpret later, log out when we started.
-        self.stdout.write("Nightly Export AUP started at: " + datetime.now())
+        self.stdout.write("Nightly Export AUP started at: {}".format(datetime.datetime.now()))
 
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
 
@@ -44,4 +44,4 @@ class Command(BaseCommand):
 
 
         # Finally, print out when we finished.
-        self.stdout.write("Nightly Force Aggregation finished at: " + datetime.now())
+        self.stdout.write("Nightly Force Aggregation finished at: {}".format(datetime.datetime.now()))
