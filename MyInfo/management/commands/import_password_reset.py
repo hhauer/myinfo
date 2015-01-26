@@ -34,13 +34,13 @@ class Command(BaseCommand):
             psu_uuid = r.json()
 
             try:
-                if psu_uuid is None:
+                if psu_uuid is None or psu_uuid == "None":
                     self.stdout.write("No PSU_UUID was available for UDC_ID: " + record[0])
                 else:
                     obj, created = ContactInformation.objects.update_or_create(
-                        psu_uuid = psu_uuid,
-                        cell_phone = record[1],
-                        alternate_email = record[2],
+                        psu_uuid=psu_uuid,
+                        cell_phone=record[1],
+                        alternate_email=record[2],
                     )
 
                     obj.save()
@@ -52,5 +52,8 @@ class Command(BaseCommand):
                     self.stdout.write(update_or_create + " record for: " + psu_uuid)
             except:
                 self.stdout.write("There was an exception for: " + psu_uuid)
-                self.stdout.write("Cell Phone was: " + record[1] + " Email was: " + record[2])
+                if record[1] is not None:
+                    self.stdout.write("Cell Phone was: " + record[1])
+                if record[2] is not None:
+                    self.stdout.write("Email was: " + record[2])
 
