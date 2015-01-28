@@ -34,7 +34,7 @@ def index(request):
 
     if login_form.is_valid():
         # If for some reason they already have a session, let's get rid of it and start fresh.
-        if request.session is not None:
+        if request.session is not None:  # pragma: no branch
             request.session.flush()
 
         logger.debug("OAM Login Attempt: {0}".format(login_form.cleaned_data['username']))
