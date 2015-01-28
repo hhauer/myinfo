@@ -16,5 +16,5 @@ def custom_error(request):
 # Render an error page that the user has been subjected to rate limiting.
 def rate_limited(request):
     remote_addr = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
-    logger.info("service=MyInfo remote_addr=" + remote_addr + " rate_limited=true")
+    logger.info("service=myinfo remote_addr=" + remote_addr + " rate_limited=true")
     return render(request, 'rate_limited.html')

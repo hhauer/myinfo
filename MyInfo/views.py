@@ -92,8 +92,7 @@ def set_password(request):
 
     if 'identity' not in request.session:  # pragma: no cover
         # Shouldn't happen, the above get_or_create would error out first.
-        logger.critical("service=myinfo error=\"No identity information available at set password. Aborting. \
-                \" session=\"{0}\"".format(request.session))
+        logger.critical("service=myinfo error=no_identity_at_password session={0}".format(request.session))
         return HttpResponseServerError('No identity information was available.')
 
     success = False

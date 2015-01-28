@@ -4,8 +4,8 @@ from AccountPickup import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'aup/$', views.AUP, name='aup'),
-    url(r'odin/$', views.odinName, name='odin'),
+    url(r'aup/$', views.aup, name='aup'),
+    url(r'odin/$', views.odin_name, name='odin'),
     url(r'alias/$', views.email_alias, name='alias'),
     url(r'contact/$', views.contact_info, name='contact_info'),
     url(r'next/$', views.oam_status_router, name='next_step'),

@@ -41,16 +41,16 @@ def index(request):
                                  birth_date=form.cleaned_data['birth_date'],
                                  password=form.cleaned_data['auth_pass'],
                                  request=request)
-        logger.info("Account claim login attempt with ID: {0}".format(form.cleaned_data['id_number']))
+        logger.debug("Account claim login attempt with ID: {0}".format(form.cleaned_data['id_number']))
         if user is not None:
             # Identity is valid.
             auth.login(request, user)
-            logger.info("Account claim login success with ID: {0}".format(form.cleaned_data['id_number']))
+            logger.info("service=myinfo login_id={0} success=true".format(form.cleaned_data['id_number']))
             
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
         # If identity is invalid, prompt re-entry.
         error_message = "That identity was not found."
-    
+
     return render(request, 'AccountPickup/index.html', {
         'form': form,
         'error': error_message,
@@ -59,7 +59,7 @@ def index(request):
 
 # Acceptable use policy.
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
-def AUP(request):
+def aup(request):
     # If someone has already completed this step, move them along:
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.agree_aup is not None and date.today() < oam_status.agree_aup + timedelta(weeks=26):
@@ -71,7 +71,7 @@ def AUP(request):
         oam_status.agree_aup = date.today()
         oam_status.save()
         
-        logger.info("service=MyInfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " aup=true")
+        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " aup=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
     return render(request, 'AccountPickup/aup.html', {
@@ -99,7 +99,7 @@ def contact_info(request):
         oam_status.set_contact_info = True
         oam_status.save()
         
-        logger.info("service=MyInfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " password_reset=true")
+        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " password_reset=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     elif request.method == 'POST':
         logger.debug(_contact_info)
@@ -113,7 +113,7 @@ def contact_info(request):
 
 # Select ODIN name
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
-def odinName(request):
+def odin_name(request):
     # If someone has already completed this step, move them along:
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.select_odin_username is True:
@@ -124,7 +124,7 @@ def odinName(request):
         request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
         # If truename server is not responding, don't give user empty list
         if len(request.session['TRUENAME_USERNAMES']) == 0:
-            raise APIException("Truename API call failed")
+            raise APIException("Truename API call failed: No names")
 
     # Build our forms with choices from truename.
     odin_form = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
@@ -135,19 +135,19 @@ def odinName(request):
         oam_status.save()
 
         # Send the information to sailpoint to begin provisioning.
-        odin_name = request.session['TRUENAME_USERNAMES'][int(odin_form.cleaned_data['name'])]
-        r = set_odin_username(request.session['identity'], odin_name)
+        _odin_name = request.session['TRUENAME_USERNAMES'][int(odin_form.cleaned_data['name'])]
+        r = set_odin_username(request.session['identity'], _odin_name)
         if r != "SUCCESS":
             # API call to IIQ failed
             oam_status.select_odin_username = False
             oam_status.save()
-            raise APIException("IIQ API call failed")
+            raise APIException("IIQ API call failed: Odin not set")
 
-        request.session['identity']['ODIN_NAME'] = odin_name
-        request.session['identity']['EMAIL_ADDRESS'] = odin_name + "@pdx.edu"
+        request.session['identity']['ODIN_NAME'] = _odin_name
+        request.session['identity']['EMAIL_ADDRESS'] = _odin_name + "@pdx.edu"
         request.session.modified = True  # Manually notify Django we modified a sub-object of the session.
         
-        logger.info("service=MyInfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + odin_name)
+        logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + _odin_name)
 
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     
@@ -171,7 +171,7 @@ def email_alias(request):
 
         if len(request.session['TRUENAME_EMAILS']) == 0:
             # Truename down, don't offer empty list
-            raise APIException("Truename API call failed")
+            raise APIException("Truename API call failed: No names")
 
         # Prepend a "None" option at the start of the emails.
         request.session['TRUENAME_EMAILS'].insert(0, 'None')
@@ -193,8 +193,8 @@ def email_alias(request):
             request.session['identity']['EMAIL_ALIAS'] = _email_alias
             request.session.modified = True  # Manually notify Django we modified a sub-object of the session.
 
-            logger.info(
-                "service=MyInfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " email_alias=" + _email_alias)
+            logger.info("service=myinfo psu_uuid={0} email_alias={1}".format(
+                request.session['identity']['PSU_UUID'], _email_alias))
 
         oam_status.select_email_alias = True
         oam_status.save()
@@ -229,7 +229,7 @@ def oam_status_router(request):
         provision_status = get_provisioning_status(request.session['identity']['PSU_UUID'])
 
         if len(provision_status) == 0:
-            raise APIException("IIQ API call failed")
+            raise APIException("IIQ API call failed: no status")
 
         # If they've already been through MyInfo, provisioned will be true and we don't want to pester them
         # a second time to pick an alias if previously they selected "none."
