@@ -51,8 +51,8 @@ def index(request):
                 
                 r = password_reset_sms(user_data.cell_phone, short_code.code)
 
-            if len(r) == 0:
-                raise APIException("Reset code not sent.")
+            if r is not True:
+                raise APIException("Reset code not sent. Email? " + str(email_response))
             
             return HttpResponseRedirect(reverse("PasswordReset:reset_notoken"))
             
