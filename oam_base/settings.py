@@ -229,6 +229,7 @@ MAX_USERNAME_LENGTH = 36
 DOWNTIME_EXEMPT_PATHS = (
     '/admin',
     '/accounts/login',
+    '/MyInfo/ping',
 )
 
 # Settings for password reset import management command.
