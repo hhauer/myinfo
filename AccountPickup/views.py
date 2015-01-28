@@ -186,9 +186,9 @@ def email_alias(request):
 
         if _email_alias is not None and _email_alias != 'None':
             r = set_email_alias(request.session['identity'], _email_alias)
-            if r != "SUCCESS":
+            if r is not True:
                 # API call failed
-                raise APIException("IIQ API call failed")
+                raise APIException("API call to set_email_alias did not return success.")
 
             request.session['identity']['EMAIL_ALIAS'] = _email_alias
             request.session.modified = True  # Manually notify Django we modified a sub-object of the session.
