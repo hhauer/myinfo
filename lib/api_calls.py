@@ -186,8 +186,8 @@ def set_odin_username(identity, odin_name):
 def set_email_alias(identity, email_alias):
     if settings.DEVELOPMENT is True:
         if identity['PSU_UUID'] == '000000002':
-            return "FAIL STUB"
-        return "SUCCESS"
+            return False
+        return True
 
     data = {
         'psu_uuid': identity["PSU_UUID"],
