@@ -129,7 +129,6 @@ INSTALLED_APPS = (
     'lib',
     # Apps related to plugins.
     'ajax',
-    'widget_tweaks',
     'localflavor',
     'downtime',
     'debug_toolbar.apps.DebugToolbarConfig',
