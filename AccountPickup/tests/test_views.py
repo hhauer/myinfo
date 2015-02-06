@@ -198,14 +198,14 @@ class APAliasTestCase(AccountPickupViewsTestCase):
         self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data = {'id_number': '000000001', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
         _ = self.client.post(self.INDEX, data=data, follow=True)
-        self.assertRaisesMessage(APIException, "Truename API call failed", self.client.get, self.ALIAS)
+        self.assertRaises(APIException, self.client.get, self.ALIAS)
 
         # IIQ down
         self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data['id_number'] = '000000002'
         _ = self.client.post(self.INDEX, data=data, follow=True)
         data = {'alias': '1'}
-        self.assertRaisesMessage(APIException, "IIQ API call failed", self.client.post, self.ALIAS, data=data)
+        self.assertRaises(APIException, self.client.post, self.ALIAS, data=data)
 
 
 class APContactTestCase(AccountPickupViewsTestCase):

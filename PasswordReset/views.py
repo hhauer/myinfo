@@ -58,12 +58,15 @@ def index(request):
             
     except (ContactInformation.DoesNotExist, ContactInformation.MultipleObjectsReturned):
         # Either we couldn't find it or we couldn't uniquely identify it.
-        logger.info("service=MyInfo email=" + reset_request.cleaned_data['email'] + " cell=" +
-                    reset_request.cleaned_data['cell'] + "error = \"Unable to identify.\"")
+        logger.info("service=myinfo email={0} cell={1} error=unable_to_identify".format(
+            reset_request.cleaned_data['email'], reset_request.cleaned_data['cell']))
+
         error_message = "We were unable to find an identity that matched your information."
     except APIException:
-        logger.info("service=MyInfo email=" + reset_request.cleaned_data['email'] + " cell=" +
-                    reset_request.cleaned_data['cell'] + "error = \"Unable to send code.\"")
+
+        logger.info("service=myinfo email={0} cell={1} error=code_not_sent".format(
+            reset_request.cleaned_data['email'], reset_request.cleaned_data['cell']))
+
         error_message = "Sorry, we were unable to send a reset code. Please try again later."
     
     return render(request, 'PasswordReset/index.html', {'form': reset_request, 'error': error_message, })
@@ -112,16 +115,15 @@ def reset(request, token=None):
 
                 return HttpResponseRedirect(reverse('AccountPickup:next_step'))
             
-            logger.error("service=MyInfo psu_uuid={0} error=\"Password token decrypted successfully but unable to \
-                authenticate.\"".format(psu_uuid))
+            logger.error("service=myinfo psu_uuid={0} error=reset_authentication".format(psu_uuid))
             error_message = "There was an internal error. Please contact the help desk for support."
         except SignatureExpired:
             udc_id = signer.unsign(token)
             # Too slow!
-            logger.info("service=MyInfo psu_uuid={0} error=password_timeout".format(udc_id))
+            logger.info("service=myinfo psu_uuid={0} error=password_timeout".format(udc_id))
             error_message = "The password reset expired. Please try again."
         except BadSignature:
-            logger.info("service=MyInfo token={0} error=\"An invalid reset token was passed to OAM PasswordReset\"")
+            logger.info("service=myinfo token={0} error=invalid_token".format(token))
             error_message = "There was an internal error. Please contact the help desk for support."
     
         # Something went wrong, forward them back to the password reset link page.  

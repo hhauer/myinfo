@@ -44,4 +44,4 @@ class Command(BaseCommand):
 
 
         # Finally, print out when we finished.
-        self.stdout.write("Nightly Force Aggregation finished at: {}".format(datetime.datetime.now()))
+        self.stdout.write("Nightly Export AUP finished at: {}".format(datetime.datetime.now()))

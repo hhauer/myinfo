@@ -359,3 +359,21 @@ class PingTestCase(MyInfoViewsTestCase):
 
             r = self.client.get(self.PING)
             self.assertEqual(r.content, b'Database not available!')
+
+
+class MIRateLimitTestCase(MyInfoViewsTestCase):
+
+    def test_rate_limit(self):
+        self.client = Client(REMOTE_ADDR="127.0.1.2")
+        for _ in range(30):
+            self.client.get(self.INDEX)
+        r = self.client.get(self.INDEX, follow=True)
+        self.assertListEqual(r.redirect_chain, [])
+
+        data = {'username': '123456789', 'password': 'Password1!'}
+        for _ in range(30):
+            self.client.post(self.INDEX, data)
+        r = self.client.get(self.INDEX, follow=True)
+        self.assertListEqual(r.redirect_chain, [])
+        r = self.client.post(self.INDEX, data, follow=True)
+        self.assertRedirects(r, reverse('rate_limited'), host=self.HOST)

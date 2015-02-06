@@ -34,7 +34,7 @@ def index(request):
 
     if login_form.is_valid():
         # If for some reason they already have a session, let's get rid of it and start fresh.
-        if request.session is not None:
+        if request.session is not None:  # pragma: no branch
             request.session.flush()
 
         logger.debug("OAM Login Attempt: {0}".format(login_form.cleaned_data['username']))
@@ -92,8 +92,7 @@ def set_password(request):
 
     if 'identity' not in request.session:  # pragma: no cover
         # Shouldn't happen, the above get_or_create would error out first.
-        logger.critical("service=myinfo error=\"No identity information available at set password. Aborting. \
-                \" session=\"{0}\"".format(request.session))
+        logger.critical("service=myinfo error=no_identity_at_password session={0}".format(request.session))
         return HttpResponseServerError('No identity information was available.')
 
     success = False

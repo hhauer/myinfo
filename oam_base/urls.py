@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', cas_views.login, {'next_page': reverse_lazy('AccountPickup:next_step')}, name='CASLogin'),
     url(r'^accounts/logout/$', cas_views.logout, name='CASLogout'),
 
-    url(r'^error/denied/$', base_views.rate_limited, name='rate_limited'),
+    url(r'^status/denied/$', base_views.rate_limited, name='rate_limited'),
 
     url(r'^ajax/', include('ajax.urls')),
 
