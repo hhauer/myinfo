@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
+
 # Custom user manager
 class PSUCustomUserManager(BaseUserManager):
     def create_user(self, username, password=None):
@@ -13,8 +14,9 @@ class PSUCustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, password=None):
-        user = self.create_user(username,
+    def create_superuser(self, username, password):
+        user = self.create_user(
+            username,
             password=password,
         )
         user.is_admin = True
