@@ -5,7 +5,7 @@ from django.utils import timezone
 
 # http://www.crockford.com/wrmg/base32.html
 # Should reduce confusion on characters when typing in from a phone. No I/1 l/I l/1 confusion.
-CHARSET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'
+CHARSET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
 LENGTH = 10
 
 

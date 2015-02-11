@@ -14,7 +14,7 @@ class PSUCustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, password):
+    def create_superuser(self, username, password=None):
         user = self.create_user(
             username,
             password=password,
