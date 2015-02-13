@@ -21,7 +21,7 @@ class Command(BaseCommand):
         self.stdout.write("Nightly Export AUP started at: {}".format(datetime.datetime.now()))
 
         # Truncate old data.
-        self.stdout.write("Truncating previous data, if any.");
+        self.stdout.write("Truncating old records. Count: " + str(Event.objects.count()));
         Event.objects.all().delete()
 
         # Get any oamstatustracker that updated their AUP yesterday.
@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
             spriden_id = r.json()
 
-            if spriden_id is None or spriden_id == "":
+            if spriden_id is None or spriden_id == "" or spriden_id == "None":
                 self.stdout.write("Error converting {} to spriden_id.".format(x.psu_uuid))
             else:
                 Event.objects.create(psu_uuid=x.psu_uuid,
