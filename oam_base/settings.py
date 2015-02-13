@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     'ajax',
     'localflavor',
     'downtime',
+    'ods_integration',
     'debug_toolbar.apps.DebugToolbarConfig',
 )
 
