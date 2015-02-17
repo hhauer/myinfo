@@ -20,9 +20,10 @@ class Command(BaseCommand):
         # For making the logs easier to interpret later, log out when we started.
         self.stdout.write("Nightly Export AUP started at: {}".format(datetime.datetime.now()))
 
-        # Truncate old data.
-        self.stdout.write("Truncating old records. Count: " + str(Event.objects.count()));
-        Event.objects.all().delete()
+        # Truncate consumed data.
+        consumed = Event.objects.filter(consumed=True)
+        self.stdout.write("Truncating old records. Count: " + str(consumed.count()));
+        consumed.delete()
 
         # Get any oamstatustracker that updated their AUP yesterday.
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
