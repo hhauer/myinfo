@@ -137,14 +137,14 @@ class APOdinTestCase(AccountPickupViewsTestCase):
         self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data = {'id_number': '000000001', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
         _ = self.client.post(self.INDEX, data=data, follow=True)
-        self.assertRaisesMessage(APIException, "Truename API call failed", self.client.get, self.ODIN)
+        self.assertRaises(APIException, self.client.get, self.ODIN)
 
         # IIQ down
         self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data['id_number'] = '000000002'
         _ = self.client.post(self.INDEX, data=data, follow=True)
         data = {'name': '0'}
-        self.assertRaisesMessage(APIException, "IIQ API call failed", self.client.post, self.ODIN, data=data)
+        self.assertRaises(APIException, self.client.post, self.ODIN, data=data)
 
 
 class APAliasTestCase(AccountPickupViewsTestCase):
@@ -206,6 +206,23 @@ class APAliasTestCase(AccountPickupViewsTestCase):
         _ = self.client.post(self.INDEX, data=data, follow=True)
         data = {'alias': '1'}
         self.assertRaises(APIException, self.client.post, self.ALIAS, data=data)
+
+    def test_alias_skipping(self):
+        # No alias, first time through myinfo
+        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        data = {'id_number': '000000005', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+        r = self.client.post(self.INDEX, data=data, follow=True)
+        self.assertRedirects(r, self.ALIAS, host=self.HOST)
+        _ = self.client.post(self.ALIAS, data={'alias': '0'})
+        # No alias, subsequent visits
+        r = self.client.post(self.INDEX, data=data, follow=True)
+        self.assertRedirects(r, reverse('MyInfo:pick_action'), host=self.HOST)
+
+        # Alias exists, first time through myinfo
+        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        data = {'id_number': '000000006', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+        r = self.client.post(self.INDEX, data=data, follow=True)
+        self.assertRedirects(r, reverse('MyInfo:pick_action'), host=self.HOST)
 
 
 class APContactTestCase(AccountPickupViewsTestCase):
@@ -316,8 +333,7 @@ class APNextTestCase(AccountPickupViewsTestCase):
     def test_next_api_fail(self):
         self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data = {'id_number': '000000003', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        self.assertRaisesMessage(APIException, "IIQ API call failed",
-                                 self.client.post, self.INDEX, data=data, follow=True)
+        self.assertRaises(APIException, self.client.post, self.INDEX, data=data, follow=True)
 
 
 class APRateLimitTestCase(AccountPickupViewsTestCase):
