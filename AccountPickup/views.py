@@ -233,7 +233,7 @@ def oam_status_router(request):
 
         # If they've already been through MyInfo, provisioned will be true and we don't want to pester them
         # a second time to pick an alias if previously they selected "none."
-        if oam_status.provisioned is False:
+        if oam_status.select_email_alias is False:
             oam_status.select_email_alias = provision_status["ALIAS_SELECTED"]
 
         oam_status.provisioned = provision_status["PROVISIONED"]
