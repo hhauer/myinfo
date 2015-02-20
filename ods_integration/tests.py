@@ -1,5 +1,7 @@
 import datetime
+import unittest
 
+from django.conf import settings
 from django.test import TestCase
 from django.core.management import call_command
 
@@ -8,6 +10,7 @@ from ods_integration.models import Event
 
 
 # Create your tests here.
+@unittest.skipIf(settings.SAILPOINT_SERVER_URL == '', "No valid sailpoint host.")
 class IntegrationTestCase(TestCase):
     def setUp(self):
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
