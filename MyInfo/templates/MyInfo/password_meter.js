@@ -4,6 +4,7 @@ $(document).ready(function() {
 	window.numberValid = false;
     window.characterValid = false;
 	window.passwordSame = false;
+    window.illegalSymbol = false;
 	
 	$('#id_newPassword').keyup(function() {
 		window.passwordSame = false;
@@ -32,6 +33,14 @@ $(document).ready(function() {
 			$('#charactercount').removeClass('invalid').addClass('valid');
 			window.characterValid = true;
 		}
+
+        if(password.search('@') > 0) {
+            $('#invalidsymbol').removeClass('valid').addClass('invalid');
+            window.illegalSymbol = true;
+        } else {
+            $('#invalidsymbol').removeClass('invalid').addClass('valid');
+            window.illegalSymbol = false;
+        }
 		
 		var result = zxcvbn(password, []);
 
@@ -63,7 +72,7 @@ $(document).ready(function() {
 			window.passwordSame = true;
 		}
 		
-		if (window.lengthValid && window.numberValid && window.characterValid && window.passwordSame) {
+		if (window.lengthValid && window.numberValid && window.characterValid && window.passwordSame && !window.illegalSymbol) {
 			$("#password-button").removeAttr("disabled");
 		} else {
 			$("#password-button").attr("disabled", "disabled");
@@ -71,7 +80,7 @@ $(document).ready(function() {
 	});
 	
 	$('#passwordForm').submit(function() {
-		if (window.lengthValid && window.numberValid && window.characterValid && window.passwordSame) {
+		if (window.lengthValid && window.numberValid && window.characterValid && window.passwordSame && !window.illegalSymbol) {
 			return true;
 		} else {
 			return false;

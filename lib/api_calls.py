@@ -1,5 +1,15 @@
 """
 For managing API calls out to external resources such as sailpoint.
+
+Special dev user stubs:
+000000000 - Known bad/nonexistent identity
+000000001 - No truename odin, no truename alias
+000000002 - Failed odin set, failed alias set
+000000003 - Failed provision status call to IIQ
+000000004 - User not published in directory
+000000005 - Pre-existing, with no alias
+000000006 - Pre-existing, with alias set
+"BadPass1" for old or new password in password change will reject that password
 """
 # import urllib.request, urllib.parse, urllib.error
 # import urllib.request, urllib.error, urllib.parse
@@ -253,6 +263,21 @@ def get_provisioning_status(psu_uuid):
     if settings.DEVELOPMENT is True:
         if psu_uuid == '000000003':
             return {}
+        if psu_uuid == '000000005':
+            return {
+                "ODIN_SELECTED": True,
+                "ALIAS_SELECTED": False,
+                "PROVISIONED": True,
+                "WELCOMED": True,
+            }
+        if psu_uuid == '000000006':
+            return {
+                "ODIN_SELECTED": True,
+                "ALIAS_SELECTED": True,
+                "PROVISIONED": True,
+                "WELCOMED": True,
+            }
+
         (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=psu_uuid)
         return {
             "ODIN_SELECTED": oam_status.select_odin_username,

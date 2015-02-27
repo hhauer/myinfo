@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.core.urlresolvers import reverse_lazy
+from django.views.generic import RedirectView
 
 from MyInfo import views as my_info_views
 from django_cas import views as cas_views
@@ -23,6 +24,10 @@ urlpatterns = patterns('',
     url(r'^ajax/', include('ajax.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
+
+    # Simple redirects for static files that browsers expect to be at the root.
+    url(r'^robots\.txt$', RedirectView.as_view(url='/static/robots.txt')),
+    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico')),
 )
 
 handler500 = 'oam_base.views.custom_error'

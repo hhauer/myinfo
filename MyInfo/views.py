@@ -112,7 +112,13 @@ def set_password(request):
             oam_status.save()
 
         if success is True:
+            logger.info("service=myinfo psu_uuid={0} password_set=true".format(
+                request.session['identity']['PSU_UUID']))
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+        else:
+            logger.info("service=myinfo psu_uuid={0} password_set=false".format(
+                request.session['identity']['PSU_UUID']
+            ))
 
     # Consider rendering when the password expires. Eventually.
     return render(request, 'MyInfo/set_password.html', {
@@ -144,6 +150,9 @@ def set_directory(request):
             oam_status.set_directory = True
             oam_status.save()
 
+        logger.info("service=myinfo psu_uuid={0} directory_set=true".format(
+            request.session['identity']['PSU_UUID']
+        ))
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'MyInfo/set_directory.html', {
@@ -173,6 +182,9 @@ def set_contact(request):
 
         contact_info_form.save()
 
+        logger.info("service=myinfo psu_uuid={0} contact_updated=true".format(
+            request.session['identity']['PSU_UUID']
+        ))
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'MyInfo/set_contact.html', {
@@ -192,7 +204,7 @@ def welcome_landing(request):
 
     # Kill the session. They are now done.
     request.session.flush()
-
+    logger.info("service=myinfo psu_uuid={0} welcomed=true".format(identity['PSU_UUID']))
     return render(request, 'MyInfo/welcome_landing.html', {
         'identity': identity,
     })
