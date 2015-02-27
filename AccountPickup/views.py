@@ -81,6 +81,8 @@ def aup(request):
 
 
 # Password reset information.
+# TODO: Refactor to merge with MyInfo.views.set_contact
+# Probably best accomplished while reworking it for confirmation code feature
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def contact_info(request):
     # If someone has already completed this step, move them along:
