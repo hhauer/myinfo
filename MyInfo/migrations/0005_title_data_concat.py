@@ -14,7 +14,7 @@ def truncate_job_title(apps, schema_editor):  # pragma: no cover
 class Migration(migrations.Migration):  # pragma: no cover
 
     dependencies = [
-        ('MyInfo', '0002_initial_data'),
+        ('MyInfo', '0004_room_number_column_shrink'),
     ]
 
     operations = [
