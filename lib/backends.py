@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class AccountPickupBackend(object):
     @staticmethod
     def authenticate(request, id_number=None, birth_date=None, password=None):
-        _user = get_user_model()
+        User = get_user_model()
 
         if not id_number or not birth_date or not password:
             return None
@@ -34,19 +34,19 @@ class AccountPickupBackend(object):
             return None
         
         try:
-            user = _user.objects.get(username=identity['PSU_UUID'])
-        except _user.DoesNotExist:
+            user = User.objects.get(username=identity['PSU_UUID'])
+        except User.DoesNotExist:
             # user will have an "unusable" password
-            user = _user.objects.create_user(identity['PSU_UUID'], password=None)
+            user = User.objects.create_user(identity['PSU_UUID'], password=None)
         return user
 
     @staticmethod
     def get_user(user_id):
-        _user = get_user_model()
+        User = get_user_model()
 
         try:
-            return _user.objects.get(pk=user_id)
-        except _user.DoesNotExist:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
             return None
 
 
@@ -54,7 +54,7 @@ class AccountPickupBackend(object):
 class OAMLoginBackend(object):
     @staticmethod
     def authenticate(request, username=None, password=None):
-        _user = get_user_model()
+        User = get_user_model()
 
         if not username or not password:
             return None
@@ -66,19 +66,19 @@ class OAMLoginBackend(object):
             return None
 
         try:
-            user = _user.objects.get(username=identity['PSU_UUID'])
-        except _user.DoesNotExist:
+            user = User.objects.get(username=identity['PSU_UUID'])
+        except User.DoesNotExist:
             # user will have an "unusable" password
-            user = _user.objects.create_user(identity['PSU_UUID'], password=None)
+            user = User.objects.create_user(identity['PSU_UUID'], password=None)
         return user
 
     @staticmethod
     def get_user(user_id):
-        _user = get_user_model()
+        User = get_user_model()
 
         try:
-            return _user.objects.get(pk=user_id)
-        except _user.DoesNotExist:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
             return None
 
 
@@ -86,7 +86,7 @@ class OAMLoginBackend(object):
 class ForgotPasswordBackend(object):
     @staticmethod
     def authenticate(request, psu_uuid=None):
-        _user = get_user_model()
+        User = get_user_model()
 
         if not psu_uuid:
             return None
@@ -98,17 +98,17 @@ class ForgotPasswordBackend(object):
         logger.debug("service=myinfo psu_uuid=" + psu_uuid + " authenticate=password_reset")
 
         try:
-            user = _user.objects.get(username=psu_uuid)
-        except _user.DoesNotExist:
+            user = User.objects.get(username=psu_uuid)
+        except User.DoesNotExist:
             # user will have an "unusable" password
-            user = _user.objects.create_user(psu_uuid, password=None)
+            user = User.objects.create_user(psu_uuid, password=None)
         return user
     
     @staticmethod
     def get_user(user_id):
-        _user = get_user_model()
+        User = get_user_model()
 
         try:
-            return _user.objects.get(pk=user_id)
-        except _user.DoesNotExist:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
             return None
