@@ -6,6 +6,8 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import Error
+from django.views.generic import TemplateView
+from django.utils.decorators import method_decorator
 
 from lib.api_calls import change_password
 
@@ -70,15 +72,30 @@ def index(request):
         'notices': notices,
     })
 
+# Replaced with class-based view
+# # Present the user with a list of appropriate actions for them to be able to take.
+# # This serves as a navigation menu.
+# @login_required(login_url=reverse_lazy('index'))
+# def pick_action(request):
+#     return render(request, 'MyInfo/pick_action.html', {
+#         'identity': request.session['identity'],
+#         'allow_cancel': request.session['ALLOW_CANCEL'],
+#     })
 
-# Present the user with a list of appropriate actions for them to be able to take.
-# This serves as a navigation menu.
-@login_required(login_url=reverse_lazy('index'))
-def pick_action(request):
-    return render(request, 'MyInfo/pick_action.html', {
-        'identity': request.session['identity'],
-        'allow_cancel': request.session['ALLOW_CANCEL'],
-    })
+
+class PickActionView(TemplateView):
+
+    template_name = "MyInfo/pick_action.html"
+
+    @method_decorator(login_required(login_url=reverse_lazy('index')))
+    def dispatch(self, request, *args, **kwargs):
+        return super(PickActionView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(PickActionView, self).get_context_data(**kwargs)
+        context['identity'] = self.request.session['identity']
+        context['allow_cancel'] = self.request.session['ALLOW_CANCEL']
+        return context
 
 
 @login_required(login_url=reverse_lazy('index'))
