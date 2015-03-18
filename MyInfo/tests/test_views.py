@@ -4,7 +4,7 @@ from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 from random import choice
 from MyInfo.models import MaintenanceNotice, Department
-from MyInfo.forms import formPasswordChange, formNewPassword
+from MyInfo.forms import ChangeOdinPasswordForm, SetOdinPasswordForm
 from datetime import datetime, timedelta
 
 
@@ -127,11 +127,7 @@ class ChangePasswordTestCase(MyInfoViewsTestCase):
         self.assertEqual(r.status_code, 200)
         self.assertIn('form', r.context)
         self.assertFalse(r.context['form'].is_bound)
-        self.assertIsInstance(r.context['form'], formPasswordChange)
-        self.assertIn('success', r.context)
-        self.assertFalse(r.context['success'])
-        self.assertIn('error', r.context)
-        self.assertIsNone(r.context['error'])
+        self.assertIsInstance(r.context['form'], ChangeOdinPasswordForm)
 
     def test_change_password_post(self):
         # Test invalid form
@@ -143,39 +139,27 @@ class ChangePasswordTestCase(MyInfoViewsTestCase):
 
         # Test rejected new password
         r = self.client.post(self.PASSWORD, data={
-            'newPassword': 'BadPass1',
-            'confirmPassword': 'BadPass1',
-            'currentPassword': 'Password1'})
+            'new_password1': 'BadPass1',
+            'new_password2': 'BadPass1',
+            'current_password': 'Password1'})
         self.assertEqual(r.status_code, 200)
         self.assertIn('form', r.context)
         self.assertTrue(r.context['form'].is_bound)
-        self.assertTrue(r.context['form'].is_valid())
-        self.assertIn('success', r.context)
-        self.assertFalse(r.context['success'])
-        self.assertIn('error', r.context)
-        self.assertIsNotNone(r.context['error'])
+        self.assertFalse(r.context['form'].is_valid())
 
         # Test rejected current password
         r = self.client.post(self.PASSWORD, data={
-            'newPassword': 'Password1',
-            'confirmPassword': 'Password1',
-            'currentPassword': 'BadPass1'})
+            'new_password1': 'Password1',
+            'new_password2': 'Password1',
+            'current_password': 'BadPass1'})
         self.assertEqual(r.status_code, 200)
         self.assertIn('form', r.context)
         self.assertTrue(r.context['form'].is_bound)
-        self.assertTrue(r.context['form'].is_valid())
-        self.assertIn('success', r.context)
-        self.assertFalse(r.context['success'])
-        self.assertIn('error', r.context)
-        self.assertIsNotNone(r.context['error'])
+        self.assertFalse(r.context['form'].is_valid())
 
         # Test good input
-        r = self.client.post(self.PASSWORD,
-                             data={
-                                 'newPassword': 'Password1',
-                                 'confirmPassword': 'Password1',
-                                 'currentPassword': 'Password2'},
-                             follow=True)
+        data = {'new_password1': 'Password1', 'new_password2': 'Password1', 'current_password': 'Password2'}
+        r = self.client.post(self.PASSWORD, data=data, follow=True)
         self.assertRedirects(r, self.PICK, host=self.HOST)
 
 
@@ -196,12 +180,8 @@ class NewPasswordTestCase(MyInfoViewsTestCase):
         self.assertEqual(r.status_code, 200)
         self.assertIn('form', r.context)
         self.assertFalse(r.context['form'].is_bound)
-        self.assertNotIsInstance(r.context['form'], formPasswordChange)
-        self.assertIsInstance(r.context['form'], formNewPassword)
-        self.assertIn('success', r.context)
-        self.assertFalse(r.context['success'])
-        self.assertIn('error', r.context)
-        self.assertIsNone(r.context['error'])
+        self.assertNotIsInstance(r.context['form'], ChangeOdinPasswordForm)
+        self.assertIsInstance(r.context['form'], SetOdinPasswordForm)
 
     def test_new_password_post(self):
         # Test invalid form
@@ -212,18 +192,14 @@ class NewPasswordTestCase(MyInfoViewsTestCase):
         self.assertFalse(r.context['form'].is_valid())
 
         # Test rejected new password
-        r = self.client.post(self.PASSWORD, data={'newPassword': 'BadPass1', 'confirmPassword': 'BadPass1'})
+        r = self.client.post(self.PASSWORD, data={'new_password1': 'BadPass1', 'new_password2': 'BadPass1'})
         self.assertEqual(r.status_code, 200)
         self.assertIn('form', r.context)
         self.assertTrue(r.context['form'].is_bound)
-        self.assertTrue(r.context['form'].is_valid())
-        self.assertIn('success', r.context)
-        self.assertFalse(r.context['success'])
-        self.assertIn('error', r.context)
-        self.assertIsNotNone(r.context['error'])
+        self.assertFalse(r.context['form'].is_valid())
 
         # Test good input
-        data = {'newPassword': 'Password1', 'confirmPassword': 'Password1'}
+        data = {'new_password1': 'Password1', 'new_password2': 'Password1'}
         r = self.client.post(self.PASSWORD, data=data, follow=True)
         self.assertRedirects(r, self.PICK, host=self.HOST)
 

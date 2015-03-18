@@ -1,55 +1,55 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-		<meta charset="utf-8">
-	
-		<script src="{% static "lib/js/jquery-1.9.1.js" %}"></script>
-		<script src="{% static "lib/js/jquery-ui-1.10.3.custom.js" %}"></script>
-		<script src="{% static "lib/js/jquery.cookie.js" %}"></script>
-		<script src="{% static "lib/js/myinfo-ajax.js" %}"></script>
-		<script src="{% static "lib/js/kickstart.js" %}"></script>
-	
-		<link href="{% static "lib/css/normalize.css" %}" rel="stylesheet">
-		<link href="{% static "lib/css/jquery-ui-1.10.3.custom.css" %}" rel="stylesheet">
-		<link href="{% static "lib/css/kickstart.css" %}" rel="stylesheet">
-		<link href="{% static "lib/css/myinfo.css" %}" rel="stylesheet">
-	
-		<title>PSU - {% block title %}{% endblock %}</title>
-	
-		
-			
-	{% block head_js %}{% endblock %}
-			
-	</head>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
 
-	<body>
-		<div class="wrapper2">
-		<header class="header col_12 column grid flex">
-			<div class="container grid">
-				<div class="logo">
-				<img class="oamLogo" src="{% static "MyInfo/images/OAM_Logo.png" %}" alt="Odin Account Manager Logo">
-				<img class="psuLogo hide-phone" src="{% static "MyInfo/images/psuLogoWhite.png" %}" alt="PSU Logo">
-				</div>
-			</div>
-		</header>
-		
-		{% block body_content %}{% endblock %}
-		<div class="clear"></div>
-		</div>
-		<div class="footer2">
-		<div class="grid flex col_12 column containerBot">
-			<div class="footer grid">
-				<div class="footerLeft grid col_6 left column">
-					<a href="#" class="copyRight">©2015</a> | <span style="margin-left:10px;">Need Help? <a href="http://www.pdx.edu/oit/contact" style="margin-left:5px;"> Contact us.</a></span>
-				</div>
-				
-				<div class="footerRight grid col_6 right column">
-					{% block footer %}{% endblock %}
-				</div>
-				</div>
-			</div>
-		</div>
-	</body>
+    <script src="{% static "lib/js/jquery-1.9.1.js" %}"></script>
+    <script src="{% static "lib/js/jquery-ui-1.10.3.custom.js" %}"></script>
+    <script src="{% static "lib/js/jquery.cookie.js" %}"></script>
+    <script src="{% static "lib/js/myinfo-ajax.js" %}"></script>
+    <script src="{% static "lib/js/kickstart.js" %}"></script>
+
+    <link href="{% static "lib/css/normalize.css" %}" rel="stylesheet">
+    <link href="{% static "lib/css/jquery-ui-1.10.3.custom.css" %}" rel="stylesheet">
+    <link href="{% static "lib/css/kickstart.css" %}" rel="stylesheet">
+    <link href="{% static "lib/css/myinfo.css" %}" rel="stylesheet">
+
+    <title>PSU - {% block title %}{% endblock %}</title>
+
+
+    {% block head_js %}{% endblock %}
+
+</head>
+
+<body>
+<div class="wrapper2">
+    <header class="header col_12 column grid flex">
+        <div class="container grid">
+            <div class="logo">
+                <img class="oamLogo" src="{% static "MyInfo/images/OAM_Logo.png" %}" alt="Odin Account Manager Logo">
+                <img class="psuLogo hide-phone" src="{% static "MyInfo/images/psuLogoWhite.png" %}" alt="PSU Logo">
+            </div>
+        </div>
+    </header>
+
+    {% block body_content %}{% endblock %}
+    <div class="clear"></div>
+</div>
+<div class="footer2">
+    <div class="grid flex col_12 column containerBot">
+        <div class="footer grid">
+            <div class="footerLeft grid col_6 left column">
+                <a href="#" class="copyRight">©2015</a> | <span style="margin-left:10px;">Need Help? <a
+                    href="http://www.pdx.edu/oit/contact" style="margin-left:5px;"> Contact us.</a></span>
+            </div>
+
+            <div class="footerRight grid col_6 right column">
+                {% block footer %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
 </html>
