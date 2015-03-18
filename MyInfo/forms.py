@@ -20,15 +20,17 @@ class SetOdinPasswordForm(SetPasswordForm):
 
     def clean(self):
         super(SetOdinPasswordForm, self).clean()
+        # Consider checking status router and existence of current_password field to make sure the proper
+        # form is being used
         if len(self._errors) == 0:
-            new_password = self.cleaned_data['new_password1']
-            old_password = self.cleaned_data.get('current_password', None)
+            new_pw = self.cleaned_data['new_password1']
+            old_pw = self.cleaned_data.get('current_password', None)
             identity = {'PSU_UUID': self.user.get_username()}
 
-            (success, messages) = change_password(identity=identity, new_password=new_password, old_password=old_password)
+            (status, errors) = change_password(identity=identity, new_password=new_pw, old_password=old_pw)
 
-            if success is False:
-                raise forms.ValidationError([forms.ValidationError(error) for error in messages])
+            if status is False:
+                raise forms.ValidationError([forms.ValidationError(error) for error in errors])
 
     def save(self, commit=True):
         pass
