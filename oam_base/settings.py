@@ -9,10 +9,6 @@ TEMPLATE_DEBUG = DEBUG = True
 # If development is set to true, all calls to Sailpoint are bypassed with stubbed returns.
 DEVELOPMENT = True
 
-# default as of 1.6
-# ADMINS = ()
-# MANAGERS = ADMINS
-
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.sqlite3',
@@ -71,19 +67,10 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'developmentkey'
-
-# List of callables that know how to import templates from various sources.
-# This is default as of 1.6, no longer needed in settings file
-# TEMPLATE_LOADERS = (
-#     'django.template.loaders.filesystem.Loader',
-#     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-# )
 
 MIDDLEWARE_CLASSES = (
     'downtime.middleware.DowntimeMiddleware',
@@ -111,6 +98,22 @@ ROOT_URLCONF = 'oam_base.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'oam_base.wsgi.application'
 
+# django.core.context_processors moves in django 1.8
+# to django.template.context_processors
+TEMPLATE_CONTEXT_PROCESSORS = (
+    # defaults
+    "django.contrib.auth.context_processors.auth",  # provides 'user' and 'perms'
+    "django.core.context_processors.debug",  # provides 'debug', 'sql_queries'
+    "django.core.context_processors.i18n",  # provides language localization info
+    "django.core.context_processors.media",  # provides 'MEDIA_URL'
+    "django.core.context_processors.static",  # provides 'STATIC_URL'
+    "django.core.context_processors.tz",  # provides 'TIME_ZONE'
+    "django.contrib.messages.context_processors.messages",  # provides 'messages' and 'DEFAULT_MESSAGE_LEVELS'
+    # Custom
+    "oam_base.context_processors.identity",  # request.session['identity']
+    "oam_base.context_processors.cancel",  # request.session['ALLOW_CANCEL']
+)
+
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'templates').replace('\\', '/'),
 )
@@ -119,8 +122,6 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    # 'django.contrib.sites',
-    # 'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'CustomUser',

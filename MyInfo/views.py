@@ -56,7 +56,6 @@ def index(request):
                          "Ensure this information is correct and please try again. "
                          "If you continue to have difficulty, contact the Helpdesk (503-725-4357) for assistance.")
 
-
     # Determine whether or not to render a maintenance notice.
     notices = MaintenanceNotice.objects.filter(
         start_display__lte=datetime.datetime.now()
@@ -71,29 +70,12 @@ def index(request):
     })
 
 
-# Replaced with class-based view
-# # Present the user with a list of appropriate actions for them to be able to take.
-# # This serves as a navigation menu.
-# @login_required(login_url=reverse_lazy('index'))
-# def pick_action(request):
-# return render(request, 'MyInfo/pick_action.html', {
-#         'identity': request.session['identity'],
-#         'allow_cancel': request.session['ALLOW_CANCEL'],
-#     })
-
-
 class PickActionView(TemplateView):
     template_name = "MyInfo/pick_action.html"
 
     @method_decorator(login_required(login_url=reverse_lazy('index')))
     def dispatch(self, request, *args, **kwargs):
         return super(PickActionView, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(PickActionView, self).get_context_data(**kwargs)
-        context['identity'] = self.request.session['identity']
-        context['allow_cancel'] = self.request.session['ALLOW_CANCEL']
-        return context
 
 
 @login_required(login_url=reverse_lazy('index'))
@@ -125,9 +107,7 @@ def set_password(request):
 
     # Consider rendering when the password expires. Eventually.
     return render(request, 'MyInfo/set_password.html', {
-        'identity': identity,
         'form': form,
-        'allow_cancel': request.session['ALLOW_CANCEL'],
     })
 
 
@@ -142,14 +122,14 @@ def set_directory(request):
         directory_info_form = DirectoryInformationForm(request.POST or None, instance=directory_info)
     else:
         oam_status.set_directory = True
-        oam_status.save()
+        oam_status.save(update_fields=['set_directory'])
         return HttpResponseRedirect(reverse("AccountPickup:next_step"))  # Shouldn't be here.
 
     if directory_info_form.is_valid():
         directory_info_form.save()
-        if oam_status.set_directory is False:  # pragma: no branch
+        if oam_status.set_directory is False:
             oam_status.set_directory = True
-            oam_status.save()
+            oam_status.save(update_fields=['set_directory'])
 
         logger.info("service=myinfo psu_uuid={0} directory_set=true".format(
             request.session['identity']['PSU_UUID']
@@ -157,9 +137,7 @@ def set_directory(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'MyInfo/set_directory.html', {
-        'identity': request.session['identity'],
         'form': directory_info_form,
-        'allow_cancel': request.session['ALLOW_CANCEL'],
     })
 
 
@@ -181,7 +159,7 @@ def set_contact(request):
         if cell_phone is None and alternate_email is None:  # pragma: no cover
             (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
             oam_status.set_contact_info = False
-            oam_status.save()
+            oam_status.save(update_fields=['set_contact_info'])
 
         contact_info_form.save()
 
@@ -191,9 +169,7 @@ def set_contact(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'MyInfo/set_contact.html', {
-        'identity': request.session['identity'],
         'form': contact_info_form,
-        'allow_cancel': request.session['ALLOW_CANCEL'],
     })
 
 
@@ -201,7 +177,7 @@ def set_contact(request):
 def welcome_landing(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     oam_status.welcome_displayed = True
-    oam_status.save()
+    oam_status.save(update_fields=['welcome_displayed'])
 
     identity = request.session['identity']
 
