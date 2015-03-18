@@ -2,35 +2,52 @@ from collections import OrderedDict
 from django import forms
 
 from MyInfo.models import DirectoryInformation, ContactInformation
+from django.contrib.auth.forms import SetPasswordForm
+from lib.api_calls import change_password
 
 import logging
 logger = logging.getLogger(__name__)
 
 
-class formNewPassword(forms.Form):
-    newPassword = forms.CharField(max_length=32, widget=forms.PasswordInput, label="New Password")
-    confirmPassword = forms.CharField(max_length=32, widget=forms.PasswordInput, label="Confirm Password")
-    
-    # Validate that the passwords match.
-    def clean_confirmPassword(self):
-        password1 = self.cleaned_data.get("newPassword", "")
-        password2 = self.cleaned_data["confirmPassword"]
-        
-        if password1 != password2:
-            raise forms.ValidationError("The two passwords didn't match.")
-        
-        return password2
+class SetOdinPasswordForm(SetPasswordForm):
 
-class formPasswordChange(formNewPassword):
-    currentPassword = forms.CharField(max_length=32, widget=forms.PasswordInput, label="Current Password")
-    
-    # Manually set the order of fields so that "Current Password" comes first
-    # https://github.com/pennersr/django-allauth/issues/356#issuecomment-24758824
-    def __init__(self, *args, **kwargs):
-        super(formPasswordChange, self).__init__(*args, **kwargs)
-        
-        fields_key_order = ['currentPassword', 'newPassword', 'confirmPassword']
-        self.fields = OrderedDict((k, self.fields[k]) for k in fields_key_order)
+    def __init__(self, user, *args, **kwargs):
+        super(SetOdinPasswordForm, self).__init__(user, *args, **kwargs)
+        self.fields['new_password1'].min_length = 8
+        self.fields['new_password1'].max_length = 30
+        self.fields['new_password2'].min_length = 8
+        self.fields['new_password2'].max_length = 30
+
+    def clean(self):
+        super(SetOdinPasswordForm, self).clean()
+        if len(self._errors) == 0:
+            new_password = self.cleaned_data['new_password1']
+            old_password = self.cleaned_data.get('current_password', None)
+            identity = {'PSU_UUID': self.user.get_username()}
+
+            (success, messages) = change_password(identity=identity, new_password=new_password, old_password=old_password)
+
+            if success is False:
+                raise forms.ValidationError([forms.ValidationError(error) for error in messages])
+
+    def save(self, commit=True):
+        pass
+
+
+class ChangeOdinPasswordForm(SetOdinPasswordForm):
+    current_password = forms.CharField(
+        min_length=8, max_length=30, widget=forms.PasswordInput, label="Current password")
+
+    # Field ordering, not valid code until django 1.8
+    # field_order = ['current_password', 'new_password1', 'new_password2']
+
+
+# Manually set the order of fields so that "Current Password" comes first
+# https://github.com/pennersr/django-allauth/issues/356#issuecomment-24758824
+# Will no longer be necessary in django 1.8
+ChangeOdinPasswordForm.base_fields = OrderedDict(
+    (k, ChangeOdinPasswordForm.base_fields[k]) for k in ['current_password', 'new_password1', 'new_password2'])
+
 
 # Contact information used for resetting passwords.   
 class ContactInformationForm(forms.ModelForm):
@@ -59,12 +76,14 @@ class ContactInformationForm(forms.ModelForm):
         
         return email
 
+
 # Information used by PSU Employees
 class DirectoryInformationForm(forms.ModelForm):
     class Meta:
         model = DirectoryInformation
-        exclude = ['psu_uuid',]
-    
+        exclude = ['psu_uuid', ]
+
+
 # Main MyInfo login form.
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=32, label="Odin Username or PSU ID Number")

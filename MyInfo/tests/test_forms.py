@@ -1,57 +1,94 @@
 __author__ = 'Justin McClure'
 
 from django.test import TestCase
-from MyInfo.forms import formNewPassword, formPasswordChange, ContactInformationForm
+from MyInfo.forms import SetOdinPasswordForm, ChangeOdinPasswordForm, ContactInformationForm
+from django.contrib.auth import get_user_model
 
 
 class NewPasswordTestCase(TestCase):
+    fixtures = ['MyInfo_views_test_data.json']
+
     def test_matched_passwords(self):
         confirm = new = "Password1!"
-        bad = "Password2!"
+        mismatch = "Password2!"
+        bad = "BadPass1"
         data = {}
+        (user, _) = get_user_model().objects.get_or_create(username="111111111")
 
         # Test no data given
-        f = formNewPassword(data)
+        f = SetOdinPasswordForm(user=user, data=data)
         self.assertFalse(f.is_valid())
-        self.assertIn('newPassword', f.errors)
-        self.assertIn('confirmPassword', f.errors)
+        self.assertIn('new_password1', f.errors)
+        self.assertIn('new_password2', f.errors)
 
         # Test incomplete data
-        data['newPassword'] = new
-        f = formNewPassword(data)
+        data['new_password1'] = new
+        f = SetOdinPasswordForm(user=user, data=data)
         self.assertFalse(f.is_valid())
-        self.assertNotIn('newPassword', f.errors)
-        self.assertIn('newPassword', f.cleaned_data)
-        self.assertIn('confirmPassword', f.errors)
+        self.assertNotIn('new_password1', f.errors)
+        self.assertIn('new_password1', f.cleaned_data)
+        self.assertIn('new_password2', f.errors)
 
         # Test non-matching data
-        data['confirmPassword'] = bad
-        f = formNewPassword(data)
+        data['new_password2'] = mismatch
+        f = SetOdinPasswordForm(user=user, data=data)
         self.assertFalse(f.is_valid())
-        self.assertNotIn('newPassword', f.errors)
-        self.assertIn('newPassword', f.cleaned_data)
-        self.assertIn('confirmPassword', f.errors)
+        self.assertNotIn('new_password1', f.errors)
+        self.assertIn('new_password1', f.cleaned_data)
+        self.assertIn('new_password2', f.errors)
+
+        # Test IIQ rejection
+        data['new_password1'] = bad
+        data['new_password2'] = bad
+        f = SetOdinPasswordForm(user=user, data=data)
+        self.assertFalse(f.is_valid())
+        self.assertNotIn('new_password1', f.errors)
+        self.assertNotIn('new_password2', f.errors)
+        self.assertIn('__all__', f.errors)
 
         # Test good values
-        data['confirmPassword'] = confirm
-        f = formNewPassword(data)
+        data['new_password1'] = new
+        data['new_password2'] = confirm
+        f = SetOdinPasswordForm(user=user, data=data)
         self.assertTrue(f.is_valid())
-        self.assertIn('newPassword', f.cleaned_data)
-        self.assertIn('confirmPassword', f.cleaned_data)
+        self.assertIn('new_password1', f.cleaned_data)
+        self.assertIn('new_password2', f.cleaned_data)
+
+        # Make sure save doesn't store passwords in user
+        password = user.password
+        data = {'new_password1': mismatch, 'new_password2': mismatch}
+        f = SetOdinPasswordForm(user=user, data=data)
+        self.assertTrue(f.is_valid())
+        self.assertEqual(password, user.password)
 
 
 class PasswordChangeTestCase(TestCase):
+    fixtures = ['MyInfo_views_test_data.json']
+
     def test_init(self):
+
+        (user, _) = get_user_model().objects.get_or_create(username="111111111")
+
         # Test missing current
-        data = {'confirmPassword': 'foo', 'newPassword': 'foo'}
-        f = formPasswordChange(data)
+        data = {'new_password2': 'Password1', 'new_password1': 'Password1'}
+        f = ChangeOdinPasswordForm(user=user, data=data)
         self.assertFalse(f.is_valid())
-        self.assertIn('currentPassword', f.errors)
+        self.assertIn('current_password', f.errors)
+
+        # Test bad current for IIQ rejection
+        data['current_password'] = 'BadPass1'
+        f = ChangeOdinPasswordForm(user=user, data=data)
+        self.assertFalse(f.is_valid())
+        self.assertNotIn('new_password1', f.errors)
+        self.assertNotIn('new_password2', f.errors)
+        self.assertNotIn('current_password', f.errors)
+        self.assertIn('__all__', f.errors)
+
         # Test good data
-        data['currentPassword'] = 'bar'
-        f = formPasswordChange(data)
+        data['current_password'] = 'Password2'
+        f = ChangeOdinPasswordForm(user=user, data=data)
         self.assertTrue(f.is_valid())
-        self.assertEqual(f.fields.popitem(last=False)[0], 'currentPassword')
+        self.assertEqual(f.fields.popitem(last=False)[0], 'current_password')
 
 
 class ContactInformationFormTestCase(TestCase):
