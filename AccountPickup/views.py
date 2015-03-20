@@ -49,7 +49,9 @@ def index(request):
             
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
         # If identity is invalid, prompt re-entry.
-        error_message = "That identity was not found."
+        error_message = ("This information was not recognized. "
+                         "Ensure this information is correct and please try again. "
+                         "If you continue to have difficulty, contact the Helpdesk (503-725-4357) for assistance.")
 
     return render(request, 'AccountPickup/index.html', {
         'form': form,

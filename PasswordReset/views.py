@@ -61,7 +61,9 @@ def index(request):
         logger.info("service=myinfo email={0} cell={1} error=unable_to_identify".format(
             reset_request.cleaned_data['email'], reset_request.cleaned_data['cell']))
 
-        error_message = "We were unable to find an identity that matched your information."
+        error_message = ("We could not uniquely identify a user with this information. "
+                         "Ensure this information is correct and please try again. "
+                         "If you continue to have difficulty, contact the Helpdesk (503-725-4357) for assistance.")
     except APIException:
 
         logger.info("service=myinfo email={0} cell={1} error=code_not_sent".format(
@@ -116,7 +118,7 @@ def reset(request, token=None):
                 return HttpResponseRedirect(reverse('AccountPickup:next_step'))
             
             logger.error("service=myinfo psu_uuid={0} error=reset_authentication".format(psu_uuid))
-            error_message = "There was an internal error. Please contact the help desk for support."
+            error_message = "There was an internal error. Please contact the Helpdesk (503-725-4357) for assistance."
         except SignatureExpired:
             udc_id = signer.unsign(token)
             # Too slow!
@@ -124,11 +126,11 @@ def reset(request, token=None):
             error_message = "The password reset expired. Please try again."
         except BadSignature:
             logger.info("service=myinfo token={0} error=invalid_token".format(token))
-            error_message = "There was an internal error. Please contact the help desk for support."
+            error_message = "There was an internal error. Please contact the Helpdesk (503-725-4357) for assistance."
     
         # Something went wrong, forward them back to the password reset link page.  
         if error_message is None:
-            error_message = "There was an internal error. Please contact the help desk for support."
+            error_message = "There was an internal error. Please contact the Helpdesk (503-725-4357) for assistance."
             logger.debug("Reached end of key signing attempt without an error message for token: {0}".format(token))
 
     return render(request, 'PasswordReset/verification.html', {'form': reset_token_form, 'error': error_message, })

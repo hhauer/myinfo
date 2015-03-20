@@ -52,10 +52,10 @@ def index(request):
             return HttpResponseRedirect(reverse("AccountPickup:next_step"))
 
         # If identity is invalid, prompt re-entry.
-        error_message = "That identity was not found."
+        error_message = ("Username and/or Password not recognized. "
+                         "Ensure this information is correct and please try again. "
+                         "If you continue to have difficulty, contact the Helpdesk (503-725-4357) for assistance.")
 
-        # logger.debug("Error during login with username: {0} and password: {1}".format(
-        #   login_form.cleaned_data["username"], login_form.cleaned_data["password"]))
 
     # Determine whether or not to render a maintenance notice.
     notices = MaintenanceNotice.objects.filter(
@@ -70,19 +70,19 @@ def index(request):
         'notices': notices,
     })
 
+
 # Replaced with class-based view
 # # Present the user with a list of appropriate actions for them to be able to take.
 # # This serves as a navigation menu.
 # @login_required(login_url=reverse_lazy('index'))
 # def pick_action(request):
-#     return render(request, 'MyInfo/pick_action.html', {
+# return render(request, 'MyInfo/pick_action.html', {
 #         'identity': request.session['identity'],
 #         'allow_cancel': request.session['ALLOW_CANCEL'],
 #     })
 
 
 class PickActionView(TemplateView):
-
     template_name = "MyInfo/pick_action.html"
 
     @method_decorator(login_required(login_url=reverse_lazy('index')))
@@ -175,8 +175,10 @@ def set_contact(request):
     if contact_info_form.is_valid():
         # First check to see if they removed all their contact info.
         # Currently this shouldn't happen, since the underlying form rejects that state in validation.
-        if contact_info_form.cleaned_data['cell_phone'] is None and contact_info_form.cleaned_data[
-                'alternate_email'] is None:  # pragma: no cover
+        cell_phone = contact_info_form.cleaned_data['cell_phone']
+        alternate_email = contact_info_form.cleaned_data['alternate_email']
+
+        if cell_phone is None and alternate_email is None:  # pragma: no cover
             (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
             oam_status.set_contact_info = False
             oam_status.save()
