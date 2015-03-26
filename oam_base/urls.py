@@ -26,8 +26,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # Simple redirects for static files that browsers expect to be at the root.
-    url(r'^robots\.txt$', RedirectView.as_view(url='/static/robots.txt')),
-    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico')),
+    url(r'^robots\.txt$', RedirectView.as_view(url='/static/robots.txt', permanent=True)),
+    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico', permanent=True)),
 )
 
 handler500 = 'oam_base.views.custom_error'
