@@ -4,52 +4,54 @@
 {% block title %}Your Accounts Are Ready{% endblock %}
 
 {% block body_content %}
-{% include 'fragments/user_info.html' %}
+    {% include 'fragments/user_info.html' %}
 
-<div class="containerMiddle grid flex col_12 column">
-	<div class="middleBody center">
-			<div class="pickAction">
-			{% if identity.PSU_PUBLISH %}
-				<div class="col_4 column center" style="text-align:left;padding-right:10px;">
-			{% else %}
-				<div class="col_6 column center" style="text-align:left;padding-right:10px;">
-			{% endif %}
-					<h5>Update Password</h5>
-					<p>
-						You use your password with your Odin username to login to PSU computing resources. Passwords must be changed every 6 months.
-					</p><br />
-					<div class="pickActionButton">
-					<a href="{% url 'MyInfo:set_password' %}"><input class="loginButton" type="submit" value="Update Password"></a>
-					</div>
-				</div>
-			{% if identity.PSU_PUBLISH %}
-				<div class="col_4 column center" style="text-align:left;padding-right:10px;">
-			{% else %}
-				<div class="col_6 column center" style="text-align:left;padding-right:10px;">
-			{% endif %}
-					<h5>Update Reset Info</h5>
-					<p>
-						Providing password recovery information will allow you to use OAM’s password recovery features via email or SMS.
-                    </p><br />
-					<div class="pickActionButton">
-					<a href="{% url 'MyInfo:set_contact' %}"><input class="loginButton" type="submit" value="Update Password Reset Info"></a>
-					</div>
-				</div>
-			{% if identity.PSU_PUBLISH %}
-				<div class="col_4 column center" style="text-align:left;padding-right:10px;">
-					<h5>Directory Information</h5>
-					<p>
-						PSU employees can use this section to update their directory information, visible in the <a href="http://www.pdx.edu/directory" target="_blank">PSU online directory</a>.
-                    </p><br />
-					<div class="pickActionButton">
-					<a href="{% url 'MyInfo:set_directory' %}"><input class="loginButton" type="submit" value="Update Directory Info"></a>
-					</div>
-				</div>
-			{% endif %}
-			</div>
-		
-	</div>
-</div>
+    <div class="containerMiddle grid flex col_12 column">
+        <div class="middleBody center">
+            <div class="pickAction">
+            {% if identity.PSU_PUBLISH %}
+                <div class="col_4 column center" style="text-align:left;padding-right:10px;">
+            {% else %}
+                <div class="col_6 column center" style="text-align:left;padding-right:10px;">
+            {% endif %}
+                    <h5>Update Password</h5>
+                    <p>You use your password with your Odin username to login to PSU computing resources. Passwords must be changed every 6 months.</p><br/>
+
+                    <div class="pickActionButton">
+                        <a href="{% url 'MyInfo:set_password' %}">
+                            <input class="loginButton" type="submit" value="Update Password">
+                        </a>
+                    </div>
+                </div>
+            {% if identity.PSU_PUBLISH %}
+                <div class="col_4 column center" style="text-align:left;padding-right:10px;">
+            {% else %}
+                <div class="col_6 column center" style="text-align:left;padding-right:10px;">
+            {% endif %}
+                    <h5>Update Reset Info</h5>
+                    <p>Providing password recovery information will allow you to use OAM’s password recovery features via email or SMS.</p><br/>
+
+                    <div class="pickActionButton">
+                        <a href="{% url 'MyInfo:set_contact' %}">
+                            <input class="loginButton" type="submit" value="Update Password Reset Info">
+                        </a>
+                    </div>
+                </div>
+            {% if identity.PSU_PUBLISH %}
+                <div class="col_4 column center" style="text-align:left;padding-right:10px;">
+                    <h5>Directory Information</h5>
+                    <p>PSU employees can use this section to update their directory information, visible in the <a href="http://www.pdx.edu/directory" target="_blank">PSU online directory</a>.</p><br/>
+
+                    <div class="pickActionButton">
+                        <a href="{% url 'MyInfo:set_directory' %}">
+                            <input class="loginButton" type="submit" value="Update Directory Info">
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
-{% block footer %}{% if allow_cancel %}<a href="/accounts/logout/">Logout</a>{% endif %}
+{% block footer %}{% if allow_cancel %}<a href="{% url 'CASLogout' %}">Logout</a>{% endif %}
 {% endblock %}

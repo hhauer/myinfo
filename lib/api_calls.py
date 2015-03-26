@@ -144,10 +144,10 @@ def truename_email_aliases(identity):
 def change_password(identity, new_password, old_password):
     if settings.DEVELOPMENT is True:
         if new_password == "BadPass1":
-            return False, ["Development rejecting new password."]
+            return False, ["New Pass Dev Error 1", "New Pass Dev Error 2"]
         elif old_password == "BadPass1":
-            return False, ["Development rejecting old password."]
-        return True, "Development password change."
+            return False, ["Old Pass Dev Error 1", "Old Pass Dev Error 2"]
+        return True, ["Development password change."]
 
     data = {'PSU_UUID': identity["PSU_UUID"],
             'password': new_password,

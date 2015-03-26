@@ -49,7 +49,7 @@ class DirectoryInformation(models.Model):
     telephone = models.CharField(max_length=32, null=True, blank=True, validators=[validate_psu_phone])
     fax = models.CharField(max_length=32, null=True, blank=True, validators=[validate_psu_phone])
     
-    job_title = models.CharField(max_length=255, null=True, blank=True)
+    job_title = models.CharField(max_length=128, null=True, blank=True)
     department = models.ForeignKey(Department, null=True, blank=True)
     office_building = models.ForeignKey(Building, null=True, blank=True)
     office_room = models.CharField(max_length=10, null=True, blank=True)

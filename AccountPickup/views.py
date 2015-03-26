@@ -49,7 +49,9 @@ def index(request):
             
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
         # If identity is invalid, prompt re-entry.
-        error_message = "That identity was not found."
+        error_message = ("This information was not recognized. "
+                         "Ensure this information is correct and please try again. "
+                         "If you continue to have difficulty, contact the Helpdesk (503-725-4357) for assistance.")
 
     return render(request, 'AccountPickup/index.html', {
         'form': form,
@@ -81,6 +83,8 @@ def aup(request):
 
 
 # Password reset information.
+# TODO: Refactor to merge with MyInfo.views.set_contact
+# Probably best accomplished while reworking it for confirmation code feature
 @login_required(login_url=reverse_lazy('AccountPickup:index'))
 def contact_info(request):
     # If someone has already completed this step, move them along:

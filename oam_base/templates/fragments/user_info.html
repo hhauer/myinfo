@@ -1,30 +1,30 @@
 <div class="containerTop2 grid flex col_12 column">
-	<div class="container grid">
+    <div class="container grid">
 
-		<div class="topLeftInfo center col_5">
-		Hello, {{ identity.DISPLAY_NAME }}.
-		</div>
+        <div class="topLeftInfo center col_5">
+            Hello, {{ identity.DISPLAY_NAME }}.
+        </div>
 
-		<div class="col_1"> </div>
-		<div class="col_1"> </div>
+        <div class="col_1"></div>
+        <div class="col_1"></div>
 
-		<div class="topRightInfo center col_5">
+        <div class="topRightInfo center col_5">
             {% if identity.ODIN_NAME %}
-			<strong>Odin Username: </strong>{{ identity.ODIN_NAME }}<br>
+                <strong>Odin Username: </strong>{{ identity.ODIN_NAME }}<br>
             {% endif %}
 
             {% if identity.EMAIL_ADDRESS %}
-			<strong>PSU Email: </strong>{{ identity.EMAIL_ADDRESS }}<br>
+                <strong>PSU Email: </strong>{{ identity.EMAIL_ADDRESS }}<br>
             {% endif %}
 
             {% if identity.EMAIL_ALIAS %}
-            <strong>Email Alias: </strong>{{ identity.EMAIL_ALIAS }}<br>
+                <strong>Email Alias: </strong>{{ identity.EMAIL_ALIAS }}<br>
             {% endif %}
 
             {% if identity.SPRIDEN_ID %}
-			<strong>PSU ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
+                <strong>PSU ID Number: </strong>{{ identity.SPRIDEN_ID }}<br>
             {% endif %}
-		</div>
+        </div>
 
-	</div>
+    </div>
 </div>
