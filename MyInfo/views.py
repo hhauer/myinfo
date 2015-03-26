@@ -70,14 +70,6 @@ def index(request):
     })
 
 
-class PickActionView(TemplateView):
-    template_name = "MyInfo/pick_action.html"
-
-    @method_decorator(login_required(login_url=reverse_lazy('index')))
-    def dispatch(self, request, *args, **kwargs):
-        return super(PickActionView, self).dispatch(request, *args, **kwargs)
-
-
 @login_required(login_url=reverse_lazy('index'))
 def set_password(request):
     identity = request.session['identity']

@@ -101,15 +101,6 @@ class IndexTestCase(MyInfoViewsTestCase):
         self.assertRedirects(r, self.NEXT, target_status_code=302, host=self.HOST)
 
 
-class PickActionTestCase(MyInfoViewsTestCase):
-
-    def test_pick(self):
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        data = {'username': '111111111', 'password': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
-        self.assertRedirects(r, self.PICK, host=self.HOST)
-
-
 class ChangePasswordTestCase(MyInfoViewsTestCase):
 
     def setUp(self):
