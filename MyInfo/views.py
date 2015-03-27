@@ -87,7 +87,7 @@ def set_password(request):
             oam_status.save(update_fields=['set_password'])
 
         # Updating the password logs out all other sessions for the user except the current one
-        auth.update_session_auth_hash(request, request.user)
+        auth.update_session_auth_hash(request, form.user)
 
         logger.info("service=myinfo psu_uuid={0} password_set=true".format(
             identity['PSU_UUID']))

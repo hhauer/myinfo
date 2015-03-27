@@ -31,6 +31,10 @@ class SetOdinPasswordForm(SetPasswordForm):
 
             if status is False:
                 raise forms.ValidationError([forms.ValidationError(error) for error in errors])
+            else:
+                # Password is not stored in user object, but new hash is needed for auth purposes
+                self.user.set_unusable_password()
+                self.user.save(update_fields=['password'])
 
     def save(self, commit=True):
         pass

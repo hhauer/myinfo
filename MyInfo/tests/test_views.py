@@ -149,9 +149,19 @@ class ChangePasswordTestCase(MyInfoViewsTestCase):
         self.assertFalse(r.context['form'].is_valid())
 
         # Test good input
+        #    Log in outside session
+        c = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        data2 = {'username': '111111111', 'password': 'Password1!'}
+        r2 = c.post(self.INDEX, data=data2, follow=True)
+        self.assertRedirects(r2, self.PICK, host=self.HOST)
+        #    Change password in main session
         data = {'new_password1': 'Password1', 'new_password2': 'Password1', 'current_password': 'Password2'}
         r = self.client.post(self.PASSWORD, data=data, follow=True)
         self.assertRedirects(r, self.PICK, host=self.HOST)
+        #    Check outside session auth is invalidated
+        r2 = c.get(self.PICK)
+        redirect_url = self.INDEX + "?next=" + self.PICK
+        self.assertRedirects(r2, redirect_url, host=self.HOST)
 
 
 class NewPasswordTestCase(MyInfoViewsTestCase):
@@ -190,9 +200,19 @@ class NewPasswordTestCase(MyInfoViewsTestCase):
         self.assertFalse(r.context['form'].is_valid())
 
         # Test good input
+        #    Log in outside session
+        c = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        data2 = {'username': '222222222', 'password': 'Password1'}
+        r2 = c.post(self.INDEX, data=data2, follow=True)
+        self.assertRedirects(r2, self.PASSWORD, host=self.HOST)
+        #    Change password in main session
         data = {'new_password1': 'Password1', 'new_password2': 'Password1'}
         r = self.client.post(self.PASSWORD, data=data, follow=True)
         self.assertRedirects(r, self.PICK, host=self.HOST)
+        #    Check outside session auth is invalidated
+        r2 = c.get(self.PICK)
+        redirect_url = self.INDEX + "?next=" + self.PICK
+        self.assertRedirects(r2, redirect_url, host=self.HOST)
 
 
 class SetDirectoryTestCase(MyInfoViewsTestCase):
