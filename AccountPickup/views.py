@@ -18,6 +18,7 @@ from lib.api_calls import truename_odin_names, truename_email_aliases, set_odin_
 from brake.decorators import ratelimit
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -31,12 +32,12 @@ def index(request):
 
     error_message = ""
     form = AccountClaimLoginForm(request.POST or None)
-        
+
     if form.is_valid():
         # For some reason they already have a session. Let's get rid of it and start fresh.
         if request.session is not None:  # pragma: no cover
             request.session.flush()
-            
+
         user = auth.authenticate(id_number=form.cleaned_data['id_number'],
                                  birth_date=form.cleaned_data['birth_date'],
                                  password=form.cleaned_data['auth_pass'],
@@ -46,7 +47,7 @@ def index(request):
             # Identity is valid.
             auth.login(request, user)
             logger.info("service=myinfo login_id={0} success=true".format(form.cleaned_data['id_number']))
-            
+
             return HttpResponseRedirect(reverse('AccountPickup:next_step'))
         # If identity is invalid, prompt re-entry.
         error_message = ("This information was not recognized. "
@@ -66,16 +67,16 @@ def aup(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.agree_aup is not None and date.today() < oam_status.agree_aup + timedelta(weeks=26):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-    
+
     form = AcceptAUPForm(request.POST or None)
-        
+
     if form.is_valid():
         oam_status.agree_aup = date.today()
         oam_status.save()
-        
+
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " aup=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-    
+
     return render(request, 'AccountPickup/aup.html', {
         'identity': request.session['identity'],
         'form': form,
@@ -91,24 +92,24 @@ def contact_info(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.set_contact_info is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-    
+
     # Build our password reset information form.
     (_contact_info, _) = ContactInformation.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     contact_form = ContactInformationForm(request.POST or None, instance=_contact_info)
-    
+
     # Did they provide valid contact information, if so we send them along.
     if contact_form.is_valid():
         contact_form.save()
-        
+
         oam_status.set_contact_info = True
         oam_status.save()
-        
+
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " password_reset=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     elif request.method == 'POST':
         logger.debug(_contact_info)
         logger.debug(request.POST)
-    
+
     return render(request, 'AccountPickup/contact_info.html', {
         'identity': request.session['identity'],
         'form': contact_form,
@@ -122,17 +123,18 @@ def odin_name(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.select_odin_username is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-    
+
     # Get possible odin names
     if 'TRUENAME_USERNAMES' not in request.session:
         request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
         # If truename server is not responding, don't give user empty list
         if len(request.session['TRUENAME_USERNAMES']) == 0:
-            raise APIException("Truename API call failed: No names")
+            raise APIException(
+                "Truename API call failed: No names for user {}".format(request.session['identity']['PSU_UUID']))
 
     # Build our forms with choices from truename.
     odin_form = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
-        
+
     if odin_form.is_valid():
         # Must save OAMStatus before API call, or it'll set provisioned back to false.
         oam_status.select_odin_username = True
@@ -150,11 +152,11 @@ def odin_name(request):
         request.session['identity']['ODIN_NAME'] = _odin_name
         request.session['identity']['EMAIL_ADDRESS'] = _odin_name + "@pdx.edu"
         request.session.modified = True  # Manually notify Django we modified a sub-object of the session.
-        
+
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " odin_name=" + _odin_name)
 
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-    
+
     return render(request, 'AccountPickup/odin_name.html', {
         'identity': request.session['identity'],
         'odin_form': odin_form,
@@ -175,7 +177,8 @@ def email_alias(request):
 
         if len(request.session['TRUENAME_EMAILS']) == 0:
             # Truename down, don't offer empty list
-            raise APIException("Truename API call failed: No names")
+            raise APIException(
+                "Truename API call failed: No names for user {}".format(request.session['identity']['PSU_UUID']))
 
         # Prepend a "None" option at the start of the emails.
         request.session['TRUENAME_EMAILS'].insert(0, 'None')
@@ -218,7 +221,7 @@ def wait_for_provisioning(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     if oam_status.provisioned is True:
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-    
+
     return render(request, 'AccountPickup/wait_for_provisioning.html', {
         'identity': request.session['identity'],
     })
@@ -250,30 +253,30 @@ def oam_status_router(request):
     # They should be asked to agree every 6mo.
     if oam_status.agree_aup is None or oam_status.agree_aup + timedelta(weeks=26) < date.today():
         return HttpResponseRedirect(reverse('AccountPickup:aup'))
-    
+
     elif oam_status.select_odin_username is False:
         return HttpResponseRedirect(reverse('AccountPickup:odin'))
 
     elif oam_status.select_email_alias is False:
         return HttpResponseRedirect(reverse('AccountPickup:alias'))
-    
+
     # If they haven't set their contact_info and haven't opted out for the session, have them do that.
     elif oam_status.set_contact_info is False:
         return HttpResponseRedirect(reverse('AccountPickup:contact_info'))
-    
+
     elif oam_status.provisioned is False:
         return HttpResponseRedirect(reverse('AccountPickup:wait_for_provisioning'))
-    
+
     # Only identities with PSU_PUBLISH == True should be directed to set their identity information.
     elif oam_status.set_directory is False and request.session['identity']['PSU_PUBLISH'] is True:
         return HttpResponseRedirect(reverse('MyInfo:set_directory'))
-    
+
     elif oam_status.set_password is False:
         return HttpResponseRedirect(reverse('MyInfo:set_password'))
-    
+
     elif oam_status.welcome_displayed is False:
         return HttpResponseRedirect(reverse('MyInfo:welcome_landing'))
-    
+
     else:
         request.session['ALLOW_CANCEL'] = True
         # OAM has been completed. Dump them to MyInfo main page.
