@@ -9,5 +9,5 @@ urlpatterns = [
     url(r'set_contact/$', views.set_contact, name='set_contact'),
     url(r'welcome/$', views.welcome_landing, name='welcome_landing'),
 
-    url(r'ping/$', views.ping),
+    url(r'ping/$', views.ping, name='ping'),
 ]

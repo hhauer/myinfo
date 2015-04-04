@@ -20,7 +20,7 @@ class MyInfoViewsTestCase(TestCase):
         self.DIRECTORY = reverse('MyInfo:set_directory')
         self.CONTACT = reverse('MyInfo:set_contact')
         self.WELCOME = reverse('MyInfo:welcome_landing')
-        self.PING = reverse('MyInfo:MyInfo.views.ping')
+        self.PING = reverse('MyInfo:ping')
         self.NEXT = reverse("AccountPickup:next_step")
         self.RAND_IP = ["127.0.0." + str(i) for i in range(1, 256)]
 
