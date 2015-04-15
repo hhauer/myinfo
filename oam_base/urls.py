@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import RedirectView
 
@@ -10,7 +10,7 @@ from oam_base import views as base_views
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', my_info_views.index, name='index'),
     url(r'^MyInfo/', include('MyInfo.urls', namespace='MyInfo')),
     url(r'^AccountPickup/', include('AccountPickup.urls', namespace='AccountPickup')),
@@ -26,8 +26,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # Simple redirects for static files that browsers expect to be at the root.
-    url(r'^robots\.txt$', RedirectView.as_view(url='/static/robots.txt')),
-    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico')),
-)
+    url(r'^robots\.txt$', RedirectView.as_view(url='/static/robots.txt', permanent=True)),
+    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico', permanent=True)),
+]
 
 handler500 = 'oam_base.views.custom_error'
