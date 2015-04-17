@@ -135,7 +135,7 @@ INSTALLED_APPS = (
     'downtime',
     'ods_integration',
     'Duo',
-#    'debug_toolbar.apps.DebugToolbarConfig',
+    'debug_toolbar.apps.DebugToolbarConfig',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -256,5 +256,3 @@ DUO_HOST = 'api-ac9fc019.duosecurity.com'
 DUO_IKEY = ''
 DUO_SKEY = ''
 DUO_AKEY = ''
-
-
