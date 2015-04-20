@@ -31,7 +31,15 @@ def login(request):
         else:
             raise DuoSecurityException("Duo returned an exception: " + duo['message'])
 
-    sig_request = duo_web.sign_request(settings.DUO_IKEY, settings.DUO_SKEY, settings.DUO_AKEY, request.user.username)
+    if 'identity' not in request.session:
+        raise NoIdentityException("No identity information in the session.")
+
+    if 'ODIN_NAME' not in request.session['identity']:
+        raise NoIdentityException("Identity in session, but no ODIN_NAME attribute.")
+
+    odin_username = request.identity['identity']['ODIN_NAME']
+
+    sig_request = duo_web.sign_request(settings.DUO_IKEY, settings.DUO_SKEY, settings.DUO_AKEY, odin_username)
     return render(request, 'login.html', {
         'sig_request': sig_request,
         'host': settings.DUO_HOST
