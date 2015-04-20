@@ -37,7 +37,7 @@ def login(request):
     if 'ODIN_NAME' not in request.session['identity']:
         raise NoIdentityException("Identity in session, but no ODIN_NAME attribute.")
 
-    odin_username = request.identity['identity']['ODIN_NAME']
+    odin_username = request.session['identity']['ODIN_NAME']
 
     sig_request = duo_web.sign_request(settings.DUO_IKEY, settings.DUO_SKEY, settings.DUO_AKEY, odin_username)
     return render(request, 'login.html', {
