@@ -6,9 +6,12 @@ Special dev user stubs:
 000000001 - No truename odin, no truename alias
 000000002 - Failed odin set, failed alias set
 000000003 - Failed provision status call to IIQ
-000000004 - User not published in directory
+000000004 - User not published in directory (Not employee)
 000000005 - Pre-existing, with no alias
 000000006 - Pre-existing, with alias set
+000000007 - Duo id missing
+000000008 - Duo error
+000000009 - duo call fail
 "BadPass1" for old or new password in password change will reject that password
 """
 # import urllib.request, urllib.parse, urllib.error
@@ -298,6 +301,22 @@ def get_provisioning_status(psu_uuid):
 
 # Call Duo Security Pre-Provisioning
 def provision_duo(psu_uuid):
+    # Test stub
+    if settings.DEVELOPMENT is True:
+        # Not employee
+        if psu_uuid == "000000004":
+            return {"status": "error", "reason": "notemployee"}
+        # No identity
+        if psu_uuid == "000000007":
+            return {"status": "error", "reason": "noidentity"}
+        # other errors
+        if psu_uuid == "000000008":
+            return {"status": "error", "reason": "duoerror"}
+        # Failed API call (as when service unavailable)
+        if psu_uuid == "000000009":
+            return None
+        return {"status": "OK"}
+
     url = "https://{}/identityiq/rest/duo/1.0/provision/{}".format(
         settings.SAILPOINT_SERVER_URL,
         psu_uuid,
