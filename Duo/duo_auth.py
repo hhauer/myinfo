@@ -20,6 +20,7 @@ import urllib.parse
 import urllib.error
 from Duo import duo_web
 
+# This whole file doesn't appear to be used
 
 def duo_username(user):
     """ Return the Duo username for user. """
