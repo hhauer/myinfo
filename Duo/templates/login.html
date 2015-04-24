@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Duo{% endblock %}
+
+{% block head_js %}
+<script src="{% static "Duo-Web-v1.js" %}"></script>
+<script>
+  Duo.init({
+    'host': '{{host}}',
+    'sig_request': '{{sig_request}}'
+  });
+</script>
+{% endblock %}
+
+{% block body_content %}
+
+<form method="POST" id="duo_form">
+{% csrf_token %}
+</form>
+
+
+<iframe id="duo_iframe" frameborder="0"></iframe>
+<style>
+  #duo_iframe {
+    width: 100%;
+    min-width: 304px;
+    max-width: 620px;
+    height: 330px;
+    display: block;
+    margin: auto;
+  }
+</style>
+
+{% endblock %}

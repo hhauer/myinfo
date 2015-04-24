@@ -119,7 +119,7 @@ def set_password(request):
             identity['PSU_UUID']))
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
-    elif form.is_bound:  # Data was posted, but rejected
+    elif len(form.non_field_errors()) != 0:  # Valid data was posted, but API call was rejected
         logger.info("service=myinfo psu_uuid={0} password_set=false".format(
             identity['PSU_UUID']))
 

@@ -91,6 +91,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django_cas.middleware.CASMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -132,7 +133,8 @@ INSTALLED_APPS = (
     'localflavor',
     'downtime',
     'ods_integration',
-    'debug_toolbar.apps.DebugToolbarConfig',
+    'Duo',
+#    'debug_toolbar.apps.DebugToolbarConfig',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -244,3 +246,14 @@ ORACLE_SQL = ''
 
 # Cache backend for ratelimiting when behind a load balancer.
 RATELIMIT_CACHE_BACKEND = 'lib.brake_cache.LoadBalancerCache'
+
+# Duo Settings
+DUO_LOGIN_URL = 'duo'
+DUO_HOST = 'api-ac9fc019.duosecurity.com'
+
+# Duo WebSDK Api
+DUO_IKEY = ''
+DUO_SKEY = ''
+DUO_AKEY = ''
+
+

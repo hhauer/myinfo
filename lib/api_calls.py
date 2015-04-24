@@ -296,6 +296,18 @@ def get_provisioning_status(psu_uuid):
     return r.json()
 
 
+# Call Duo Security Pre-Provisioning
+def provision_duo(psu_uuid):
+    url = "https://{}/identityiq/rest/duo/1.0/provision/{}".format(
+        settings.SAILPOINT_SERVER_URL,
+        psu_uuid,
+    )
+
+    r = requests.post(url, auth=(settings.SAILPOINT_USERNAME, settings.SAILPOINT_PASSWORD), verify=False)
+
+    return r.json()
+
+
 class APIException(Exception):
     pass
 
