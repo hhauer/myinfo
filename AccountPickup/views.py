@@ -72,13 +72,12 @@ def aup(request):
 
     if form.is_valid():
         oam_status.agree_aup = date.today()
-        oam_status.save()
+        oam_status.save(update_fields=['agree_aup'])
 
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " aup=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'AccountPickup/aup.html', {
-        'identity': request.session['identity'],
         'form': form,
     })
 
@@ -102,8 +101,8 @@ def contact_info(request):
         contact_form.save()
 
         oam_status.set_contact_info = True
-        oam_status.save()
-
+        oam_status.save(update_fields=['set_contact_info'])
+        
         logger.info("service=myinfo psu_uuid=" + request.session['identity']['PSU_UUID'] + " password_reset=true")
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
     elif request.method == 'POST':
@@ -111,7 +110,6 @@ def contact_info(request):
         logger.debug(request.POST)
 
     return render(request, 'AccountPickup/contact_info.html', {
-        'identity': request.session['identity'],
         'form': contact_form,
     })
 
@@ -138,7 +136,7 @@ def odin_name(request):
     if odin_form.is_valid():
         # Must save OAMStatus before API call, or it'll set provisioned back to false.
         oam_status.select_odin_username = True
-        oam_status.save()
+        oam_status.save(update_fields=['select_odin_username'])
 
         # Send the information to sailpoint to begin provisioning.
         _odin_name = request.session['TRUENAME_USERNAMES'][int(odin_form.cleaned_data['name'])]
@@ -146,7 +144,7 @@ def odin_name(request):
         if r != "SUCCESS":
             # API call to IIQ failed
             oam_status.select_odin_username = False
-            oam_status.save()
+            oam_status.save(update_fields=['select_odin_username'])
             raise APIException("IIQ API call failed: Odin not set")
 
         request.session['identity']['ODIN_NAME'] = _odin_name
@@ -158,7 +156,6 @@ def odin_name(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'AccountPickup/odin_name.html', {
-        'identity': request.session['identity'],
         'odin_form': odin_form,
     })
 
@@ -204,11 +201,10 @@ def email_alias(request):
                 request.session['identity']['PSU_UUID'], _email_alias))
 
         oam_status.select_email_alias = True
-        oam_status.save()
+        oam_status.save(update_fields=['select_email_alias'])
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'AccountPickup/email_alias.html', {
-        'identity': request.session['identity'],
         'mail_form': mail_form,
     })
 
@@ -223,7 +219,6 @@ def wait_for_provisioning(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'AccountPickup/wait_for_provisioning.html', {
-        'identity': request.session['identity'],
     })
 
 

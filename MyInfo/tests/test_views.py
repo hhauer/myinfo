@@ -11,18 +11,16 @@ from datetime import datetime, timedelta
 class MyInfoViewsTestCase(TestCase):
     fixtures = ['MyInfo_views_test_data.json']
 
-    def setUp(self):
-        super(MyInfoViewsTestCase, self).setUp()
-        self.HOST = 'testserver'
-        self.INDEX = reverse('index')
-        self.PICK = reverse('MyInfo:pick_action')
-        self.PASSWORD = reverse('MyInfo:set_password')
-        self.DIRECTORY = reverse('MyInfo:set_directory')
-        self.CONTACT = reverse('MyInfo:set_contact')
-        self.WELCOME = reverse('MyInfo:welcome_landing')
-        self.PING = reverse('MyInfo:ping')
-        self.NEXT = reverse("AccountPickup:next_step")
-        self.RAND_IP = ["127.0.0." + str(i) for i in range(1, 256)]
+    HOST = 'testserver'
+    INDEX = reverse('index')
+    PICK = reverse('MyInfo:pick_action')
+    PASSWORD = reverse('MyInfo:set_password')
+    DIRECTORY = reverse('MyInfo:set_directory')
+    CONTACT = reverse('MyInfo:set_contact')
+    WELCOME = reverse('MyInfo:welcome_landing')
+    PING = reverse('MyInfo:ping')
+    NEXT = reverse("AccountPickup:next_step")
+    RAND_IP = ["127.0.0." + str(i) for i in range(1, 256)]
 
 
 class IndexTestCase(MyInfoViewsTestCase):
@@ -101,25 +99,21 @@ class IndexTestCase(MyInfoViewsTestCase):
         self.assertRedirects(r, self.NEXT, target_status_code=302, host=self.HOST)
 
 
-class PickActionTestCase(MyInfoViewsTestCase):
+class LoggedInTestCase(MyInfoViewsTestCase):
+    login_data = {'username': '111111111', 'password': 'Password1!'}
 
-    def test_pick(self):
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        data = {'username': '111111111', 'password': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
-        self.assertRedirects(r, self.PICK, host=self.HOST)
-
-
-class ChangePasswordTestCase(MyInfoViewsTestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super(LoggedInTestCase, cls).setUpTestData()
+        cls.class_client = Client(REMOTE_ADDR=choice(cls.RAND_IP))
+        _ = cls.class_client.post(cls.INDEX, data=cls.login_data, follow=True)
 
     def setUp(self):
-        super(ChangePasswordTestCase, self).setUp()
-        # Set up client to spoof random IP from list
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        # Log in pre-created user
-        data = {'username': '111111111', 'password': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
-        self.assertRedirects(r, self.PICK, host=self.HOST)
+        self.assertIn('identity', self.class_client.session)
+        self.client = self.class_client
+
+
+class ChangePasswordTestCase(LoggedInTestCase):
 
     def test_change_password_get(self):
         # Test get
@@ -158,24 +152,31 @@ class ChangePasswordTestCase(MyInfoViewsTestCase):
         self.assertFalse(r.context['form'].is_valid())
 
         # Test good input
+        #    Log in outside session
+        c = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        r2 = c.post(self.INDEX, data=self.login_data, follow=True)
+        self.assertRedirects(r2, self.PICK, host=self.HOST)
+        #    Change password in main session
         data = {'new_password1': 'Password1', 'new_password2': 'Password1', 'current_password': 'Password2'}
         r = self.client.post(self.PASSWORD, data=data, follow=True)
         self.assertRedirects(r, self.PICK, host=self.HOST)
+        #    Check outside session auth is invalidated
+        r2 = c.get(self.PICK)
+        redirect_url = self.INDEX + "?next=" + self.PICK
+        self.assertRedirects(r2, redirect_url, host=self.HOST)
 
 
-class NewPasswordTestCase(MyInfoViewsTestCase):
+class NewPasswordTestCase(LoggedInTestCase):
 
-    def setUp(self):
-        super(NewPasswordTestCase, self).setUp()
-        # Set up client to spoof random IP from list
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        # Log in pre-created user
-        data = {'username': '222222222', 'password': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+    login_data = {'username': '222222222', 'password': 'Password1!'}
+
+    def test_new_password_next(self):
+        # Make sure status router is properly sending to password page
+        r = self.client.get(self.NEXT, follow=True)
         self.assertRedirects(r, self.PASSWORD, host=self.HOST)
 
     def test_new_password_get(self):
-        # Test get
+
         r = self.client.get(self.PASSWORD)
         self.assertEqual(r.status_code, 200)
         self.assertIn('form', r.context)
@@ -199,20 +200,27 @@ class NewPasswordTestCase(MyInfoViewsTestCase):
         self.assertFalse(r.context['form'].is_valid())
 
         # Test good input
+        #    Log in outside session
+        c = Client(REMOTE_ADDR=choice(self.RAND_IP))
+        r2 = c.post(self.INDEX, data=self.login_data, follow=True)
+        self.assertRedirects(r2, self.PASSWORD, host=self.HOST)
+        #    Change password in main session
         data = {'new_password1': 'Password1', 'new_password2': 'Password1'}
         r = self.client.post(self.PASSWORD, data=data, follow=True)
         self.assertRedirects(r, self.PICK, host=self.HOST)
+        #    Check outside session auth is invalidated
+        #    Also checks that status router now sends past password set page
+        r2 = c.get(self.PICK)
+        redirect_url = self.INDEX + "?next=" + self.PICK
+        self.assertRedirects(r2, redirect_url, host=self.HOST)
 
 
-class SetDirectoryTestCase(MyInfoViewsTestCase):
+class SetDirectoryTestCase(LoggedInTestCase):
 
-    def setUp(self):
-        super(SetDirectoryTestCase, self).setUp()
-        # Set up client to spoof random IP from list
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        # Log in pre-created user
-        data = {'username': '333333333', 'password': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+    login_data = {'username': '333333333', 'password': 'Password1!'}
+
+    def test_set_directory_next(self):
+        r = self.client.get(self.NEXT, follow=True)
         self.assertRedirects(r, self.DIRECTORY, host=self.HOST)
 
     def test_set_directory_get(self):
@@ -247,14 +255,7 @@ class SetDirectoryTestCase(MyInfoViewsTestCase):
         self.assertRedirects(r, self.PICK, host=self.HOST)
 
 
-class SetContactTestCase(MyInfoViewsTestCase):
-
-    def setUp(self):
-        super(SetContactTestCase, self).setUp()
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        data = {'username': '111111111', 'password': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
-        self.assertRedirects(r, self.PICK, host=self.HOST)
+class SetContactTestCase(LoggedInTestCase):
 
     def test_contact_get(self):
         # Test get
@@ -308,18 +309,13 @@ class SetContactTestCase(MyInfoViewsTestCase):
         self.assertEqual(r.context['form'].initial, data)
 
 
-class WelcomeTestCase(MyInfoViewsTestCase):
-
-    def setUp(self):
-        super(WelcomeTestCase, self).setUp()
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        data = {'username': '111111111', 'password': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
-        self.assertRedirects(r, self.PICK, host=self.HOST)
+class WelcomeTestCase(LoggedInTestCase):
 
     def test_welcome(self):
+        # Test that welcome page flushes identity
         r = self.client.get(self.WELCOME)
         self.assertNotIn('identity', r.client.session)
+        # Check that welcome page logs user off
         r = self.client.get(self.PICK, follow=True)
         redirect = self.INDEX + "?next=" + self.PICK
         self.assertRedirects(r, redirect, host=self.HOST)

@@ -10,7 +10,7 @@ class PSUCustomUserManager(BaseUserManager):
 
         user = self.model(username=username)
 
-        user.set_password(password)
+        user.set_unusable_password()
         user.save(using=self._db)
         return user
 
@@ -51,11 +51,13 @@ class PSUCustomUser(AbstractBaseUser):
     def __unicode__(self):
         return self.username
 
-    def has_perm(self, perm, obj=None):
+    @staticmethod
+    def has_perm(perm, obj=None):
         # Handle whether the user has a specific permission?"
         return True
 
-    def has_module_perms(self, app_label):
+    @staticmethod
+    def has_module_perms(app_label):
         # Handle whether the user has permissions to view the app `app_label`?"
         return True
 
@@ -63,3 +65,7 @@ class PSUCustomUser(AbstractBaseUser):
     def is_staff(self):
         # Handle whether the user is a member of staff?"
         return self.is_admin
+
+    def set_password(self, raw_password):
+        # Passwords are not stored in user objects, auth is done in API calls
+        self.set_unusable_password()
