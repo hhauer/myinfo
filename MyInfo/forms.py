@@ -2,6 +2,7 @@ from collections import OrderedDict
 from django import forms
 
 from MyInfo.models import DirectoryInformation, ContactInformation
+from AccountPickup.models import OAMStatusTracker
 from django.contrib.auth.forms import SetPasswordForm
 from lib.api_calls import change_password
 
@@ -30,6 +31,8 @@ class SetOdinPasswordForm(SetPasswordForm):
             (status, errors) = change_password(identity=identity, new_password=new_pw, old_password=old_pw)
 
             if status is False:
+                # Log failure
+                logger.info("service=myinfo psu_uuid={0} password_set=false".format(self.user.get_username()))
                 raise forms.ValidationError([forms.ValidationError(error) for error in errors])
             else:
                 # Password is not stored in user object, but new hash is needed for auth purposes
@@ -37,7 +40,14 @@ class SetOdinPasswordForm(SetPasswordForm):
                 self.user.save(update_fields=['password'])
 
     def save(self, commit=True):
-        pass
+        # Save status
+        psu_uuid = self.user.get_username()
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=psu_uuid)
+        if oam_status.set_password is False:
+            oam_status.set_password = True
+            oam_status.save(update_fields=['set_password'])
+        # Log success
+        logger.info("service=myinfo psu_uuid={0} password_set=true".format(psu_uuid))
 
 
 class ChangeOdinPasswordForm(SetOdinPasswordForm):
