@@ -90,8 +90,8 @@ def set_password(request):
 class DirectoryView(UpdateView):
 
     template_name = 'MyInfo/set_directory.html'
-    model = DirectoryInformation
-    fields = '__all__'
+    # model = DirectoryInformation
+    form_class = DirectoryInformationForm
     success_url = reverse_lazy('AccountPickup:next_step')
 
     @method_decorator(login_required(login_url=reverse_lazy('index')))
@@ -111,15 +111,11 @@ class DirectoryView(UpdateView):
         (directory_info, _) = DirectoryInformation.objects.get_or_create(psu_uuid=self.request.user.get_username())
         return directory_info
 
-    def form_valid(self, form):
-        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=self.request.user.get_username())
-        if oam_status.set_directory is False:
-            oam_status.set_directory = True
-            oam_status.save(update_fields=['set_directory'])
+    def get_form_kwargs(self):
 
-        logger.info("service=myinfo psu_uuid={0} directory_set=true".format(self.request.user.get_username()))
-        # Parent class saves form/object
-        return super(DirectoryView, self).form_valid(form)
+        kwargs = super(DirectoryView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 # TODO: refactor to merge with AccountPickup contact info view

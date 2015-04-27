@@ -105,6 +105,19 @@ class DirectoryInformationForm(forms.ModelForm):
         model = DirectoryInformation
         exclude = ['psu_uuid', ]
 
+    def __init__(self, request, *args, **kwargs):
+        super(DirectoryInformationForm, self).__init__(*args, **kwargs)
+        self.request = request
+
+    def save(self, commit=True):
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=self.request.user.get_username())
+        if oam_status.set_directory is False:
+            oam_status.set_directory = True
+            oam_status.save(update_fields=['set_directory'])
+        logger.info("service=myinfo psu_uuid={0} directory_set=true".format(self.request.user.get_username()))
+
+        return super(DirectoryInformationForm, self).save(commit=commit)
+
 
 # Main MyInfo login form.
 class LoginForm(forms.Form):
