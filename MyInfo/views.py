@@ -4,9 +4,9 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import password_change
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import Error
-from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 
 from MyInfo.forms import ChangeOdinPasswordForm, SetOdinPasswordForm, LoginForm, DirectoryInformationForm, \
@@ -72,35 +72,15 @@ def index(request):
 
 @login_required(login_url=reverse_lazy('index'))
 def set_password(request):
-    identity = request.session['identity']
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=identity['PSU_UUID'])
 
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.user.get_username())
     if oam_status.set_password is True:
-        form = ChangeOdinPasswordForm(user=request.user, data=request.POST or None)
+        form = ChangeOdinPasswordForm
     else:
-        form = SetOdinPasswordForm(user=request.user, data=request.POST or None)
+        form = SetOdinPasswordForm
 
-    if form.is_valid():
-
-        if oam_status.set_password is False:
-            oam_status.set_password = True
-            oam_status.save(update_fields=['set_password'])
-
-        # Updating the password logs out all other sessions for the user except the current one
-        auth.update_session_auth_hash(request, form.user)
-
-        logger.info("service=myinfo psu_uuid={0} password_set=true".format(
-            identity['PSU_UUID']))
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-
-    elif len(form.non_field_errors()) != 0:  # Valid data was posted, but API call was rejected
-        logger.info("service=myinfo psu_uuid={0} password_set=false".format(
-            identity['PSU_UUID']))
-
-    # Consider rendering when the password expires. Eventually.
-    return render(request, 'MyInfo/set_password.html', {
-        'form': form,
-    })
+    return password_change(request=request, template_name='MyInfo/set_password.html',
+                           post_change_redirect=reverse('AccountPickup:next_step'), password_change_form=form)
 
 
 @login_required(login_url=reverse_lazy('index'))

@@ -209,6 +209,7 @@ class NewPasswordTestCase(LoggedInTestCase):
         r = self.client.post(self.PASSWORD, data=data, follow=True)
         self.assertRedirects(r, self.PICK, host=self.HOST)
         #    Check outside session auth is invalidated
+        #    Also checks that status router now sends past password set page
         r2 = c.get(self.PICK)
         redirect_url = self.INDEX + "?next=" + self.PICK
         self.assertRedirects(r2, redirect_url, host=self.HOST)
