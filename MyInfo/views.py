@@ -114,7 +114,7 @@ class DirectoryView(UpdateView):
     def get_form_kwargs(self):
 
         kwargs = super(DirectoryView, self).get_form_kwargs()
-        kwargs.update({'request': self.request})
+        kwargs.update({'psu_uuid': self.request.user.get_username()})
         return kwargs
 
 

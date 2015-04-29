@@ -55,6 +55,7 @@ class SetOdinPasswordForm(SetPasswordForm):
         if oam_status.set_password is False:
             oam_status.set_password = True
             oam_status.save(update_fields=['set_password'])
+        return self.user
 
 
 class ChangeOdinPasswordForm(SetOdinPasswordForm):
@@ -105,16 +106,16 @@ class DirectoryInformationForm(forms.ModelForm):
         model = DirectoryInformation
         exclude = ['psu_uuid', ]
 
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, psu_uuid, *args, **kwargs):
         super(DirectoryInformationForm, self).__init__(*args, **kwargs)
-        self.request = request
+        self.psu_uuid = psu_uuid
 
     def save(self, commit=True):
-        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=self.request.user.get_username())
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=self.psu_uuid)
         if oam_status.set_directory is False:
             oam_status.set_directory = True
             oam_status.save(update_fields=['set_directory'])
-        logger.info("service=myinfo psu_uuid={0} directory_set=true".format(self.request.user.get_username()))
+        logger.info("service=myinfo psu_uuid={0} directory_set=true".format(self.psu_uuid))
 
         return super(DirectoryInformationForm, self).save(commit=commit)
 
