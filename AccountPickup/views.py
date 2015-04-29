@@ -5,6 +5,8 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.views.generic import FormView
+from django.utils.decorators import method_decorator
 
 from MyInfo.models import ContactInformation
 from MyInfo.forms import ContactInformationForm
@@ -216,6 +218,44 @@ def email_alias(request):
     return render(request, 'AccountPickup/email_alias.html', {
         'mail_form': mail_form,
     })
+
+
+class SelectAliasView(FormView):
+    template_name = 'AccountPickup/email_alias.html'
+    form_class = EmailAliasForm
+    success_url = reverse_lazy('AccountPickup:next_step')
+
+    @method_decorator(login_required(login_url=reverse_lazy('AccountPickup:index')))
+    def dispatch(self, request, *args, **kwargs):
+        # If someone has already completed this step, move them along:
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+        if oam_status.select_email_alias is True:
+            return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+        self._get_aliases(request)
+        return super(SelectAliasView, self).dispatch(request, *args, **kwargs)
+
+    @staticmethod
+    def _get_aliases(request):
+        # Get possible email aliases
+        if 'TRUENAME_EMAILS' not in request.session:
+            request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
+
+            if len(request.session['TRUENAME_EMAILS']) == 0:
+                # Truename down, don't offer empty list
+                raise APIException(
+                    "Truename API call failed: No names for user {}".format(request.session['identity']['PSU_UUID']))
+
+            # Prepend a "None" option at the start of the emails.
+            request.session['TRUENAME_EMAILS'].insert(0, 'None')
+
+    def get_form_kwargs(self):
+        kwargs = super(SelectAliasView, self).get_form_kwargs()
+        kwargs.update({'session': self.request.session})
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super(SelectAliasView, self).form_valid(form)
 
 
 # Pause and wait for provisioning to finish if necessary. This page uses AJAX calls to determine
