@@ -1,8 +1,11 @@
 __author__ = 'Justin McClure'
 
 from django.test import TestCase
-from MyInfo.forms import SetOdinPasswordForm, ChangeOdinPasswordForm, ContactInformationForm
 from django.contrib.auth import get_user_model
+
+from MyInfo.forms import SetOdinPasswordForm, ChangeOdinPasswordForm, ContactInformationForm, DirectoryInformationForm
+from MyInfo.models import DirectoryInformation
+from AccountPickup.models import OAMStatusTracker
 
 
 class NewPasswordTestCase(TestCase):
@@ -117,3 +120,40 @@ class ContactInformationFormTestCase(TestCase):
         self.assertNotEqual(f.cleaned_data['cell_phone'], '')
         self.assertIn('alternate_email', f.cleaned_data)
         self.assertNotEqual(f.cleaned_data['alternate_email'], '')
+
+
+class DirectoryInformationTestCase(TestCase):
+
+    psu_uuid = "123456789"
+
+    def test_good_init(self):
+        # Test successful init without data
+        form = DirectoryInformationForm(self.psu_uuid)
+        self.assertNotIn("psu_uuid", form.fields)
+        self.assertFalse(form.is_valid())
+        # Test init with data
+        (directory_information, _) = DirectoryInformation.objects.get_or_create(psu_uuid=self.psu_uuid)
+        data = {'job_title': 'Django tester'}
+        form = DirectoryInformationForm(self.psu_uuid, data)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['job_title'], "Django tester")
+
+    def test_bad_init(self):
+        # Test init with no uuid
+        self.assertRaises(TypeError, DirectoryInformationForm)
+
+    def test_save(self):
+
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=self.psu_uuid)
+        self.assertFalse(oam_status.set_directory)
+
+        (directory_information, _) = DirectoryInformation.objects.get_or_create(psu_uuid=self.psu_uuid)
+        self.assertIsNone(directory_information.job_title)
+        form = DirectoryInformationForm(psu_uuid=self.psu_uuid, data={"job_title": 'Foo Bar'},
+                                        instance=directory_information)
+        self.assertTrue(form.is_valid())
+        form.save()
+        oam_status.refresh_from_db()
+        self.assertTrue(oam_status.set_directory)
+        directory_information.refresh_from_db()
+        self.assertEqual(directory_information.job_title, "Foo Bar")
