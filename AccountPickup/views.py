@@ -122,34 +122,70 @@ def contact_info(request):
     })
 
 
-# Select ODIN name
-@login_required(login_url=reverse_lazy('AccountPickup:index'))
-def odin_name(request):
-    # If someone has already completed this step, move them along:
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-    if oam_status.select_odin_username is True:
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+# # Select ODIN name
+# @login_required(login_url=reverse_lazy('AccountPickup:index'))
+# def odin_name(request):
+#     # If someone has already completed this step, move them along:
+#     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+#     if oam_status.select_odin_username is True:
+#         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+#
+#     # Get possible odin names
+#     if 'TRUENAME_USERNAMES' not in request.session:
+#         request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
+#         # If truename server is not responding, don't give user empty list
+#         if len(request.session['TRUENAME_USERNAMES']) == 0:
+#             raise APIException(
+#                 "Truename API call failed: No names for user {}".format(request.session['identity']['PSU_UUID']))
+#
+#     # Build our forms with choices from truename.
+#     form = OdinNameForm(session=request.session, data=request.POST or None)
+#
+#     if form.is_valid():
+#
+#         form.save()
+#
+#         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+#
+#     return render(request, 'AccountPickup/odin_name.html', {
+#         'form': form,
+#     })
 
-    # Get possible odin names
-    if 'TRUENAME_USERNAMES' not in request.session:
-        request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
-        # If truename server is not responding, don't give user empty list
-        if len(request.session['TRUENAME_USERNAMES']) == 0:
-            raise APIException(
-                "Truename API call failed: No names found. psu_uuid={0}".format(request.user.get_username()))
 
-    # Build our forms with choices from truename.
-    form = OdinNameForm(session=request.session, data=request.POST or None)
+class SelectOdinNameView(FormView):
+    template_name = 'AccountPickup/odin_name.html'
+    form_class = OdinNameForm
+    success_url = reverse_lazy('AccountPickup:next_step')
 
-    if form.is_valid():
+    @method_decorator(login_required(login_url=reverse_lazy('AccountPickup:index')))
+    def dispatch(self, request, *args, **kwargs):
+        # If someone has already completed this step, move them along:
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.user.get_username())
+        if oam_status.select_odin_username is True:
+            return HttpResponseRedirect(self.success_url)
 
+        self._get_odin_names(request)
+
+        return super(SelectOdinNameView, self).dispatch(request, *args, **kwargs)
+
+    @staticmethod
+    def _get_odin_names(request):
+        # Get possible odin names
+        if 'TRUENAME_USERNAMES' not in request.session:
+            request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
+            # If truename server is not responding, don't give user empty list
+            if len(request.session['TRUENAME_USERNAMES']) == 0:
+                raise APIException(
+                    "Truename API call failed: No names for user {}".format(request.user.get_username()))
+
+    def get_form_kwargs(self):
+        kwargs = super(SelectOdinNameView, self).get_form_kwargs()
+        kwargs.update({'session': self.request.session})
+        return kwargs
+
+    def form_valid(self, form):
         form.save()
-
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-
-    return render(request, 'AccountPickup/odin_name.html', {
-        'form': form,
-    })
+        return super(SelectOdinNameView, self).form_valid(form)
 
 
 # Select Preferred email.
