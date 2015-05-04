@@ -1,6 +1,6 @@
 from django import forms
 
-from lib.api_calls import set_email_alias, APIException
+from lib.api_calls import set_email_alias, set_odin_username, APIException
 from AccountPickup.models import OAMStatusTracker
 
 import logging
@@ -19,9 +19,33 @@ class AcceptAUPForm(forms.Form):
 
 # Must override __init__ to dynamically allocate choices for each user.
 class OdinNameForm(forms.Form):
-    def __init__(self, names, *args, **kwargs):
+    def __init__(self, session, *args, **kwargs):
         super(OdinNameForm, self).__init__(*args, **kwargs)
-        self.fields["name"] = forms.ChoiceField(choices=names, label="Odin Username")
+        self.fields["name"] = forms.ChoiceField(choices=enumerate(session['TRUENAME_USERNAMES']), label="Odin Username")
+        self.session = session
+
+    def save(self):
+        # Must save OAMStatus before API call, or it'll set provisioned back to false.
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=self.session['identity']['PSU_UUID'])
+        oam_status.select_odin_username = True
+        oam_status.save(update_fields=['select_odin_username'])
+
+        # Send the information to sailpoint to begin provisioning.
+        name = self.session['TRUENAME_USERNAMES'][int(self.cleaned_data['name'])]
+        status = set_odin_username(self.session['identity'], name)
+
+        if status != "SUCCESS":  # API call to IIQ failed
+            oam_status.select_odin_username = False
+            oam_status.save(update_fields=['select_odin_username'])
+            raise APIException("IIQ API call failed: Odin not set")
+
+        self.session['identity']['ODIN_NAME'] = name
+        self.session['identity']['EMAIL_ADDRESS'] = name + "@pdx.edu"
+        self.session.modified = True  # Manually notify Django we modified a sub-object of the session.
+
+        logger.info("service=myinfo psu_uuid=" + self.session['identity']['PSU_UUID'] + " odin_name=" + name)
+
+        return self.session
 
 
 class EmailAliasForm(forms.Form):

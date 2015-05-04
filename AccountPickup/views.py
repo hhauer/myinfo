@@ -139,34 +139,16 @@ def odin_name(request):
                 "Truename API call failed: No names found. psu_uuid={0}".format(request.user.get_username()))
 
     # Build our forms with choices from truename.
-    odin_form = OdinNameForm(enumerate(request.session['TRUENAME_USERNAMES']), request.POST or None)
+    form = OdinNameForm(session=request.session, data=request.POST or None)
 
-    if odin_form.is_valid():
-        # Must save OAMStatus before API call, or it'll set provisioned back to false.
-        oam_status.select_odin_username = True
-        oam_status.save(update_fields=['select_odin_username'])
+    if form.is_valid():
 
-        # Send the information to sailpoint to begin provisioning.
-        name = request.session['TRUENAME_USERNAMES'][int(odin_form.cleaned_data['name'])]
-        r = set_odin_username(request.session['identity'], name)
-        if r != "SUCCESS":
-            # API call to IIQ failed
-            oam_status.select_odin_username = False
-            oam_status.save(update_fields=['select_odin_username'])
-            raise APIException("IIQ API call failed: Odin not set. psu_uuid={0} name={1}".format(
-                               request.user.get_username(), name))
-
-        request.session['identity']['ODIN_NAME'] = name
-        request.session['identity']['EMAIL_ADDRESS'] = name + "@pdx.edu"
-        request.session.modified = True  # Manually notify Django we modified a sub-object of the session.
-
-        logger.info("service=myinfo page=accountclaim action=odin_name status=success name={0} psu_uuid={1}".format(
-                    name, request.user.get_username()))
+        form.save()
 
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'AccountPickup/odin_name.html', {
-        'odin_form': odin_form,
+        'form': form,
     })
 
 
