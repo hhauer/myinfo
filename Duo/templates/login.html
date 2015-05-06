@@ -19,17 +19,19 @@
 {% csrf_token %}
 </form>
 
-
+<div class="col_4"></div>
+<div class="col_4">
 <iframe id="duo_iframe" frameborder="0"></iframe>
-<style>
-  #duo_iframe {
-    width: 100%;
-    min-width: 304px;
-    max-width: 620px;
-    height: 330px;
-    display: block;
-    margin: auto;
-  }
-</style>
-
+    <style>
+      #duo_iframe {
+        width: 100%;
+        min-width: 304px;
+        max-width: 620px;
+        height: 330px;
+        margin: 0px auto;
+        border: none;
+      }
+    </style>
+</div>
+<div class="col_4"></div>
 {% endblock %}
