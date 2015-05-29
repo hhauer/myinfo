@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.conf import settings
 
 from Duo import duo_web
@@ -18,6 +19,10 @@ def login(request):
     # Interaction with Duo occurs entirely over JavaScript, but leverages a widget designed for login.
     # If the user selects "login" they will post back to this page, but we don't actually want to do anything but
     # re-draw the widget.
+
+    # Success message if duo auth worked
+    if request.method == "POST":
+        messages.success(request, "Login Successful!", extra_tags='center notice')
 
     # Duo API returns a dict.
     duo = provision_duo(request.user.username)

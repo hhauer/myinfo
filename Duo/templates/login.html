@@ -4,34 +4,43 @@
 {% block title %}Duo{% endblock %}
 
 {% block head_js %}
-<script src="{% static "Duo-Web-v1.js" %}"></script>
-<script>
-  Duo.init({
-    'host': '{{host}}',
-    'sig_request': '{{sig_request}}'
-  });
-</script>
+    <script src="{% static "Duo-Web-v1.js" %}"></script>
+    <script>
+        Duo.init({
+            'host': '{{host}}',
+            'sig_request': '{{sig_request}}'
+        });
+    </script>
 {% endblock %}
 
 {% block body_content %}
 
-<form method="POST" id="duo_form">
-{% csrf_token %}
-</form>
+    <form method="POST" id="duo_form">
+        {% csrf_token %}
+    </form>
 
-<div class="col_4"></div>
-<div class="col_4">
-<iframe id="duo_iframe" frameborder="0"></iframe>
-    <style>
-      #duo_iframe {
-        width: 100%;
-        min-width: 304px;
-        max-width: 620px;
-        height: 330px;
-        margin: 0px auto;
-        border: none;
-      }
-    </style>
-</div>
-<div class="col_4"></div>
+    <div class="col_4"></div>
+    <div class="col_4">
+        <iframe id="duo_iframe" frameborder="0"></iframe>
+        <style>
+            #duo_iframe {
+                width: 100%;
+                min-width: 304px;
+                max-width: 620px;
+                height: 330px;
+                margin: 0px auto;
+                border: none;
+            }
+        </style>
+        <h5 class="center"><b>Push 'Log in' to test your Odin+ configuration.</b></h5>
+        {% if messages %}
+            {% for message in messages %}
+                <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}<a href="#close" class="icon-remove"></a>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="col_4"></div>
+
 {% endblock %}
