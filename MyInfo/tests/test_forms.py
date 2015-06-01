@@ -49,17 +49,15 @@ class NewPasswordTestCase(TestCase):
         # Test good values
         data['new_password1'] = new
         data['new_password2'] = confirm
+        password = user.password
         f = SetOdinPasswordForm(user=user, data=data)
         self.assertTrue(f.is_valid())
         self.assertIn('new_password1', f.cleaned_data)
         self.assertIn('new_password2', f.cleaned_data)
-
-        # Make sure save doesn't store passwords in user
-        password = user.password
-        data = {'new_password1': mismatch, 'new_password2': mismatch}
-        f = SetOdinPasswordForm(user=user, data=data)
-        self.assertTrue(f.is_valid())
-        self.assertEqual(password, user.password)
+        # Make sure save doesn't store usable passwords in user
+        self.assertFalse(f.user.has_usable_password())
+        # Make sure password hash has changed
+        self.assertNotEqual(password, user.password)
 
 
 class PasswordChangeTestCase(TestCase):

@@ -4,9 +4,9 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import password_change
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import Error
-from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 
 from MyInfo.forms import ChangeOdinPasswordForm, SetOdinPasswordForm, LoginForm, DirectoryInformationForm, \
@@ -56,7 +56,6 @@ def index(request):
                          "Ensure this information is correct and please try again. "
                          "If you continue to have difficulty, contact the Helpdesk (503-725-4357) for assistance.")
 
-
     # Determine whether or not to render a maintenance notice.
     notices = MaintenanceNotice.objects.filter(
         start_display__lte=datetime.datetime.now()
@@ -71,64 +70,17 @@ def index(request):
     })
 
 
-# Replaced with class-based view
-# # Present the user with a list of appropriate actions for them to be able to take.
-# # This serves as a navigation menu.
-# @login_required(login_url=reverse_lazy('index'))
-# def pick_action(request):
-# return render(request, 'MyInfo/pick_action.html', {
-#         'identity': request.session['identity'],
-#         'allow_cancel': request.session['ALLOW_CANCEL'],
-#     })
-
-
-class PickActionView(TemplateView):
-    template_name = "MyInfo/pick_action.html"
-
-    @method_decorator(login_required(login_url=reverse_lazy('index')))
-    def dispatch(self, request, *args, **kwargs):
-        return super(PickActionView, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(PickActionView, self).get_context_data(**kwargs)
-        context['identity'] = self.request.session['identity']
-        context['allow_cancel'] = self.request.session['ALLOW_CANCEL']
-        return context
-
-
 @login_required(login_url=reverse_lazy('index'))
 def set_password(request):
-    identity = request.session['identity']
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=identity['PSU_UUID'])
 
+    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.user.get_username())
     if oam_status.set_password is True:
-        form = ChangeOdinPasswordForm(user=request.user, data=request.POST or None)
+        form = ChangeOdinPasswordForm
     else:
-        form = SetOdinPasswordForm(user=request.user, data=request.POST or None)
+        form = SetOdinPasswordForm
 
-    if form.is_valid():
-
-        if oam_status.set_password is False:
-            oam_status.set_password = True
-            oam_status.save(update_fields=['set_password'])
-
-        # Updating the password logs out all other sessions for the user except the current one
-        auth.update_session_auth_hash(request, request.user)
-
-        logger.info("service=myinfo psu_uuid={0} password_set=true".format(
-            identity['PSU_UUID']))
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-
-    elif len(form.non_field_errors()) != 0:  # Valid data was posted, but API call was rejected
-        logger.info("service=myinfo psu_uuid={0} password_set=false".format(
-            identity['PSU_UUID']))
-
-    # Consider rendering when the password expires. Eventually.
-    return render(request, 'MyInfo/set_password.html', {
-        'identity': identity,
-        'form': form,
-        'allow_cancel': request.session['ALLOW_CANCEL'],
-    })
+    return password_change(request=request, template_name='MyInfo/set_password.html',
+                           post_change_redirect=reverse('AccountPickup:next_step'), password_change_form=form)
 
 
 @login_required(login_url=reverse_lazy('index'))
@@ -142,14 +94,14 @@ def set_directory(request):
         directory_info_form = DirectoryInformationForm(request.POST or None, instance=directory_info)
     else:
         oam_status.set_directory = True
-        oam_status.save()
+        oam_status.save(update_fields=['set_directory'])
         return HttpResponseRedirect(reverse("AccountPickup:next_step"))  # Shouldn't be here.
 
     if directory_info_form.is_valid():
         directory_info_form.save()
-        if oam_status.set_directory is False:  # pragma: no branch
+        if oam_status.set_directory is False:
             oam_status.set_directory = True
-            oam_status.save()
+            oam_status.save(update_fields=['set_directory'])
 
         logger.info("service=myinfo psu_uuid={0} directory_set=true".format(
             request.session['identity']['PSU_UUID']
@@ -157,9 +109,7 @@ def set_directory(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'MyInfo/set_directory.html', {
-        'identity': request.session['identity'],
         'form': directory_info_form,
-        'allow_cancel': request.session['ALLOW_CANCEL'],
     })
 
 
@@ -181,7 +131,7 @@ def set_contact(request):
         if cell_phone is None and alternate_email is None:  # pragma: no cover
             (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
             oam_status.set_contact_info = False
-            oam_status.save()
+            oam_status.save(update_fields=['set_contact_info'])
 
         contact_info_form.save()
 
@@ -191,9 +141,7 @@ def set_contact(request):
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'MyInfo/set_contact.html', {
-        'identity': request.session['identity'],
         'form': contact_info_form,
-        'allow_cancel': request.session['ALLOW_CANCEL'],
     })
 
 
@@ -201,7 +149,7 @@ def set_contact(request):
 def welcome_landing(request):
     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
     oam_status.welcome_displayed = True
-    oam_status.save()
+    oam_status.save(update_fields=['welcome_displayed'])
 
     identity = request.session['identity']
 

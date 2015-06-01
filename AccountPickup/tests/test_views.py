@@ -9,17 +9,16 @@ from lib.api_calls import APIException
 class AccountPickupViewsTestCase(TestCase):
     fixtures = ['AccountPickup_views_test_data.json']
 
-    def setUp(self):
-        super(AccountPickupViewsTestCase, self).setUp()
-        self.HOST = 'testserver'
-        self.INDEX = reverse('AccountPickup:index')
-        self.AUP = reverse('AccountPickup:aup')
-        self.ODIN = reverse('AccountPickup:odin')
-        self.ALIAS = reverse('AccountPickup:alias')
-        self.CONTACT = reverse('AccountPickup:contact_info')
-        self.NEXT = reverse('AccountPickup:next_step')
-        self.WAIT = reverse('AccountPickup:wait_for_provisioning')
-        self.RAND_IP = ["127.0.0." + str(i) for i in range(1, 256)]
+    HOST = 'testserver'
+    INDEX = reverse('AccountPickup:index')
+    AUP = reverse('AccountPickup:aup')
+    ODIN = reverse('AccountPickup:odin')
+    ALIAS = reverse('AccountPickup:alias')
+    CONTACT = reverse('AccountPickup:contact_info')
+    NEXT = reverse('AccountPickup:next_step')
+    WAIT = reverse('AccountPickup:wait_for_provisioning')
+    PICK = reverse('MyInfo:pick_action')
+    RAND_IP = ["127.0.0." + str(i) for i in range(1, 256)]
 
 
 class APIndexTestCase(AccountPickupViewsTestCase):
@@ -68,13 +67,33 @@ class APIndexTestCase(AccountPickupViewsTestCase):
         self.assertNotEqual(self.client.session.session_key, s)
 
 
-class APAupTestCase(AccountPickupViewsTestCase):
+class APLoggedInTestCase(AccountPickupViewsTestCase):
+
+    login_data = {}
+
+    @classmethod
+    def setUpTestData(cls):
+        super(APLoggedInTestCase, cls).setUpTestData()
+        cls.class_client = Client(REMOTE_ADDR=choice(cls.RAND_IP))
+        _ = cls.class_client.post(cls.INDEX, data=cls.login_data, follow=True)
 
     def setUp(self):
-        super(APAupTestCase, self).setUp()
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        data = {'id_number': '111111111', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+        self.assertIn('identity', self.class_client.session)
+        self.client = self.class_client
+
+
+class APAupTestCase(APLoggedInTestCase):
+
+    login_data = {'id_number': '111111111', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+
+    def test_aup_next(self):
+        # test no agreement
+        r = self.client.get(self.NEXT, follow=True)
+        self.assertRedirects(r, self.AUP, host=self.HOST)
+        # test outdated agreement
+        c = Client(REMOTE_ADD=choice(self.RAND_IP))
+        data = {'id_number': '111111112', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+        r = c.post(self.INDEX, data=data, follow=True)
         self.assertRedirects(r, self.AUP, host=self.HOST)
 
     def test_aup_get(self):
@@ -99,15 +118,12 @@ class APAupTestCase(AccountPickupViewsTestCase):
         self.assertRedirects(r, self.NEXT, target_status_code=302, host=self.HOST)
 
 
-class APOdinTestCase(AccountPickupViewsTestCase):
+class APOdinTestCase(APLoggedInTestCase):
 
-    def setUp(self):
-        super(APOdinTestCase, self).setUp()
-        # Set up client to spoof random IP from list
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        # Log in pre-created user
-        data = {'id_number': '222222222', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+    login_data = {'id_number': '222222222', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+
+    def test_odin_next(self):
+        r = self.client.get(self.NEXT, follow=True)
         self.assertRedirects(r, self.ODIN, host=self.HOST)
 
     def test_odin_get(self):
@@ -147,13 +163,12 @@ class APOdinTestCase(AccountPickupViewsTestCase):
         self.assertRaises(APIException, self.client.post, self.ODIN, data=data)
 
 
-class APAliasTestCase(AccountPickupViewsTestCase):
+class APAliasTestCase(APLoggedInTestCase):
 
-    def setUp(self):
-        super(APAliasTestCase, self).setUp()
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        data = {'id_number': '333333333', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+    login_data = {'id_number': '333333333', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+
+    def test_alias_next(self):
+        r = self.client.get(self.NEXT, follow=True)
         self.assertRedirects(r, self.ALIAS, host=self.HOST)
 
     def test_alias_get(self):
@@ -225,13 +240,12 @@ class APAliasTestCase(AccountPickupViewsTestCase):
         self.assertRedirects(r, reverse('MyInfo:pick_action'), host=self.HOST)
 
 
-class APContactTestCase(AccountPickupViewsTestCase):
+class APContactTestCase(APLoggedInTestCase):
 
-    def setUp(self):
-        super(APContactTestCase, self).setUp()
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
-        data = {'id_number': '444444444', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+    login_data = {'id_number': '444444444', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
+
+    def test_contact_next(self):
+        r = self.client.get(self.NEXT, follow=True)
         self.assertRedirects(r, self.CONTACT, host=self.HOST)
 
     def test_contact_get(self):
@@ -305,35 +319,31 @@ class APWaitTestCase(AccountPickupViewsTestCase):
 class APNextTestCase(AccountPickupViewsTestCase):
 
     def test_next_directory(self):
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data = {'id_number': '666666666', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+        r = self.client.post(self.INDEX, data=data, follow=True, REMOTE_ADDR=choice(self.RAND_IP))
         self.assertRedirects(r, reverse('MyInfo:set_directory'), host=self.HOST)
 
     def test_next_password(self):
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data = {'id_number': '777777777', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+        r = self.client.post(self.INDEX, data=data, follow=True, REMOTE_ADDR=choice(self.RAND_IP))
         self.assertRedirects(r, reverse('MyInfo:set_password'), host=self.HOST)
 
     def test_next_welcome(self):
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data = {'id_number': '888888888', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+        r = self.client.post(self.INDEX, data=data, follow=True, REMOTE_ADDR=choice(self.RAND_IP))
         # Welcome page should kill session
         self.assertNotIn('_auth_user_id', self.client.session)
         self.assertRedirects(r, reverse('MyInfo:welcome_landing'), host=self.HOST)
 
     def test_next_complete(self):
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data = {'id_number': '999999999', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        r = self.client.post(self.INDEX, data=data, follow=True)
+        r = self.client.post(self.INDEX, data=data, follow=True, REMOTE_ADDR=choice(self.RAND_IP))
         self.assertRedirects(r, reverse('MyInfo:pick_action'), host=self.HOST)
 
     def test_next_api_fail(self):
-        self.client = Client(REMOTE_ADDR=choice(self.RAND_IP))
         data = {'id_number': '000000003', 'birth_date': '12/21/2012', 'auth_pass': 'Password1!'}
-        self.assertRaises(APIException, self.client.post, self.INDEX, data=data, follow=True)
+        ip = choice(self.RAND_IP)
+        self.assertRaises(APIException, self.client.post, self.INDEX, data=data, follow=True, REMOTE_ADDR=ip)
 
 
 class APRateLimitTestCase(AccountPickupViewsTestCase):

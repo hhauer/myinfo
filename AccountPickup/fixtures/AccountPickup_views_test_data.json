@@ -16,6 +16,20 @@
 {
     "fields": {
         "provisioned": true,
+        "agree_aup": "2014-02-18",
+        "set_contact_info": true,
+        "set_password": true,
+        "set_directory": true,
+        "welcome_displayed": true,
+        "select_email_alias": true,
+        "select_odin_username": true
+    },
+    "pk": "111111112",
+    "model": "AccountPickup.oamstatustracker"
+},
+{
+    "fields": {
+        "provisioned": true,
         "agree_aup": "2015-02-18",
         "set_contact_info": true,
         "set_password": true,
