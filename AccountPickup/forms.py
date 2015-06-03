@@ -37,13 +37,15 @@ class OdinNameForm(forms.Form):
         if status != "SUCCESS":  # API call to IIQ failed
             oam_status.select_odin_username = False
             oam_status.save(update_fields=['select_odin_username'])
-            raise APIException("IIQ API call failed: Odin not set")
+            raise APIException("IIQ API call failed: Odin not set. psu_uuid={0} name={1}".format(
+                               self.session['identity']['PSU_UUID'], name))
 
         self.session['identity']['ODIN_NAME'] = name
         self.session['identity']['EMAIL_ADDRESS'] = name + "@pdx.edu"
         self.session.modified = True  # Manually notify Django we modified a sub-object of the session.
 
-        logger.info("service=myinfo psu_uuid=" + self.session['identity']['PSU_UUID'] + " odin_name=" + name)
+        logger.info("service=myinfo page=accountclaim action=odin_name status=success name={0} psu_uuid={1}".format(
+                    name, self.session['identity']['PSU_UUID']))
 
         return self.session
 
@@ -63,12 +65,13 @@ class EmailAliasForm(forms.Form):
             result = set_email_alias(self.session['identity'], alias)
             if result is not True:
                 # API call failed
-                raise APIException("API call to set_email_alias did not return success.")
+                raise APIException("IIQ API call failed: Alias not set. psu_uuid={0} alias={1}".format(
+                    self.session['identity']['PSU_UUID'], alias))
 
             self.session['identity']['EMAIL_ALIAS'] = alias
             self.session.modified = True  # Manually notify Django we modified a sub-object of the session.
 
-            logger.info("service=myinfo psu_uuid={0} email_alias={1}".format(
+            logger.info("service=myinfo page=accountclaim action=alias status=success psu_uuid={0} alias={1}".format(
                 self.session['identity']['PSU_UUID'], alias))
 
         (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=self.session['identity']['PSU_UUID'])

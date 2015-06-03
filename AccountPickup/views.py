@@ -122,36 +122,6 @@ def contact_info(request):
     })
 
 
-# # Select ODIN name
-# @login_required(login_url=reverse_lazy('AccountPickup:index'))
-# def odin_name(request):
-#     # If someone has already completed this step, move them along:
-#     (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-#     if oam_status.select_odin_username is True:
-#         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-#
-#     # Get possible odin names
-#     if 'TRUENAME_USERNAMES' not in request.session:
-#         request.session['TRUENAME_USERNAMES'] = truename_odin_names(request.session['identity'])
-#         # If truename server is not responding, don't give user empty list
-#         if len(request.session['TRUENAME_USERNAMES']) == 0:
-#             raise APIException(
-#                 "Truename API call failed: No names for user {}".format(request.session['identity']['PSU_UUID']))
-#
-#     # Build our forms with choices from truename.
-#     form = OdinNameForm(session=request.session, data=request.POST or None)
-#
-#     if form.is_valid():
-#
-#         form.save()
-#
-#         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-#
-#     return render(request, 'AccountPickup/odin_name.html', {
-#         'form': form,
-#     })
-
-
 class SelectOdinNameView(FormView):
     template_name = 'AccountPickup/odin_name.html'
     form_class = OdinNameForm
@@ -176,7 +146,7 @@ class SelectOdinNameView(FormView):
             # If truename server is not responding, don't give user empty list
             if len(request.session['TRUENAME_USERNAMES']) == 0:
                 raise APIException(
-                    "Truename API call failed: No names for user {}".format(request.user.get_username()))
+                    "Truename API call failed: No names found. psu_uuid={0}".format(request.user.get_username()))
 
     def get_form_kwargs(self):
         kwargs = super(SelectOdinNameView, self).get_form_kwargs()
@@ -186,56 +156,6 @@ class SelectOdinNameView(FormView):
     def form_valid(self, form):
         form.save()
         return super(SelectOdinNameView, self).form_valid(form)
-
-
-# Select Preferred email.
-@login_required(login_url=reverse_lazy('AccountPickup:index'))
-def email_alias(request):
-    # If someone has already completed this step, move them along:
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-    if oam_status.select_email_alias is True:
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-
-    # Get possible email aliases
-    if 'TRUENAME_EMAILS' not in request.session:
-        request.session['TRUENAME_EMAILS'] = truename_email_aliases(request.session['identity'])
-
-        if len(request.session['TRUENAME_EMAILS']) == 0:
-            # Truename down, don't offer empty list
-            raise APIException(
-                "Truename API call failed: No names found. psu_uuid={0}".format(request.user.get_username()))
-
-        # Prepend a "None" option at the start of the emails.
-        request.session['TRUENAME_EMAILS'].insert(0, 'None')
-
-    # Build our forms with choices from truename.
-    mail_form = EmailAliasForm(enumerate(request.session['TRUENAME_EMAILS']), request.POST or None)
-
-    if mail_form.is_valid():
-        # Send the information to sailpoint to begin provisioning.
-        alias = request.session['TRUENAME_EMAILS'][int(mail_form.cleaned_data['alias'])]
-        logger.debug("Email alias value: " + alias)
-
-        if alias is not None and alias != 'None':
-            r = set_email_alias(request.session['identity'], alias)
-            if r is not True:
-                # API call failed
-                raise APIException("IIQ API call failed: Alias not set. psu_uuid={0} alias={1}".format(
-                    request.user.get_username(), alias))
-
-            request.session['identity']['EMAIL_ALIAS'] = alias
-            request.session.modified = True  # Manually notify Django we modified a sub-object of the session.
-
-            logger.info("service=myinfo page=accountclaim action=alias status=success psu_uuid={0} alias={1}".format(
-                request.user.get_username(), alias))
-
-        oam_status.select_email_alias = True
-        oam_status.save(update_fields=['select_email_alias'])
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
-
-    return render(request, 'AccountPickup/email_alias.html', {
-        'mail_form': mail_form,
-    })
 
 
 class SelectAliasView(FormView):
@@ -261,7 +181,7 @@ class SelectAliasView(FormView):
             if len(request.session['TRUENAME_EMAILS']) == 0:
                 # Truename down, don't offer empty list
                 raise APIException(
-                    "Truename API call failed: No names for user {}".format(request.session['identity']['PSU_UUID']))
+                    "Truename API call failed: No aliases found. psu_uuid={0}".format(request.user.get_username()))
 
             # Prepend a "None" option at the start of the emails.
             request.session['TRUENAME_EMAILS'].insert(0, 'None')
