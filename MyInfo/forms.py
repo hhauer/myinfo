@@ -30,14 +30,23 @@ class SetOdinPasswordForm(SetPasswordForm):
 
             (status, errors) = change_password(identity=identity, new_password=new_pw, old_password=old_pw)
 
+            if old_pw is None:
+                action = "set_password"
+            else:
+                action = "change_password"
+
             if status is False:
                 # Log failure
-                logger.info("service=myinfo psu_uuid={0} password_set=false".format(self.user.get_username()))
+                error_text = "\"[" + ",".join(errors) + "]\""
+                logger.info("service=myinfo page=myinfo action={0} status={1} psu_uuid={2}".format(
+                            action, error_text, self.user.get_username()))
                 raise forms.ValidationError([forms.ValidationError(error) for error in errors])
             else:
                 # Password is not stored in user object, but new hash is needed for auth purposes
                 self.user.set_unusable_password()
                 self.user.save(update_fields=['password'])
+                logger.info("service=myinfo page=myinfo action={0} status=success psu_uuid={1}".format(
+                            action, self.user.get_username()))
 
     def save(self, commit=True):
         # Save status
@@ -46,21 +55,18 @@ class SetOdinPasswordForm(SetPasswordForm):
         if oam_status.set_password is False:
             oam_status.set_password = True
             oam_status.save(update_fields=['set_password'])
-        # Log success
-        logger.info("service=myinfo psu_uuid={0} password_set=true".format(psu_uuid))
 
 
 class ChangeOdinPasswordForm(SetOdinPasswordForm):
     current_password = forms.CharField(
         min_length=8, max_length=30, widget=forms.PasswordInput, label="Current password")
 
-    # Field ordering, not valid code until django 1.8
+    # Field ordering. Not valid code until future django changes are implemented
     # field_order = ['current_password', 'new_password1', 'new_password2']
 
 
 # Manually set the order of fields so that "Current Password" comes first
 # https://github.com/pennersr/django-allauth/issues/356#issuecomment-24758824
-# Will no longer be necessary in django 1.8
 ChangeOdinPasswordForm.base_fields = OrderedDict(
     (k, ChangeOdinPasswordForm.base_fields[k]) for k in ['current_password', 'new_password1', 'new_password2'])
 

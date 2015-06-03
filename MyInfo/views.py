@@ -46,12 +46,15 @@ def index(request):
         if user is not None:
             # Identity is valid.
             auth.login(request, user)
-            logger.info("service=myinfo login_username=" + login_form.cleaned_data['username'] + " success=true")
+            logger.info("service=myinfo page=myinfo action=login status=success credential={0} psu_uuid={1}".format(
+                        login_form.cleaned_data['username'], user.get_username()))
 
             # Head to the oam status router in case they have any unmet oam tasks.
             return HttpResponseRedirect(reverse("AccountPickup:next_step"))
 
-        # If identity is invalid, prompt re-entry.
+        # If identity is invalid, log and prompt re-entry.
+        logger.info("service=myinfo page=myinfo action=login status=failed credential={0}".format(
+                    login_form.cleaned_data['username']))
         error_message = ("Username and/or Password not recognized. "
                          "Ensure this information is correct and please try again. "
                          "If you continue to have difficulty, contact the Helpdesk (503-725-4357) for assistance.")
@@ -100,12 +103,14 @@ def set_directory(request):
     if directory_info_form.is_valid():
         directory_info_form.save()
         if oam_status.set_directory is False:
+            action_text = "set_directory"
             oam_status.set_directory = True
             oam_status.save(update_fields=['set_directory'])
+        else:
+            action_text = "update_directory"
 
-        logger.info("service=myinfo psu_uuid={0} directory_set=true".format(
-            request.session['identity']['PSU_UUID']
-        ))
+        logger.info("service=myinfo page=myinfo action={0} status=success psu_uuid={1}".format(
+                    action_text, request.user.get_username()))
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'MyInfo/set_directory.html', {
@@ -123,21 +128,10 @@ def set_contact(request):
     contact_info_form = ContactInformationForm(request.POST or None, instance=contact_info)
 
     if contact_info_form.is_valid():
-        # First check to see if they removed all their contact info.
-        # Currently this shouldn't happen, since the underlying form rejects that state in validation.
-        cell_phone = contact_info_form.cleaned_data['cell_phone']
-        alternate_email = contact_info_form.cleaned_data['alternate_email']
-
-        if cell_phone is None and alternate_email is None:  # pragma: no cover
-            (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-            oam_status.set_contact_info = False
-            oam_status.save(update_fields=['set_contact_info'])
 
         contact_info_form.save()
-
-        logger.info("service=myinfo psu_uuid={0} contact_updated=true".format(
-            request.session['identity']['PSU_UUID']
-        ))
+        logger.info("service=myinfo page=myinfo action=update_contact status=success psu_uuid={0}".format(
+                    request.user.get_username()))
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'MyInfo/set_contact.html', {
@@ -155,7 +149,7 @@ def welcome_landing(request):
 
     # Kill the session. They are now done.
     request.session.flush()
-    logger.info("service=myinfo psu_uuid={0} welcomed=true".format(identity['PSU_UUID']))
+    logger.info("service=myinfo page=myinfo action=welcome status=success psu_uuid={0}".format(identity['PSU_UUID']))
     return render(request, 'MyInfo/welcome_landing.html', {
         'identity': identity,
     })
