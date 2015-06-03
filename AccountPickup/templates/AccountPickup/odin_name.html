@@ -25,7 +25,7 @@
 			<p class="odinTextTop">Select your Odin username here. You will use your username to log into PSU's electronic systems. Your username will remain the same for the duration of your stay at PSU.</p>
 			<form id="provisionAccount" action="{% url 'AccountPickup:odin' %}" method="post">
 				{% csrf_token %}
-				{{ odin_form.name }}
+				{{ form.name }}
 	
 				<p style="margin-top:20px;"><strong>Reminder:</strong>  PSU policy requires that you read the email sent to your PSU email address on a regular basis. It is your responsibility to check your inbox for important announcements and notifications.</p>
 				<input class="Submit" type="submit" value="Continue" style="margin-bottom:30px;">

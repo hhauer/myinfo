@@ -41,7 +41,7 @@ class DirectoryInformation(models.Model):
         ('Portland State University Foundation', 'PSU Foundation'),
     )
     
-    psu_uuid = models.CharField(unique=True, max_length=36, primary_key=True)
+    psu_uuid = models.CharField(unique=True, max_length=36, primary_key=True, editable=False)
     
     company = models.CharField(max_length=50, choices=COMPANY_CHOICES, null=True, blank=True,
                                default="Portland State University")

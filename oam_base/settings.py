@@ -103,11 +103,8 @@ WSGI_APPLICATION = 'oam_base.wsgi.application'
 TEMPLATE_CONTEXT_PROCESSORS = (
     # defaults
     "django.contrib.auth.context_processors.auth",  # provides 'user' and 'perms'
-    "django.core.context_processors.debug",  # provides 'debug', 'sql_queries'
-    "django.core.context_processors.i18n",  # provides language localization info
-    "django.core.context_processors.media",  # provides 'MEDIA_URL'
-    "django.core.context_processors.static",  # provides 'STATIC_URL'
-    "django.core.context_processors.tz",  # provides 'TIME_ZONE'
+    "django.template.context_processors.debug",  # provides 'debug', 'sql_queries'
+    "django.template.context_processors.static",  # provides 'STATIC_URL'
     "django.contrib.messages.context_processors.messages",  # provides 'messages' and 'DEFAULT_MESSAGE_LEVELS'
     # Custom
     "oam_base.context_processors.identity",  # request.session['identity']

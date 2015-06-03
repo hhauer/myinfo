@@ -8,6 +8,7 @@ from django.contrib.auth.views import password_change
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import Error
 from django.utils.decorators import method_decorator
+from django.views.generic import FormView, UpdateView
 
 from MyInfo.forms import ChangeOdinPasswordForm, SetOdinPasswordForm, LoginForm, DirectoryInformationForm, \
     ContactInformationForm
@@ -86,38 +87,39 @@ def set_password(request):
                            post_change_redirect=reverse('AccountPickup:next_step'), password_change_form=form)
 
 
-@login_required(login_url=reverse_lazy('index'))
-def set_directory(request):
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+class DirectoryView(UpdateView):
 
-    # Are they an employee with information to update?
-    if request.session['identity']['PSU_PUBLISH'] is True:
-        (directory_info, _) = DirectoryInformation.objects.get_or_create(
-            psu_uuid=request.session['identity']['PSU_UUID'])
-        directory_info_form = DirectoryInformationForm(request.POST or None, instance=directory_info)
-    else:
-        oam_status.set_directory = True
-        oam_status.save(update_fields=['set_directory'])
-        return HttpResponseRedirect(reverse("AccountPickup:next_step"))  # Shouldn't be here.
+    template_name = 'MyInfo/set_directory.html'
+    # model = DirectoryInformation
+    form_class = DirectoryInformationForm
+    success_url = reverse_lazy('AccountPickup:next_step')
 
-    if directory_info_form.is_valid():
-        directory_info_form.save()
-        if oam_status.set_directory is False:
-            action_text = "set_directory"
+    @method_decorator(login_required(login_url=reverse_lazy('index')))
+    def dispatch(self, request, *args, **kwargs):
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.user.get_username())
+
+        # Are they an employee with information to update?
+        if request.session['identity']['PSU_PUBLISH'] is False:
             oam_status.set_directory = True
             oam_status.save(update_fields=['set_directory'])
-        else:
-            action_text = "update_directory"
+            return HttpResponseRedirect(self.success_url)  # If not, they shouldn't be here
 
-        logger.info("service=myinfo page=myinfo action={0} status=success psu_uuid={1}".format(
-                    action_text, request.user.get_username()))
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+        return super(DirectoryView, self).dispatch(request, *args, **kwargs)
 
-    return render(request, 'MyInfo/set_directory.html', {
-        'form': directory_info_form,
-    })
+    def get_object(self, queryset=None):
+
+        (directory_info, _) = DirectoryInformation.objects.get_or_create(psu_uuid=self.request.user.get_username())
+        return directory_info
+
+    def get_form_kwargs(self):
+
+        kwargs = super(DirectoryView, self).get_form_kwargs()
+        kwargs.update({'psu_uuid': self.request.user.get_username()})
+        return kwargs
 
 
+# TODO: refactor to merge with AccountPickup contact info view
+# Probably best done when confirmation/notification functionality is added
 @login_required(login_url=reverse_lazy('index'))
 def set_contact(request):
     # We don't check OAMStatusTracker because if they don't have contact info set they will be sent to the
@@ -146,13 +148,11 @@ def welcome_landing(request):
     oam_status.save(update_fields=['welcome_displayed'])
 
     identity = request.session['identity']
-
     # Kill the session. They are now done.
     request.session.flush()
+
     logger.info("service=myinfo page=myinfo action=welcome status=success psu_uuid={0}".format(identity['PSU_UUID']))
-    return render(request, 'MyInfo/welcome_landing.html', {
-        'identity': identity,
-    })
+    return render(request, 'MyInfo/welcome_landing.html', {'identity': identity, })
 
 
 # Handle an F5 ping.

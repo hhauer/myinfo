@@ -55,6 +55,7 @@ class SetOdinPasswordForm(SetPasswordForm):
         if oam_status.set_password is False:
             oam_status.set_password = True
             oam_status.save(update_fields=['set_password'])
+        return self.user
 
 
 class ChangeOdinPasswordForm(SetOdinPasswordForm):
@@ -104,6 +105,24 @@ class DirectoryInformationForm(forms.ModelForm):
     class Meta:
         model = DirectoryInformation
         exclude = ['psu_uuid', ]
+
+    def __init__(self, psu_uuid, *args, **kwargs):
+        super(DirectoryInformationForm, self).__init__(*args, **kwargs)
+        self.psu_uuid = psu_uuid
+
+    def save(self, commit=True):
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=self.psu_uuid)
+        if oam_status.set_directory is False:
+            action_text = "set_directory"
+            oam_status.set_directory = True
+            oam_status.save(update_fields=['set_directory'])
+        else:
+            action_text = "update_directory"
+
+        logger.info("service=myinfo page=myinfo action={0} status=success psu_uuid={1}".format(
+                    action_text, self.psu_uuid()))
+
+        return super(DirectoryInformationForm, self).save(commit=commit)
 
 
 # Main MyInfo login form.

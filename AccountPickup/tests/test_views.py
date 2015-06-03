@@ -130,16 +130,16 @@ class APOdinTestCase(APLoggedInTestCase):
         # Test get
         r = self.client.get(self.ODIN)
         self.assertEqual(r.status_code, 200)
-        self.assertIn('odin_form', r.context)
-        self.assertFalse(r.context['odin_form'].is_bound)
+        self.assertIn('form', r.context)
+        self.assertFalse(r.context['form'].is_bound)
 
     def test_odin_post(self):
         # Test bad input
         r = self.client.post(self.ODIN, {'name': '9001'})
         self.assertEqual(r.status_code, 200)
-        self.assertIn('odin_form', r.context)
-        self.assertTrue(r.context['odin_form'].is_bound)
-        self.assertFalse(r.context['odin_form'].is_valid())
+        self.assertIn('form', r.context)
+        self.assertTrue(r.context['form'].is_bound)
+        self.assertFalse(r.context['form'].is_valid())
 
         # Test good input
         r = self.client.post(self.ODIN, {'name': '1'})
@@ -175,16 +175,16 @@ class APAliasTestCase(APLoggedInTestCase):
         # Test get
         r = self.client.get(self.ALIAS)
         self.assertEqual(r.status_code, 200)
-        self.assertIn('mail_form', r.context)
-        self.assertFalse(r.context['mail_form'].is_bound)
+        self.assertIn('form', r.context)
+        self.assertFalse(r.context['form'].is_bound)
 
     def test_alias_post(self):
         # Test bad input
         r = self.client.post(self.ALIAS, {'alias': '9001'})
         self.assertEqual(r.status_code, 200)
-        self.assertIn('mail_form', r.context)
-        self.assertTrue(r.context['mail_form'].is_bound)
-        self.assertFalse(r.context['mail_form'].is_valid())
+        self.assertIn('form', r.context)
+        self.assertTrue(r.context['form'].is_bound)
+        self.assertFalse(r.context['form'].is_valid())
         self.assertNotIn('EMAIL_ALIAS', self.client.session['identity'])
 
         # Test good input
