@@ -120,7 +120,7 @@ class DirectoryInformationForm(forms.ModelForm):
             action_text = "update_directory"
 
         logger.info("service=myinfo page=myinfo action={0} status=success psu_uuid={1}".format(
-                    action_text, self.psu_uuid()))
+                    action_text, self.psu_uuid))
 
         return super(DirectoryInformationForm, self).save(commit=commit)
 
