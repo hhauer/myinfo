@@ -8,6 +8,7 @@ from django.contrib.auth.views import password_change
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db import Error
 from django.utils.decorators import method_decorator
+from django.views.generic import FormView, UpdateView
 
 from MyInfo.forms import ChangeOdinPasswordForm, SetOdinPasswordForm, LoginForm, DirectoryInformationForm, \
     ContactInformationForm
@@ -46,12 +47,15 @@ def index(request):
         if user is not None:
             # Identity is valid.
             auth.login(request, user)
-            logger.info("service=myinfo login_username=" + login_form.cleaned_data['username'] + " success=true")
+            logger.info("service=myinfo page=myinfo action=login status=success credential={0} psu_uuid={1}".format(
+                        login_form.cleaned_data['username'], user.get_username()))
 
             # Head to the oam status router in case they have any unmet oam tasks.
             return HttpResponseRedirect(reverse("AccountPickup:next_step"))
 
-        # If identity is invalid, prompt re-entry.
+        # If identity is invalid, log and prompt re-entry.
+        logger.info("service=myinfo page=myinfo action=login status=failed credential={0}".format(
+                    login_form.cleaned_data['username']))
         error_message = ("Username and/or Password not recognized. "
                          "Ensure this information is correct and please try again. "
                          "If you continue to have difficulty, contact the Helpdesk (503-725-4357) for assistance.")
@@ -83,36 +87,39 @@ def set_password(request):
                            post_change_redirect=reverse('AccountPickup:next_step'), password_change_form=form)
 
 
-@login_required(login_url=reverse_lazy('index'))
-def set_directory(request):
-    (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
+class DirectoryView(UpdateView):
 
-    # Are they an employee with information to update?
-    if request.session['identity']['PSU_PUBLISH'] is True:
-        (directory_info, _) = DirectoryInformation.objects.get_or_create(
-            psu_uuid=request.session['identity']['PSU_UUID'])
-        directory_info_form = DirectoryInformationForm(request.POST or None, instance=directory_info)
-    else:
-        oam_status.set_directory = True
-        oam_status.save(update_fields=['set_directory'])
-        return HttpResponseRedirect(reverse("AccountPickup:next_step"))  # Shouldn't be here.
+    template_name = 'MyInfo/set_directory.html'
+    # model = DirectoryInformation
+    form_class = DirectoryInformationForm
+    success_url = reverse_lazy('AccountPickup:next_step')
 
-    if directory_info_form.is_valid():
-        directory_info_form.save()
-        if oam_status.set_directory is False:
+    @method_decorator(login_required(login_url=reverse_lazy('index')))
+    def dispatch(self, request, *args, **kwargs):
+        (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.user.get_username())
+
+        # Are they an employee with information to update?
+        if request.session['identity']['PSU_PUBLISH'] is False:
             oam_status.set_directory = True
             oam_status.save(update_fields=['set_directory'])
+            return HttpResponseRedirect(self.success_url)  # If not, they shouldn't be here
 
-        logger.info("service=myinfo psu_uuid={0} directory_set=true".format(
-            request.session['identity']['PSU_UUID']
-        ))
-        return HttpResponseRedirect(reverse('AccountPickup:next_step'))
+        return super(DirectoryView, self).dispatch(request, *args, **kwargs)
 
-    return render(request, 'MyInfo/set_directory.html', {
-        'form': directory_info_form,
-    })
+    def get_object(self, queryset=None):
+
+        (directory_info, _) = DirectoryInformation.objects.get_or_create(psu_uuid=self.request.user.get_username())
+        return directory_info
+
+    def get_form_kwargs(self):
+
+        kwargs = super(DirectoryView, self).get_form_kwargs()
+        kwargs.update({'psu_uuid': self.request.user.get_username()})
+        return kwargs
 
 
+# TODO: refactor to merge with AccountPickup contact info view
+# Probably best done when confirmation/notification functionality is added
 @login_required(login_url=reverse_lazy('index'))
 def set_contact(request):
     # We don't check OAMStatusTracker because if they don't have contact info set they will be sent to the
@@ -123,21 +130,10 @@ def set_contact(request):
     contact_info_form = ContactInformationForm(request.POST or None, instance=contact_info)
 
     if contact_info_form.is_valid():
-        # First check to see if they removed all their contact info.
-        # Currently this shouldn't happen, since the underlying form rejects that state in validation.
-        cell_phone = contact_info_form.cleaned_data['cell_phone']
-        alternate_email = contact_info_form.cleaned_data['alternate_email']
-
-        if cell_phone is None and alternate_email is None:  # pragma: no cover
-            (oam_status, _) = OAMStatusTracker.objects.get_or_create(psu_uuid=request.session['identity']['PSU_UUID'])
-            oam_status.set_contact_info = False
-            oam_status.save(update_fields=['set_contact_info'])
 
         contact_info_form.save()
-
-        logger.info("service=myinfo psu_uuid={0} contact_updated=true".format(
-            request.session['identity']['PSU_UUID']
-        ))
+        logger.info("service=myinfo page=myinfo action=update_contact status=success psu_uuid={0}".format(
+                    request.user.get_username()))
         return HttpResponseRedirect(reverse('AccountPickup:next_step'))
 
     return render(request, 'MyInfo/set_contact.html', {
@@ -152,13 +148,11 @@ def welcome_landing(request):
     oam_status.save(update_fields=['welcome_displayed'])
 
     identity = request.session['identity']
-
     # Kill the session. They are now done.
     request.session.flush()
-    logger.info("service=myinfo psu_uuid={0} welcomed=true".format(identity['PSU_UUID']))
-    return render(request, 'MyInfo/welcome_landing.html', {
-        'identity': identity,
-    })
+
+    logger.info("service=myinfo page=myinfo action=welcome status=success psu_uuid={0}".format(identity['PSU_UUID']))
+    return render(request, 'MyInfo/welcome_landing.html', {'identity': identity, })
 
 
 # Handle an F5 ping.

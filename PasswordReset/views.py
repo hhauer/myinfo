@@ -53,21 +53,30 @@ def index(request):
 
             if r is not True:
                 raise APIException("Reset code not sent. Email? " + str(email_response))
-            
+
+            logger.info(
+                "service=myinfo page=passwordreset action=reset_request status=success email={0} cell={1}".format(
+                    reset_request.cleaned_data['email'], reset_request.cleaned_data['cell']))
             return HttpResponseRedirect(reverse("PasswordReset:reset_notoken"))
             
-    except (ContactInformation.DoesNotExist, ContactInformation.MultipleObjectsReturned):
+    except (ContactInformation.DoesNotExist, ContactInformation.MultipleObjectsReturned) as e:
         # Either we couldn't find it or we couldn't uniquely identify it.
-        logger.info("service=myinfo email={0} cell={1} error=unable_to_identify".format(
-            reset_request.cleaned_data['email'], reset_request.cleaned_data['cell']))
+        if isinstance(e, ContactInformation.DoesNotExist):
+            status = "id_not_found"
+        else:
+            status = "multiple_matches"
+        logger.info(
+            "service=myinfo page=passwordreset action=reset_request status={0} email={1} cell={2}".format(
+                status, reset_request.cleaned_data['email'], reset_request.cleaned_data['cell']))
 
         error_message = ("We could not uniquely identify a user with this information. "
                          "Ensure this information is correct and please try again. "
                          "If you continue to have difficulty, contact the Helpdesk (503-725-4357) for assistance.")
     except APIException:
 
-        logger.info("service=myinfo email={0} cell={1} error=code_not_sent".format(
-            reset_request.cleaned_data['email'], reset_request.cleaned_data['cell']))
+        logger.info(
+            "service=myinfo page=passwordreset action=reset_request status=code_not_sent email={0} cell={1}".format(
+                reset_request.cleaned_data['email'], reset_request.cleaned_data['cell']))
 
         error_message = "Sorry, we were unable to send a reset code. Please try again later."
     
@@ -115,6 +124,9 @@ def reset(request, token=None):
                 oam_status.set_password = False
                 oam_status.save()
 
+                logger.info(
+                    "service=myinfo page=passwordreset action=login status=success token={0} psu_uuid={1}".format(
+                        token, user.get_username()))
                 return HttpResponseRedirect(reverse('AccountPickup:next_step'))
             
             logger.error("service=myinfo psu_uuid={0} error=reset_authentication".format(psu_uuid))
@@ -122,10 +134,11 @@ def reset(request, token=None):
         except SignatureExpired:
             udc_id = signer.unsign(token)
             # Too slow!
-            logger.info("service=myinfo psu_uuid={0} error=password_timeout".format(udc_id))
+            logger.info("service=myinfo page=passwordreset action=login status=timeout token={0} psu_uuid={1}".format(
+                token, udc_id))
             error_message = "The password reset expired. Please try again."
         except BadSignature:
-            logger.info("service=myinfo token={0} error=invalid_token".format(token))
+            logger.info("service=myinfo page=passwordreset action=login status=invalid_token token={0}".format(token))
             error_message = "There was an internal error. Please contact the Helpdesk (503-725-4357) for assistance."
     
         # Something went wrong, forward them back to the password reset link page.  
